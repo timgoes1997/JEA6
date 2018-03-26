@@ -3,9 +3,13 @@ package entity.user;
 import javax.persistence.*;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 
 @Entity(name = "USERDATA")
-public class User {
+public class User implements Serializable{
+
+    private static final long serialVersionUID = 1941556366358043294L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ID")

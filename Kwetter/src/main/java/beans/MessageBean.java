@@ -1,5 +1,6 @@
 package beans;
 
+import entity.message.InitialMessage;
 import entity.message.Message;
 
 import javax.annotation.PostConstruct;
@@ -30,11 +31,11 @@ public class MessageBean {
     @PostConstruct
     public void init(){
         messageList = new ArrayList<>();
-        messageList.add(new Message("Hello"));
-        messageList.add(new Message("Hello"));
-        messageList.add(new Message("Hello"));
-        messageList.add(new Message("Hello"));
-        messageList.add(new Message("Hello"));
+        messageList.add(new InitialMessage("Hello"));
+        messageList.add(new InitialMessage("Hello"));
+        messageList.add(new InitialMessage("Hello"));
+        messageList.add(new InitialMessage("Hello"));
+        messageList.add(new InitialMessage("Hello"));
     }
 
     @GET
@@ -42,7 +43,7 @@ public class MessageBean {
     @Path("{id}")
     public Response getMessageByID(@PathParam("id") int id){
         if(messageList.size() > id){
-            Message test = new Message("Hello");
+            Message test = new InitialMessage("Hello");
             em.persist(test);
             return Response.ok(messageList.get(id)).build();
         }

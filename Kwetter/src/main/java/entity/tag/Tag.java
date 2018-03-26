@@ -7,6 +7,8 @@ import java.io.Serializable;
 @Entity(name="TAG")
 public class Tag implements Serializable {
 
+    private static final long serialVersionUID = -7353582357753720500L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ID")

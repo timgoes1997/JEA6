@@ -10,11 +10,11 @@ import java.util.Date;
 import java.util.List;
 
 @Entity(name="MESSAGE")
-public class Message implements Serializable {
+public abstract class Message implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ID")
-    public Long id;
+    private Long id;
 
     @Size(min=1, max=280)
     @Column(name = "TEXT", unique = true)
@@ -22,26 +22,26 @@ public class Message implements Serializable {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "TYPE")
-    public MessageType type; //To check wether a message is directed towards your followers or visible for everyone.
+    private MessageType type; //To check wether a message is directed towards your followers or visible for everyone.
 
     @OneToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "MESSAGE_TAGS",
             joinColumns = { @JoinColumn(name="MESSAGE_ID", referencedColumnName="ID")},
             inverseJoinColumns = { @JoinColumn(name="TAG_ID", referencedColumnName="ID")})
-    public List<Tag> tags;
+    private List<Tag> tags;
 
     @Temporal(TemporalType.DATE)
     @Column(name = "DATE")
-    public Date date;
+    private Date date;
 
     @OneToOne(cascade = CascadeType.ALL)
-    public User messager;
+    private User messager;
 
     @OneToMany
     @JoinTable(name = "MESSAGE_MENTIONS",
             joinColumns = { @JoinColumn(name="MESSAGE_ID", referencedColumnName="ID")},
             inverseJoinColumns = { @JoinColumn(name="MENTION_ACCOUNT_ID", referencedColumnName="ID")})
-    public List<User> mentions;
+    private List<User> mentions;
 
     public Message(){
 
@@ -59,7 +59,23 @@ public class Message implements Serializable {
         return text;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public MessageType getType() {
+        return type;
+    }
+
+    public List<Tag> getTags() {
+        return tags;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public User getMessager() {
+        return messager;
+    }
+
+    public List<User> getMentions() {
+        return mentions;
     }
 }
