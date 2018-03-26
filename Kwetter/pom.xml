@@ -82,6 +82,13 @@
       <version>2.5.2</version>
       <scope>test</scope>
     </dependency>
+
+    <dependency>
+      <groupId>org.apache.derby</groupId>
+      <artifactId>derbyclient</artifactId>
+      <version>10.14.1.0</version>
+    </dependency>
+
   </dependencies>
 
   <build>
