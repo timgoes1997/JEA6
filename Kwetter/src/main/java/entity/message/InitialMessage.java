@@ -1,6 +1,10 @@
 package entity.message;
 
 import javax.persistence.Entity;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Date;
 
 @Entity
 public class InitialMessage extends Message {
@@ -13,5 +17,10 @@ public class InitialMessage extends Message {
 
     public InitialMessage(String text){
         super(text);
+        this.date = Date.from(LocalDateTime.ofInstant(new Date().toInstant(),
+                ZoneId.systemDefault()).atZone(ZoneId.systemDefault()).toInstant());
+
+        this.tags = new ArrayList<>();
+        this.mentions = new ArrayList<>();
     }
 }

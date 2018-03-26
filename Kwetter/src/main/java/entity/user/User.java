@@ -6,6 +6,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -15,7 +16,7 @@ public class User implements Serializable{
     private static final long serialVersionUID = 1941556366358043294L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
     private long id;
 
@@ -41,6 +42,7 @@ public class User implements Serializable{
     @Column(name = "LASTNAME", nullable = false)
     private String lastName;
 
+    /*
     @Column(name = "TELEPHONENUMBER")
     private String telephoneNumber;
 
@@ -64,27 +66,51 @@ public class User implements Serializable{
     @Column(name = "BIRTHDAY")
     private Date birthDay;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PINNED_MESSAGE")
     private Message pinnedMessage;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "USER_FOLLOWERS",
             joinColumns = { @JoinColumn(name="USER_ID", referencedColumnName="ID")},
             inverseJoinColumns = { @JoinColumn(name="FOLLOWER_ID", referencedColumnName="ID")})
     private List<User> followers;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "USER_FOLLOWING",
             joinColumns = { @JoinColumn(name="USER_ID", referencedColumnName="ID")},
             inverseJoinColumns = { @JoinColumn(name="FOLLOWER_ID", referencedColumnName="ID")})
     private List<User> following;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "USER_MESSAGES",
             joinColumns = { @JoinColumn(name="USER_ID", referencedColumnName="ID")},
             inverseJoinColumns = { @JoinColumn(name="MESSAGE_ID", referencedColumnName="ID")})
     private List<Message> messages;
+*/
+    public User(){
+
+    }
+
+    public User(String username, String password, UserRole role, String firstName, String lastName){
+        this.username = username;
+        this.password = password;
+        this.firstName = firstName;
+        this.middleName = "test";
+        this.lastName = lastName;
+        this.role = role;
+        /*
+        this.telephoneNumber = "0600000000";
+        this.bio = "test";
+        this.location = "eindhoven";
+        this.email = "tim@test.nl";
+        this.website = "www.fontys.nl";
+        this.birthDay = new Date();
+        this.pinnedMessage = null;
+        following = new ArrayList<>();
+        followers = new ArrayList<>();
+        messages = new ArrayList<>();*/
+    }
 
     public String getUsername() {
         return username;
@@ -130,6 +156,7 @@ public class User implements Serializable{
         return lastName;
     }
 
+    /*
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
@@ -224,5 +251,5 @@ public class User implements Serializable{
 
     public void removeFollowing(User user){
         this.following.remove(user);
-    }
+    }*/
 }

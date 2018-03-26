@@ -23,7 +23,7 @@ import java.util.List;
 @Path("message")
 public class MessageBean {
 
-    @PersistenceContext(unitName = "Kwetter")
+    @PersistenceContext
     private EntityManager em;
 
     private List<Message> messageList;

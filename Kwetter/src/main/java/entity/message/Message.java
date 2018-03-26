@@ -12,36 +12,36 @@ import java.util.List;
 @Entity(name="MESSAGE")
 public abstract class Message implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
     private Long id;
 
     @Size(min=1, max=280)
     @Column(name = "TEXT", unique = true)
-    private String text;
+    protected String text;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "TYPE")
-    private MessageType type; //To check wether a message is directed towards your followers or visible for everyone.
+    protected MessageType type; //To check wether a message is directed towards your followers or visible for everyone.
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "MESSAGE_TAGS",
             joinColumns = { @JoinColumn(name="MESSAGE_ID", referencedColumnName="ID")},
             inverseJoinColumns = { @JoinColumn(name="TAG_ID", referencedColumnName="ID")})
-    private List<Tag> tags;
+    protected List<Tag> tags;
 
     @Temporal(TemporalType.DATE)
     @Column(name = "DATE")
-    private Date date;
+    protected Date date;
 
     @OneToOne(cascade = CascadeType.ALL)
-    private User messager;
+    protected User messager;
 
     @OneToMany
     @JoinTable(name = "MESSAGE_MENTIONS",
             joinColumns = { @JoinColumn(name="MESSAGE_ID", referencedColumnName="ID")},
             inverseJoinColumns = { @JoinColumn(name="MENTION_ACCOUNT_ID", referencedColumnName="ID")})
-    private List<User> mentions;
+    protected List<User> mentions;
 
     public Message(){
 
