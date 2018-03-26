@@ -20,8 +20,9 @@ public class User implements Serializable{
     @Column(name = "ID")
     private long id;
 
+
+    //@Pattern(regexp = "[^a-zA-Z0-9_]+$")
     @Size(min=3, max=40)
-    @Pattern(regexp = "[^a-zA-Z0-9_]+$")
     @Column(name = "USERNAME", unique = true, nullable = false)
     private String username;
 
@@ -42,7 +43,6 @@ public class User implements Serializable{
     @Column(name = "LASTNAME", nullable = false)
     private String lastName;
 
-    /*
     @Column(name = "TELEPHONENUMBER")
     private String telephoneNumber;
 
@@ -87,7 +87,7 @@ public class User implements Serializable{
             joinColumns = { @JoinColumn(name="USER_ID", referencedColumnName="ID")},
             inverseJoinColumns = { @JoinColumn(name="MESSAGE_ID", referencedColumnName="ID")})
     private List<Message> messages;
-*/
+
     public User(){
 
     }
@@ -111,6 +111,7 @@ public class User implements Serializable{
         followers = new ArrayList<>();
         messages = new ArrayList<>();*/
     }
+
 
     public String getUsername() {
         return username;
@@ -156,7 +157,6 @@ public class User implements Serializable{
         return lastName;
     }
 
-    /*
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
@@ -251,5 +251,5 @@ public class User implements Serializable{
 
     public void removeFollowing(User user){
         this.following.remove(user);
-    }*/
+    }
 }
