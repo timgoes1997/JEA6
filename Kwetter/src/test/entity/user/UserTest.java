@@ -16,6 +16,7 @@ public class UserTest {
     @Before
     public void setUp() throws Exception {
         em = PersistenceHelper.getEntityManager();
+        System.out.println("TEST");
     }
 
     @After
