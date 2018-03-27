@@ -7,7 +7,7 @@ import java.io.Serializable;
 @Entity(name="TAG")
 @NamedQueries({
         @NamedQuery(name="Tag.findAll",
-                query="SELECT t FROM Tag t"),
+                query="SELECT t FROM TAG t"),
 })
 public class Tag implements Serializable {
 
