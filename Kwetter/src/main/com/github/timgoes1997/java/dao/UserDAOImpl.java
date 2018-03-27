@@ -34,7 +34,12 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public void addFollower(User accToFollow, User accToFollowing) {
+    public void addFollower(User userFollow, User accToFollow) {
+
+    }
+
+    @Override
+    public void removeFollower(User userFollow, User accToRemoveFollow){
 
     }
 }

@@ -14,4 +14,5 @@ public interface UserDAO {
 
     void addFollower(User accToFollow, User accToFollowing);
 
+    void removeFollower(User userFollow, User accToRemoveFollow);
 }

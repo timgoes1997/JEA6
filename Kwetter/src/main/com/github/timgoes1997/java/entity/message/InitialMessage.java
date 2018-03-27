@@ -1,12 +1,18 @@
 package com.github.timgoes1997.java.entity.message;
 
+import com.github.timgoes1997.java.entity.tag.Tag;
+import com.github.timgoes1997.java.entity.user.User;
+
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
+@DiscriminatorValue("1")
 public class InitialMessage extends Message {
 
     private static final long serialVersionUID = 7201507778760836571L;
@@ -15,12 +21,7 @@ public class InitialMessage extends Message {
         super();
     }
 
-    public InitialMessage(String text){
-        super(text);
-        this.date = Date.from(LocalDateTime.ofInstant(new Date().toInstant(),
-                ZoneId.systemDefault()).atZone(ZoneId.systemDefault()).toInstant());
-
-        this.tags = new ArrayList<>();
-        this.mentions = new ArrayList<>();
+    public InitialMessage(String text, MessageType type, User messager, Date date, List<Tag> tags, List<User> mentions){
+        super(text, type, messager, date, tags, mentions);
     }
 }
