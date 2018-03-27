@@ -1,4 +1,7 @@
-package entity.user;
+package com.github.timgoes1997.java.entity.user;
+
+import static org.junit.Assert.*;
+
 
 import helper.PersistenceHelper;
 import org.junit.After;
