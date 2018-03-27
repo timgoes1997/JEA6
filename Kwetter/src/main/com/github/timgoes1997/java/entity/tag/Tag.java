@@ -5,6 +5,10 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 
 @Entity(name="TAG")
+@NamedQueries({
+        @NamedQuery(name="Tag.findAll",
+                query="SELECT t FROM Tag t"),
+})
 public class Tag implements Serializable {
 
     private static final long serialVersionUID = -7353582357753720500L;

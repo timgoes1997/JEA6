@@ -30,6 +30,8 @@ public class UserTest {
     public void addMessage() {
         em.getTransaction().begin();
 
+        em.persist(new User("TestUser", "Password", UserRole.User, "Test", "User"));
+
         em.getTransaction().commit();
     }
 

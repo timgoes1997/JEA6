@@ -6,10 +6,14 @@
     <persistence-unit name="Kwetter" transaction-type="RESOURCE_LOCAL">
         <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
 
-        <class>entity.message.Message</class>
-        <class>entity.tag.Tag</class>
-        <class>entity.user.User</class>
         <exclude-unlisted-classes>false</exclude-unlisted-classes>
+
+        <class>com.github.timgoes1997.java.entity.user.User</class>
+        <class>com.github.timgoes1997.java.entity.message.Message</class>
+        <class>com.github.timgoes1997.java.entity.message.InitialMessage</class>
+        <class>com.github.timgoes1997.java.entity.message.Remessage</class>
+        <class>com.github.timgoes1997.java.entity.message.ReplyMessage</class>
+        <class>com.github.timgoes1997.java.entity.tag.Tag</class>
         <properties>
             <property name="javax.persistence.jdbc.url" value="jdbc:derby:memory:testDB;create=true"/>
             <property name="javax.persistence.jdbc.driver" value="org.apache.derby.jdbc.EmbeddedDriver"/>

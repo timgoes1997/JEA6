@@ -6,6 +6,8 @@ import com.github.timgoes1997.java.entity.tag.Tag;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
+import java.util.List;
 
 @Stateless
 public class TagDAOImpl implements TagDAO{
@@ -31,6 +33,13 @@ public class TagDAOImpl implements TagDAO{
     @Override
     public Tag findTagByName(String tagName) {
         return null;
+    }
+
+    @Override
+    public List<Tag> getAllTags() {
+        TypedQuery<Tag> query =
+                em.createNamedQuery("Tag.findAll", Tag.class);
+        return query.getResultList();
     }
 
     /**
