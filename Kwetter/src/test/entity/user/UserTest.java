@@ -27,6 +27,7 @@ public class UserTest {
     public void addMessage() {
         em.getTransaction().begin();
 
+        em.getTransaction().commit();
     }
 
     @Test
