@@ -56,7 +56,7 @@ public class TagDAOImplTest {
     @Test
     public void getAllTags(){
         em.getTransaction().begin();
-        int deletedCount = em.createQuery("DELETE FROM Tag").executeUpdate();
+        int deletedCount = em.createQuery("DELETE FROM TAG").executeUpdate();
         int count = 5;
         for(int i = 0; i < count; i++){
             em.persist(new Tag(String.format("test %d",i)));
