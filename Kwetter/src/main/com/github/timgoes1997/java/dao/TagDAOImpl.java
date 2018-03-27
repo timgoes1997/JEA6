@@ -32,4 +32,12 @@ public class TagDAOImpl implements TagDAO{
     public Tag findTagByName(String tagName) {
         return null;
     }
+
+    /**
+     * For testing purposes
+     * @param em entitymanager for unittesting this bean/dao
+     */
+    public void setEntityManager(EntityManager em){
+        this.em = em;
+    }
 }

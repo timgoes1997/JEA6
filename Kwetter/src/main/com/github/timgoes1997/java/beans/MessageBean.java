@@ -31,11 +31,12 @@ public class MessageBean {
     @PostConstruct
     public void init(){
         messageList = new ArrayList<>();
+        /*
         messageList.add(new InitialMessage("Hello"));
         messageList.add(new InitialMessage("Hello"));
         messageList.add(new InitialMessage("Hello"));
         messageList.add(new InitialMessage("Hello"));
-        messageList.add(new InitialMessage("Hello"));
+        messageList.add(new InitialMessage("Hello"));*/
     }
 
     @GET
@@ -43,8 +44,8 @@ public class MessageBean {
     @Path("{id}")
     public Response getMessageByID(@PathParam("id") int id){
         if(messageList.size() > id){
-            Message test = new InitialMessage("Hello");
-            em.persist(test);
+            /*Message test = new InitialMessage("Hello");
+            em.persist(test);*/
             return Response.ok(messageList.get(id)).build();
         }
         else{

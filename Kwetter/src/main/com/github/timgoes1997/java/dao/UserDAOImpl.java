@@ -42,4 +42,12 @@ public class UserDAOImpl implements UserDAO {
     public void removeFollower(User userFollow, User accToRemoveFollow){
 
     }
+
+    /**
+     * For testing purposes
+     * @param em entitymanager for unittesting this bean/dao
+     */
+    public void setEntityManager(EntityManager em){
+        this.em = em;
+    }
 }
