@@ -2,14 +2,18 @@ package com.github.timgoes1997.java.dao;
 
 import com.github.timgoes1997.java.dao.interfaces.UserDAO;
 import helper.PersistenceHelper;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
+import org.junit.runners.MethodSorters;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+
+import java.util.Map;
 
 import static org.junit.Assert.*;
 
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class UserDAOImplTest {
 
     private EntityManager em;
@@ -29,26 +33,32 @@ public class UserDAOImplTest {
     }
 
     @Test
-    public void create() {
+    public void test1_create() {
+        if(em.isOpen()) System.out.println("LUL");
     }
 
     @Test
-    public void edit() {
+    public void test2_edit() {
+        if(em.isOpen()) System.out.println("LUL2");
     }
 
     @Test
-    public void find() {
+    public void test3_find() {
+        if(em.isOpen()) System.out.println("LUL3");
     }
 
     @Test
-    public void findByUsername() {
+    public void test4_findByUsername() {
+        if(em.isOpen()) System.out.println("LUL4");
     }
 
     @Test
-    public void addFollower() {
+    public void test5_addFollower() {
+        if(em.isOpen()) System.out.println("LUL5");
     }
 
     @Test
-    public void removeFollower() {
+    public void test6_removeFollower() {
+        if(em.isOpen()) System.out.println("LUL6");
     }
 }

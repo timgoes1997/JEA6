@@ -7,7 +7,7 @@ import javax.persistence.Persistence;
 public class PersistenceHelper {
     private static final EntityManager entityManager;
     static {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("Kwetter");
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("KwetterTest");
         entityManager = emf.createEntityManager();
     }
     public static EntityManager getEntityManager() {
