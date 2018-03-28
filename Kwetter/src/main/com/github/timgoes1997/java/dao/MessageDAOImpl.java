@@ -8,6 +8,7 @@ import com.github.timgoes1997.java.entity.tag.Tag;
 import com.github.timgoes1997.java.entity.user.User;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import java.util.Date;
@@ -30,14 +31,24 @@ public class MessageDAOImpl implements MessageDAO {
 
     @Override
     public Message find(long id) {
-        TypedQuery<Message> query =
-                em.createNamedQuery("Message.findByID", Message.class);
-        return query.getSingleResult();
+        try {
+            TypedQuery<Message> query =
+                    em.createNamedQuery("Message.findByID", Message.class);
+            return query.setParameter("id", id).getSingleResult();
+        }catch (NoResultException exception){
+            return null;
+        }
     }
 
     @Override
-    public Message findMessageByUser(User user) {
-        return null;
+    public List<Message> findMessagesByUser(User user) {
+        try {
+            TypedQuery<Message> query =
+                    em.createNamedQuery("Message.findByUser", Message.class);
+            return query.setParameter("id", user.getId()).getResultList();
+        }catch (NoResultException exception){
+            return null;
+        }
     }
 
     @Override

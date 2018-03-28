@@ -11,6 +11,14 @@ import java.util.Date;
 import java.util.List;
 
 @Entity(name = "USERDATA")
+@NamedQueries({
+        @NamedQuery(name="User.findAll",
+                query="SELECT u FROM USER u"),
+        @NamedQuery(name="User.findByName",
+                query="SELECT u FROM USER u WHERE u.username = :name"),
+        @NamedQuery(name="User.findByID",
+                query="SELECT u FROM USER u WHERE u.id = :id"),
+})
 public class User implements Serializable{
 
     private static final long serialVersionUID = 1941556366358043294L;
@@ -19,7 +27,6 @@ public class User implements Serializable{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
     private long id;
-
 
     //@Pattern(regexp = "[^a-zA-Z0-9_]+$")
     @Size(min=3, max=40)
@@ -92,26 +99,26 @@ public class User implements Serializable{
 
     }
 
-    public User(String username, String password, UserRole role, String firstName, String lastName){
+    public User(String username, String password, UserRole role, String firstName, String lastName, String email, String telephoneNumber){
         this.username = username;
         this.password = password;
         this.firstName = firstName;
-        this.middleName = "test";
         this.lastName = lastName;
         this.role = role;
-        /*
-        this.telephoneNumber = "0600000000";
-        this.bio = "test";
-        this.location = "eindhoven";
-        this.email = "tim@test.nl";
-        this.website = "www.fontys.nl";
-        this.birthDay = new Date();
-        this.pinnedMessage = null;
-        following = new ArrayList<>();
-        followers = new ArrayList<>();
-        messages = new ArrayList<>();*/
+        this.email = email;
+        this.telephoneNumber = telephoneNumber;
     }
 
+    public User(String username, String password, UserRole role, String firstName, String middleName, String lastName, String email, String telephoneNumber){
+        this.username = username;
+        this.password = password;
+        this.firstName = firstName;
+        this.middleName = middleName;
+        this.lastName = lastName;
+        this.role = role;
+        this.email = email;
+        this.telephoneNumber = telephoneNumber;
+    }
 
     public String getUsername() {
         return username;
@@ -251,5 +258,9 @@ public class User implements Serializable{
 
     public void removeFollowing(User user){
         this.following.remove(user);
+    }
+
+    public long getId() {
+        return id;
     }
 }

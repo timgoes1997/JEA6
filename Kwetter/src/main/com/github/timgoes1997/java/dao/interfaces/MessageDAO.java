@@ -16,7 +16,7 @@ public interface MessageDAO {
 
     Message find(long id);
 
-    Message findMessageByUser(User user);
+    List<Message> findMessagesByUser(User user);
 
     List<ReplyMessage> getMessageReplies(Message message);
 

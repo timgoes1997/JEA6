@@ -33,32 +33,32 @@ public class UserDAOImplTest {
     }
 
     @Test
-    public void test1_create() {
-        if(em.isOpen()) System.out.println("LUL");
+    public void create() {
+
     }
 
     @Test
-    public void test2_edit() {
-        if(em.isOpen()) System.out.println("LUL2");
+    public void edit() {
+
     }
 
     @Test
-    public void test3_find() {
-        if(em.isOpen()) System.out.println("LUL3");
+    public void find() {
+
     }
 
     @Test
-    public void test4_findByUsername() {
-        if(em.isOpen()) System.out.println("LUL4");
+    public void findByUsername() {
+
     }
 
     @Test
-    public void test5_addFollower() {
-        if(em.isOpen()) System.out.println("LUL5");
+    public void addFollower() {
+
     }
 
     @Test
-    public void test6_removeFollower() {
-        if(em.isOpen()) System.out.println("LUL6");
+    public void removeFollower() {
+
     }
 }

@@ -19,6 +19,8 @@ import java.util.List;
                 query="SELECT m FROM MESSAGE m"),
         @NamedQuery(name="Message.findByID",
                 query="SELECT m FROM MESSAGE m WHERE m.id = :id"),
+        @NamedQuery(name="Message.findByUser",
+                query="SELECT m FROM MESSAGE m WHERE m.messager.id = :id"),
         @NamedQuery(name="Message.getLikesByID",
                 query="SELECT COUNT(m.likes) FROM MESSAGE m WHERE m.id = :id"),
 })

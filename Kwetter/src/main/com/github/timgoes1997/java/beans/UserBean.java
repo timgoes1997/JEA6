@@ -24,7 +24,7 @@ public class UserBean {
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("{id}")
     public void addUser(@PathParam("id") Long accId) {
-        userDAO.create(new User("Timmeke", "Wachtwoord", UserRole.User, "Tim", "Goes" ));
+        userDAO.create(new User("Timmeke", "Wachtwoord", UserRole.User, "Tim", "Goes", "Tim.goes@student.fontys.nl", "0600000000"));
     }
 
 }
