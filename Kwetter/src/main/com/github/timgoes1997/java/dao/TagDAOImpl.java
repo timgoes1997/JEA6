@@ -5,6 +5,7 @@ import com.github.timgoes1997.java.entity.tag.Tag;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import java.util.List;
@@ -27,12 +28,24 @@ public class TagDAOImpl implements TagDAO{
 
     @Override
     public Tag find(long id) {
-        return null;
+        try {
+        TypedQuery<Tag> query =
+                em.createNamedQuery("Tag.findByID", Tag.class);
+            return query.setParameter("id", id).getSingleResult();
+        }catch (NoResultException exception){
+            return null;
+        }
     }
 
     @Override
     public Tag findTagByName(String tagName) {
-        return null;
+        try {
+            TypedQuery<Tag> query =
+                    em.createNamedQuery("Tag.findByName", Tag.class);
+            return query.setParameter("name", tagName).getSingleResult();
+        }catch (NoResultException exception){
+            return null;
+        }
     }
 
     @Override

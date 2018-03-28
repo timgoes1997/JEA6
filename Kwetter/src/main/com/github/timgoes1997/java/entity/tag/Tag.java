@@ -8,6 +8,10 @@ import java.io.Serializable;
 @NamedQueries({
         @NamedQuery(name="Tag.findAll",
                 query="SELECT t FROM TAG t"),
+        @NamedQuery(name="Tag.findByName",
+                query="SELECT t FROM TAG t WHERE t.tagName = :name"),
+        @NamedQuery(name="Tag.findByID",
+                query="SELECT t FROM TAG t WHERE t.id = :id"),
 })
 public class Tag implements Serializable {
 
@@ -19,8 +23,8 @@ public class Tag implements Serializable {
     private Long id;
 
     @Size(min=1, max=279)
-    @Column(name = "TEXT", unique = true)
-    public String tagName;
+    @Column(name = "NAME", unique = true)
+    private String tagName;
 
     public Tag(){
 
@@ -32,5 +36,9 @@ public class Tag implements Serializable {
 
     public long getId() {
         return id;
+    }
+
+    public String getTagName(){
+        return tagName;
     }
 }
