@@ -31,34 +31,51 @@ public class MessageDAOImpl implements MessageDAO {
 
     @Override
     public Message find(long id) {
-        try {
-            TypedQuery<Message> query =
-                    em.createNamedQuery("Message.findByID", Message.class);
-            return query.setParameter("id", id).getSingleResult();
-        }catch (NoResultException exception){
-            return null;
-        }
+        TypedQuery<Message> query =
+                em.createNamedQuery("Message.findByID", Message.class);
+        return query.setParameter("id", id).getSingleResult();
     }
 
     @Override
     public List<Message> findMessagesByUser(User user) {
-        try {
-            TypedQuery<Message> query =
-                    em.createNamedQuery("Message.findByUser", Message.class);
-            return query.setParameter("id", user.getId()).getResultList();
-        }catch (NoResultException exception){
-            return null;
-        }
+        TypedQuery<Message> query =
+                em.createNamedQuery("Message.findByUser", Message.class);
+        return query.setParameter("id", user.getId()).getResultList();
+    }
+
+    @Override
+    public List<Message> findMessagesByUser(User user, int firstResult, int maxResults) {
+        TypedQuery<Message> query =
+                em.createNamedQuery("Message.findByUser", Message.class).setFirstResult(firstResult).setMaxResults(maxResults);
+        return query.setParameter("id", user.getId()).getResultList();
     }
 
     @Override
     public List<ReplyMessage> getMessageReplies(Message message) {
-        return null;
+        TypedQuery<ReplyMessage> query =
+                em.createNamedQuery("Message.findReplies", ReplyMessage.class);
+        return query.setParameter("id", message.getId()).getResultList();
+    }
+
+    @Override
+    public List<ReplyMessage> getMessageReplies(Message message, int firstResult, int maxResults) {
+        TypedQuery<ReplyMessage> query =
+                em.createNamedQuery("Message.findReplies", ReplyMessage.class).setFirstResult(firstResult).setMaxResults(maxResults);
+        return query.setParameter("id", message.getId()).getResultList();
     }
 
     @Override
     public List<Remessage> getMessageRemessages(Message message) {
-        return null;
+        TypedQuery<Remessage> query =
+                em.createNamedQuery("Message.findRemessages", Remessage.class);
+        return query.setParameter("id", message.getId()).getResultList();
+    }
+
+    @Override
+    public List<Remessage> getMessageRemessages(Message message, int firstResult, int maxResults) {
+        TypedQuery<Remessage> query =
+                em.createNamedQuery("Message.findRemessages", Remessage.class).setFirstResult(firstResult).setMaxResults(maxResults);
+        return query.setParameter("id", message.getId()).getResultList();
     }
 
     @Override
@@ -83,9 +100,10 @@ public class MessageDAOImpl implements MessageDAO {
 
     /**
      * For testing purposes
+     *
      * @param em entitymanager for unittesting this bean/dao
      */
-    public void setEntityManager(EntityManager em){
+    public void setEntityManager(EntityManager em) {
         this.em = em;
     }
 }

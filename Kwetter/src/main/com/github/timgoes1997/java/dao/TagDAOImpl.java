@@ -11,7 +11,7 @@ import javax.persistence.TypedQuery;
 import java.util.List;
 
 @Stateless
-public class TagDAOImpl implements TagDAO{
+public class TagDAOImpl implements TagDAO {
 
     @PersistenceContext
     private EntityManager em;
@@ -28,24 +28,16 @@ public class TagDAOImpl implements TagDAO{
 
     @Override
     public Tag find(long id) {
-        try {
         TypedQuery<Tag> query =
                 em.createNamedQuery("Tag.findByID", Tag.class);
-            return query.setParameter("id", id).getSingleResult();
-        }catch (NoResultException exception){
-            return null;
-        }
+        return query.setParameter("id", id).getSingleResult();
     }
 
     @Override
     public Tag findTagByName(String tagName) {
-        try {
-            TypedQuery<Tag> query =
-                    em.createNamedQuery("Tag.findByName", Tag.class);
-            return query.setParameter("name", tagName).getSingleResult();
-        }catch (NoResultException exception){
-            return null;
-        }
+        TypedQuery<Tag> query =
+                em.createNamedQuery("Tag.findByName", Tag.class);
+        return query.setParameter("name", tagName).getSingleResult();
     }
 
     @Override
@@ -57,9 +49,10 @@ public class TagDAOImpl implements TagDAO{
 
     /**
      * For testing purposes
+     *
      * @param em entitymanager for unittesting this bean/dao
      */
-    public void setEntityManager(EntityManager em){
+    public void setEntityManager(EntityManager em) {
         this.em = em;
     }
 }

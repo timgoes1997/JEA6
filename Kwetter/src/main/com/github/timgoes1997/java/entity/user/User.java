@@ -13,11 +13,11 @@ import java.util.List;
 @Entity(name = "USERDATA")
 @NamedQueries({
         @NamedQuery(name="User.findAll",
-                query="SELECT u FROM USER u"),
+                query="SELECT u FROM USERDATA u"),
         @NamedQuery(name="User.findByName",
-                query="SELECT u FROM USER u WHERE u.username = :name"),
+                query="SELECT u FROM USERDATA u WHERE u.username = :name"),
         @NamedQuery(name="User.findByID",
-                query="SELECT u FROM USER u WHERE u.id = :id"),
+                query="SELECT u FROM USERDATA u WHERE u.id = :id"),
 })
 public class User implements Serializable{
 

@@ -5,9 +5,12 @@ import com.github.timgoes1997.java.entity.tag.Tag;
 import helper.PersistenceHelper;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
 import java.util.List;
@@ -15,6 +18,9 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 public class TagDAOImplTest {
+
+    @Rule
+    public ExpectedException exception = ExpectedException.none();
 
     private EntityManager em;
 
@@ -53,10 +59,11 @@ public class TagDAOImplTest {
 
         em.getTransaction().begin();
         tDao.remove(t);
-        Tag tRemoved = tDao.findTagByName(remove);
-        assertNull(tRemoved);
         em.getTransaction().commit();
 
+        exception.expect(NoResultException.class);
+        Tag tRemoved = tDao.findTagByName(remove);
+        assertNull(tRemoved);
     }
 
     @Test
@@ -86,13 +93,15 @@ public class TagDAOImplTest {
         Tag tag = tDao.findTagByName(tagText1);
         Tag tag2 = tDao.findTagByName(tagText2);
         Tag tag3 = tDao.findTagByName(tagText3);
-        Tag none = tDao.findTagByName("RandomGekwetter");
+        em.getTransaction().commit();
 
         assertEquals(tagText1, tag.getTagName());
         assertEquals(tagText2, tag2.getTagName());
         assertEquals(tagText3, tag3.getTagName());
+
+        exception.expect(NoResultException.class);
+        Tag none = tDao.findTagByName("RandomGekwetter");
         assertNull(none);
-        em.getTransaction().commit();
     }
 
     /**

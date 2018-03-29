@@ -28,23 +28,15 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     public User find(long id) {
-        try {
-            TypedQuery<User> query =
-                    em.createNamedQuery("User.findByID", User.class);
-            return query.setParameter("id", id).getSingleResult();
-        }catch (NoResultException exception){
-            return null;
-        }
+        TypedQuery<User> query =
+                em.createNamedQuery("User.findByID", User.class);
+        return query.setParameter("id", id).getSingleResult();
     }
 
     @Override
     public User findByUsername(String userName) {
-        try {
-            TypedQuery<User> query = em.createNamedQuery("User.findByName", User.class);
-            return query.setParameter("User.findByName", userName).getSingleResult();
-        }catch (NoResultException exception){
-            return null;
-        }
+        TypedQuery<User> query = em.createNamedQuery("User.findByName", User.class);
+        return query.setParameter("User.findByName", userName).getSingleResult();
     }
 
     @Override
@@ -57,7 +49,7 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public void removeFollower(User userFollow, User accToRemoveFollow){
+    public void removeFollower(User userFollow, User accToRemoveFollow) {
         //Question: Do I need to do a database optimized remove instead of this (might cause to much memory usage)
         userFollow.removeFollower(accToRemoveFollow);
         accToRemoveFollow.removeFollowing(userFollow);
@@ -67,9 +59,10 @@ public class UserDAOImpl implements UserDAO {
 
     /**
      * For testing purposes
+     *
      * @param em entitymanager for unittesting this bean/dao
      */
-    public void setEntityManager(EntityManager em){
+    public void setEntityManager(EntityManager em) {
         this.em = em;
     }
 }

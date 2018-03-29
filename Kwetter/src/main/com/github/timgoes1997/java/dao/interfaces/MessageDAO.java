@@ -18,9 +18,15 @@ public interface MessageDAO {
 
     List<Message> findMessagesByUser(User user);
 
+    List<Message> findMessagesByUser(User user, int firstResult, int maxResults);
+
     List<ReplyMessage> getMessageReplies(Message message);
 
+    List<ReplyMessage> getMessageReplies(Message message, int firstResult, int maxResults);
+
     List<Remessage> getMessageRemessages(Message message);
+
+    List<Remessage> getMessageRemessages(Message message, int firstResult, int maxResults);
 
     Long getMessageLikes(Message message);
 

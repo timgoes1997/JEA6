@@ -10,6 +10,14 @@ import java.util.List;
 
 @Entity
 @DiscriminatorValue("3")
+@NamedQueries({
+        @NamedQuery(name="Remessage.findAll",
+                query="SELECT r FROM Remessage r"),
+        @NamedQuery(name="Remessage.findRepliesByType",
+                query="SELECT r FROM Remessage r WHERE r.type=3"),
+        @NamedQuery(name="Message.findRemessages",
+                query="SELECT r FROM Remessage r WHERE r.type=3 AND r.message.id = :id"),
+})
 public class Remessage extends ReplyMessage implements Serializable {
 
     private static final long serialVersionUID = -9015261934439105868L;
