@@ -1,5 +1,6 @@
-package com.github.timgoes1997.java.authentication;
+package com.github.timgoes1997.java.authentication.token;
 
+import com.github.timgoes1997.java.authentication.Constants;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.SignatureException;
