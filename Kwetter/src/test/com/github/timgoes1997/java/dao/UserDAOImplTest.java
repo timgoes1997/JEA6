@@ -3,6 +3,7 @@ package com.github.timgoes1997.java.dao;
 import com.github.timgoes1997.java.dao.interfaces.UserDAO;
 import helper.PersistenceHelper;
 import org.junit.*;
+import org.junit.rules.ExpectedException;
 import org.junit.runners.MethodSorters;
 
 import javax.persistence.EntityManager;
@@ -19,6 +20,9 @@ public class UserDAOImplTest {
     private EntityManager em;
 
     private UserDAO mDao;
+
+    @Rule
+    public ExpectedException exception = ExpectedException.none();
 
     @Before
     public void setUp() throws Exception {

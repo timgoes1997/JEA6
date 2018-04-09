@@ -5,7 +5,9 @@ import com.github.timgoes1997.java.entity.message.InitialMessage;
 import helper.PersistenceHelper;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import javax.persistence.EntityManager;
 
@@ -16,6 +18,9 @@ public class MessageDAOImplTest {
     private EntityManager em;
 
     private MessageDAO mDao;
+
+    @Rule
+    public ExpectedException exception = ExpectedException.none();
 
     @Before
     public void setUp() throws Exception {
