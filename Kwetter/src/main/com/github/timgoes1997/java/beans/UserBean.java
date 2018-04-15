@@ -32,12 +32,6 @@ public class UserBean {
     @Inject
     private TokenProvider tokenProvider;
 
-    @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Path("{id}")
-    public void addUser(@PathParam("id") Long accId) {
-        userDAO.create(new User("Timmeke", "Wachtwoord", UserRole.User, "Tim", "Goes", "Tim.goes@student.fontys.nl", "0600000000"));
-    }
 
     @POST
     @Path("/login")
@@ -55,6 +49,25 @@ public class UserBean {
 
         }catch(Exception e){
             return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+    }
+
+    @POST
+    @Path("/register")
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    public Response register(@FormParam("username") String username,
+                             @FormParam("password") String password,
+                             @FormParam("email") String email,
+                             @FormParam("firstName") String firstName,
+                             @FormParam("middleName") String middleName,
+                             @FormParam("lastName") String lastName,
+                             @FormParam("telephone") String telephone){
+        try{
+            userDAO.create(new User(username, password, UserRole.User, firstName, middleName, lastName, email, telephone));
+
+            return authenticate(username, password);
+        }catch (Exception e){
+            return Response.status(Response.Status.BAD_REQUEST).entity(e).build();
         }
     }
 

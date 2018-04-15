@@ -24,7 +24,7 @@ import java.util.List;
         @NamedQuery(name=Message.FIND_USER,
                 query="SELECT m FROM MESSAGE m WHERE m.messager.id = :id ORDER BY m.date DESC"),
         @NamedQuery(name=Message.GET_LIKES_BY_MESSAGE,
-                query="SELECT COUNT(m) FROM MESSAGE_LIKES m WHERE MESSAGE_ID = :id"),
+                query="SELECT COUNT(m.likes) FROM MESSAGE m WHERE m.id = :id"),
 })
 public abstract class Message implements Serializable {
 
