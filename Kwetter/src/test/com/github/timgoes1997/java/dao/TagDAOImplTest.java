@@ -19,12 +19,12 @@ import static org.junit.Assert.*;
 
 public class TagDAOImplTest {
 
+    @Rule
+    public ExpectedException exception = ExpectedException.none();
+
     private EntityManager em;
 
     private TagDAO tDao;
-
-    @Rule
-    public ExpectedException exception = ExpectedException.none();
 
     @Before
     public void setUp() throws Exception {
@@ -64,7 +64,6 @@ public class TagDAOImplTest {
         exception.expect(NoResultException.class);
         Tag tRemoved = tDao.findTagByName(remove);
         assertNull(tRemoved);
-
     }
 
     @Test

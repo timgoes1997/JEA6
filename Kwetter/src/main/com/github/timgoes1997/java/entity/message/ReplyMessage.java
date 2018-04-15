@@ -8,17 +8,20 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+/*
+        @NamedQuery(name="ReplyMessage.findReplies",
+                query="SELECT r FROM ReplyMessage r " +
+                        "WHERE TYPE(r) IN :class AND r.message.id = :id"), */
+
 @Entity
 @DiscriminatorValue("2")
 @NamedQueries({
         @NamedQuery(name="ReplyMessage.findAll",
                 query="SELECT r FROM ReplyMessage r"),
-        @NamedQuery(name="Message.findReplies",
-                query="SELECT r FROM ReplyMessage r " +
-                        "WHERE TYPE(r) IN :class AND r.message.id = :id"),
         @NamedQuery(name="ReplyMessage.findRepliesByType",
-                query="SELECT r FROM ReplyMessage r " +
-                        "WHERE r.type=2 AND r.message.id = :id"),
+                query="SELECT r FROM ReplyMessage r WHERE r.type=2"),
+        @NamedQuery(name="Message.findReplies",
+                query="SELECT r FROM ReplyMessage r WHERE r.type=2 AND r.message.id = :id"),
 })
 public class ReplyMessage extends Message implements Serializable {
 
