@@ -57,6 +57,20 @@ public class UserDAOImpl implements UserDAO {
         edit(accToRemoveFollow);
     }
 
+    @Override
+    public User authenticate(String username, String encryptedPassword) {
+        TypedQuery<User> query = em.createNamedQuery(User.FIND_BY_NAME_PASSWORD,User.class);
+        query.setParameter("name", username);
+        query.setParameter("password",  encryptedPassword);
+
+        User user = query.getSingleResult();
+        if(user == null){
+            throw new SecurityException("Entered a invalid username or password");
+        }else{
+            return user;
+        }
+    }
+
     /**
      * For testing purposes
      *

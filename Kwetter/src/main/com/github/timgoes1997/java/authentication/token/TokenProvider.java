@@ -34,7 +34,7 @@ public class TokenProvider {
         this.tokenValidityForRememberMe = TimeUnit.SECONDS.toMillis(Constants.REMEMBERME_VALIDITY_SECONDS);
     }
 
-    public String createToken(String username, Set<String> authorities, Boolean rememberMe) {
+    public String issueToken(String username, Set<String> authorities, Boolean rememberMe) {
         long now = new Date().getTime();
         long validity = rememberMe ? tokenValidityForRememberMe : tokenValidity; //if rememberMe then use the validity for rememberMe otherwise 10 hours.
 
