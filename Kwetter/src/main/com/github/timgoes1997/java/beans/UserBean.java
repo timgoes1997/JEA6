@@ -1,6 +1,7 @@
 package com.github.timgoes1997.java.beans;
 
 import com.github.timgoes1997.java.authentication.Constants;
+import com.github.timgoes1997.java.authentication.interceptor.UserAuthorization;
 import com.github.timgoes1997.java.authentication.token.TokenProvider;
 import com.github.timgoes1997.java.dao.interfaces.UserDAO;
 import com.github.timgoes1997.java.entity.user.User;
@@ -65,10 +66,26 @@ public class UserBean {
         try{
             userDAO.create(new User(username, password, UserRole.User, firstName, middleName, lastName, email, telephone));
 
+            logger.info("Created new account for user: " + username);
+
             return authenticate(username, password);
         }catch (Exception e){
             return Response.status(Response.Status.BAD_REQUEST).entity(e).build();
         }
     }
 
+    @GET
+    @Path("/notoken")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response noTokenGetRequest(){
+        return Response.ok("Hello").build();
+    }
+
+    @GET
+    @Path("/token")
+    @UserAuthorization
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response tokenGetRequest(){
+        return Response.ok("Hello").build();
+    }
 }
