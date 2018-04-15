@@ -66,6 +66,7 @@ public class MessageDAOImplTest {
 
     @Test
     public void generateTags() {
+
     }
 
     @Test

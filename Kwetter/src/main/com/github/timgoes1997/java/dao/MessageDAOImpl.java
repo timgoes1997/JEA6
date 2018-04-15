@@ -1,23 +1,39 @@
 package com.github.timgoes1997.java.dao;
 
 import com.github.timgoes1997.java.dao.interfaces.MessageDAO;
+import com.github.timgoes1997.java.dao.interfaces.TagDAO;
+import com.github.timgoes1997.java.dao.interfaces.UserDAO;
 import com.github.timgoes1997.java.entity.message.Message;
 import com.github.timgoes1997.java.entity.message.Remessage;
 import com.github.timgoes1997.java.entity.message.ReplyMessage;
 import com.github.timgoes1997.java.entity.tag.Tag;
 import com.github.timgoes1997.java.entity.user.User;
 
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+@Stateless
 public class MessageDAOImpl implements MessageDAO {
 
     @PersistenceContext
     private EntityManager em;
+
+    @EJB
+    private UserDAO userDAO;
+
+    @EJB
+    private TagDAO tagDAO;
 
     @Override
     public void create(Message message) {
@@ -80,22 +96,48 @@ public class MessageDAOImpl implements MessageDAO {
 
     @Override
     public Long getMessageLikes(Message message) {
-        return null;
+        return ((Number) em.createNamedQuery("Message.getLikesByID").setParameter("id", message.getId()).getSingleResult()).longValue();
     }
 
     @Override
     public Date getCurrentLocalDateTime() {
-        return null;
+        return Date.from(LocalDateTime.ofInstant(new Date().toInstant(),
+                ZoneId.systemDefault()).atZone(ZoneId.systemDefault()).toInstant());
     }
 
     @Override
     public List<Tag> generateTags(String text) {
-        return null;
+        Pattern tagPattern = Pattern.compile("#(\\w+)");
+        Matcher mat = tagPattern.matcher(text);
+        List<Tag> tags= new ArrayList<>();
+        while (mat.find()) {
+            String tag = mat.group(1);
+            try {
+                tags.add(tagDAO.findTagByName(tag));
+            }catch (NoResultException exception){
+                tagDAO.create(new Tag(mat.group(1)));
+                tags.add(tagDAO.findTagByName(tag));
+            }
+        }
+        return tags;
     }
 
     @Override
     public List<User> generateMentions(String text) {
-        return null;
+        Pattern mentionPattern = Pattern.compile("@(\\w+)");
+        Matcher mat = mentionPattern.matcher(text);
+        List<User> mentions= new ArrayList<>();
+        while (mat.find()) {
+            try {
+                User user = userDAO.findByUsername(mat.group(1));
+                mentions.add(user);
+            } catch (NoResultException exception){
+                 /*Add something to notify user and don't throw a exception which causes the tweet not to be posted
+                   Because on twitter you also can use the @ without a valid user. Someone might want to send a ssh link and it would be retarded to make it crash.
+                  */
+            }
+        }
+        return mentions;
     }
 
     /**
