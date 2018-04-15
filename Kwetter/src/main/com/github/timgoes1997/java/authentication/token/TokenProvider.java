@@ -1,11 +1,13 @@
 package com.github.timgoes1997.java.authentication.token;
 
 import com.github.timgoes1997.java.authentication.Constants;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.SignatureException;
+import com.github.timgoes1997.java.dao.interfaces.UserDAO;
+import com.github.timgoes1997.java.entity.user.User;
+import io.jsonwebtoken.*;
 
 import javax.annotation.PostConstruct;
+import javax.ejb.Stateless;
+import javax.inject.Inject;
 import java.util.Date;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -14,9 +16,14 @@ import java.util.logging.Logger;
 
 import static java.util.stream.Collectors.joining;
 
+@Stateless
 public class TokenProvider {
 
-    private static final Logger LOGGER = Logger.getLogger(TokenProvider.class.getName());
+    @Inject
+    private Logger logger;
+
+    @Inject
+    private UserDAO userDAO;
 
     private static final String AUTHORITIES_KEY = "auth";
 
@@ -48,11 +55,23 @@ public class TokenProvider {
 
     public boolean validateToken(String authToken) {
         try {
-            Jwts.parser().setSigningKey(secretKey).parseClaimsJws(authToken);
+            Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(authToken);
+
             return true;
         } catch (SignatureException e) {
-            LOGGER.log(Level.INFO, "Invalid JWT signature: {0}", e.getMessage());
+            logger.log(Level.INFO, "Invalid JWT signature: {0}", e.getMessage());
             return false;
+        }
+    }
+
+    public User extractUser(String authToken){
+        try {
+            Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(authToken);
+
+            return userDAO.findByUsername(claims.getBody().getSubject());
+        } catch (SignatureException e) {
+            logger.log(Level.INFO, "Invalid JWT signature: {0}", e.getMessage());
+            return null;
         }
     }
 }

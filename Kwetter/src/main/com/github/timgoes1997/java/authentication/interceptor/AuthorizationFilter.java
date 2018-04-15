@@ -2,6 +2,7 @@ package com.github.timgoes1997.java.authentication.interceptor;
 
 import com.github.timgoes1997.java.authentication.Constants;
 import com.github.timgoes1997.java.authentication.token.TokenProvider;
+import com.github.timgoes1997.java.entity.user.User;
 import org.glassfish.jersey.server.ContainerRequest;
 
 import javax.annotation.Priority;
@@ -35,6 +36,9 @@ public class AuthorizationFilter implements ContainerRequestFilter {
         try{
             tokenProvider.validateToken(token);
             logger.info("Valid token: " + token);
+
+            User user = tokenProvider.extractUser(token);
+            logger.info("User for token: " + token);
         }catch (Exception e){
             logger.severe("Invalid token: " + token);
             requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).build());
