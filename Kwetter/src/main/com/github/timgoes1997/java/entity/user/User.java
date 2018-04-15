@@ -12,16 +12,28 @@ import java.util.List;
 
 @Entity(name = "USERDATA")
 @NamedQueries({
-        @NamedQuery(name="User.findAll",
+        @NamedQuery(name=User.FIND_ALL,
                 query="SELECT u FROM USERDATA u"),
-        @NamedQuery(name="User.findByName",
+        @NamedQuery(name=User.FIND_BY_NAME,
                 query="SELECT u FROM USERDATA u WHERE u.username = :name"),
-        @NamedQuery(name="User.findByID",
+        @NamedQuery(name=User.FIND_BY_ID,
                 query="SELECT u FROM USERDATA u WHERE u.id = :id"),
 })
 public class User implements Serializable{
 
+    //======================
+    //==    Constansts    ==
+    //======================
+
+    public static final String FIND_ALL = "User.findAll";
+    public static final String FIND_BY_NAME = "User.findByName";
+    public static final String FIND_BY_ID = "User.findByID";
+
     private static final long serialVersionUID = 1941556366358043294L;
+
+    //======================
+    //==      Fields      ==
+    //======================
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

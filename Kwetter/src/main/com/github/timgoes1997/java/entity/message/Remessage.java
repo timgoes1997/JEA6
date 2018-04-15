@@ -11,16 +11,28 @@ import java.util.List;
 @Entity
 @DiscriminatorValue("3")
 @NamedQueries({
-        @NamedQuery(name="Remessage.findAll",
+        @NamedQuery(name=Remessage.FIND_ALL,
                 query="SELECT r FROM Remessage r"),
-        @NamedQuery(name="Remessage.findRepliesByType",
+        @NamedQuery(name=Remessage.FIND_ALL_BY_TYPE,
                 query="SELECT r FROM Remessage r WHERE r.type=3"),
-        @NamedQuery(name="Message.findRemessages",
+        @NamedQuery(name=Remessage.FIND_REMESSAGE_FOR_MESSAGE_ID,
                 query="SELECT r FROM Remessage r WHERE r.type=3 AND r.message.id = :id"),
 })
 public class Remessage extends ReplyMessage implements Serializable {
+    //======================
+    //==    Constansts    ==
+    //======================
+
+    public static final String FIND_ALL = "Remessage.findAll";
+    public static final String FIND_ALL_BY_TYPE = "Remessage.findRepliesByType";
+    public static final String FIND_REMESSAGE_FOR_MESSAGE_ID = "Message.findRemessages";
 
     private static final long serialVersionUID = -9015261934439105868L;
+
+    //======================
+    //==      Fields      ==
+    //======================
+
 
     @Column(name = "HASTEXT")
     private boolean hasText;

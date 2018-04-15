@@ -15,18 +15,32 @@ import java.util.List;
 @DiscriminatorColumn(name="TYPE", discriminatorType =DiscriminatorType.INTEGER)
 @DiscriminatorValue("0")
 @NamedQueries({
-        @NamedQuery(name="Message.findAll",
+        @NamedQuery(name=Message.FIND_ALL,
                 query="SELECT m FROM MESSAGE m"),
-        @NamedQuery(name="Message.findByID",
+        @NamedQuery(name=Message.FIND_ID,
                 query="SELECT m FROM MESSAGE m WHERE m.id = :id"),
         /*@NamedQuery(name="Message.findByUser",
                 query="SELECT m FROM MESSAGE m WHERE m.messager.id = :id"),*/
-        @NamedQuery(name="Message.findByUser",
+        @NamedQuery(name=Message.FIND_USER,
                 query="SELECT m FROM MESSAGE m WHERE m.messager.id = :id ORDER BY m.date DESC"),
-        @NamedQuery(name="Message.getLikesByID",
+        @NamedQuery(name=Message.GET_LIKES_BY_MESSAGE,
                 query="SELECT COUNT(m) FROM MESSAGE_LIKES m WHERE MESSAGE_ID = :id"),
 })
 public abstract class Message implements Serializable {
+
+    //======================
+    //==    Constansts    ==
+    //======================
+
+    public static final String FIND_ALL = "Message.findAll";
+    public static final String FIND_ID = "Message.findByID";
+    public static final String FIND_USER = "Message.findByUser";
+    public static final String GET_LIKES_BY_MESSAGE = "Message.getLikesByID";
+
+
+    //======================
+    //==      Fields      ==
+    //======================
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")

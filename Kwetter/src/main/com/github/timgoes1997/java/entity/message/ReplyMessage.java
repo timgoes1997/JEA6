@@ -16,16 +16,28 @@ import java.util.List;
 @Entity
 @DiscriminatorValue("2")
 @NamedQueries({
-        @NamedQuery(name="ReplyMessage.findAll",
+        @NamedQuery(name=ReplyMessage.FIND_ALL,
                 query="SELECT r FROM ReplyMessage r"),
-        @NamedQuery(name="ReplyMessage.findRepliesByType",
+        @NamedQuery(name=ReplyMessage.FIND_ALL_BY_TYPE,
                 query="SELECT r FROM ReplyMessage r WHERE r.type=2"),
-        @NamedQuery(name="Message.findReplies",
+        @NamedQuery(name=ReplyMessage.FIND_REPLY_FOR_MESSAGE_ID,
                 query="SELECT r FROM ReplyMessage r WHERE r.type=2 AND r.message.id = :id"),
 })
 public class ReplyMessage extends Message implements Serializable {
 
+    //======================
+    //==    Constansts    ==
+    //======================
+
+    public static final String FIND_ALL = "ReplyMessage.findAll";
+    public static final String FIND_ALL_BY_TYPE = "ReplyMessage.findRepliesByType";
+    public static final String FIND_REPLY_FOR_MESSAGE_ID = "Message.findReplies";
+
     private static final long serialVersionUID = 6864653489060895368L;
+
+    //======================
+    //==      Fields      ==
+    //======================
 
     @OneToOne
     @JoinColumn(name = "MESSAGE")

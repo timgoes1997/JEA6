@@ -48,55 +48,55 @@ public class MessageDAOImpl implements MessageDAO {
     @Override
     public Message find(long id) {
         TypedQuery<Message> query =
-                em.createNamedQuery("Message.findByID", Message.class);
+                em.createNamedQuery(Message.FIND_ID, Message.class);
         return query.setParameter("id", id).getSingleResult();
     }
 
     @Override
     public List<Message> findMessagesByUser(User user) {
         TypedQuery<Message> query =
-                em.createNamedQuery("Message.findByUser", Message.class);
+                em.createNamedQuery(Message.FIND_USER, Message.class);
         return query.setParameter("id", user.getId()).getResultList();
     }
 
     @Override
     public List<Message> findMessagesByUser(User user, int firstResult, int maxResults) {
         TypedQuery<Message> query =
-                em.createNamedQuery("Message.findByUser", Message.class).setFirstResult(firstResult).setMaxResults(maxResults);
+                em.createNamedQuery(Message.FIND_USER, Message.class).setFirstResult(firstResult).setMaxResults(maxResults);
         return query.setParameter("id", user.getId()).getResultList();
     }
 
     @Override
     public List<ReplyMessage> getMessageReplies(Message message) {
         TypedQuery<ReplyMessage> query =
-                em.createNamedQuery("Message.findReplies", ReplyMessage.class);
+                em.createNamedQuery(ReplyMessage.FIND_REPLY_FOR_MESSAGE_ID, ReplyMessage.class);
         return query.setParameter("id", message.getId()).getResultList();
     }
 
     @Override
     public List<ReplyMessage> getMessageReplies(Message message, int firstResult, int maxResults) {
         TypedQuery<ReplyMessage> query =
-                em.createNamedQuery("Message.findReplies", ReplyMessage.class).setFirstResult(firstResult).setMaxResults(maxResults);
+                em.createNamedQuery(ReplyMessage.FIND_REPLY_FOR_MESSAGE_ID, ReplyMessage.class).setFirstResult(firstResult).setMaxResults(maxResults);
         return query.setParameter("id", message.getId()).getResultList();
     }
 
     @Override
     public List<Remessage> getMessageRemessages(Message message) {
         TypedQuery<Remessage> query =
-                em.createNamedQuery("Message.findRemessages", Remessage.class);
+                em.createNamedQuery(Remessage.FIND_REMESSAGE_FOR_MESSAGE_ID, Remessage.class);
         return query.setParameter("id", message.getId()).getResultList();
     }
 
     @Override
     public List<Remessage> getMessageRemessages(Message message, int firstResult, int maxResults) {
         TypedQuery<Remessage> query =
-                em.createNamedQuery("Message.findRemessages", Remessage.class).setFirstResult(firstResult).setMaxResults(maxResults);
+                em.createNamedQuery(Remessage.FIND_REMESSAGE_FOR_MESSAGE_ID, Remessage.class).setFirstResult(firstResult).setMaxResults(maxResults);
         return query.setParameter("id", message.getId()).getResultList();
     }
 
     @Override
     public Long getMessageLikes(Message message) {
-        return ((Number) em.createNamedQuery("Message.getLikesByID").setParameter("id", message.getId()).getSingleResult()).longValue();
+        return ((Number) em.createNamedQuery(Message.GET_LIKES_BY_MESSAGE).setParameter("id", message.getId()).getSingleResult()).longValue();
     }
 
     @Override

@@ -29,14 +29,14 @@ public class UserDAOImpl implements UserDAO {
     @Override
     public User find(long id) {
         TypedQuery<User> query =
-                em.createNamedQuery("User.findByID", User.class);
+                em.createNamedQuery(User.FIND_BY_ID, User.class);
         return query.setParameter("id", id).getSingleResult();
     }
 
     @Override
     public User findByUsername(String userName) {
-        TypedQuery<User> query = em.createNamedQuery("User.findByName", User.class);
-        return query.setParameter("User.findByName", userName).getSingleResult();
+        TypedQuery<User> query = em.createNamedQuery(User.FIND_BY_NAME, User.class);
+        return query.setParameter("name", userName).getSingleResult();
     }
 
     @Override

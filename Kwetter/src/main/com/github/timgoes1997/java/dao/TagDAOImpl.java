@@ -29,21 +29,21 @@ public class TagDAOImpl implements TagDAO {
     @Override
     public Tag find(long id) {
         TypedQuery<Tag> query =
-                em.createNamedQuery("Tag.findByID", Tag.class);
+                em.createNamedQuery(Tag.FIND_BY_ID, Tag.class);
         return query.setParameter("id", id).getSingleResult();
     }
 
     @Override
     public Tag findTagByName(String tagName) {
         TypedQuery<Tag> query =
-                em.createNamedQuery("Tag.findByName", Tag.class);
+                em.createNamedQuery(Tag.FIND_BY_NAME, Tag.class);
         return query.setParameter("name", tagName).getSingleResult();
     }
 
     @Override
     public List<Tag> getAllTags() {
         TypedQuery<Tag> query =
-                em.createNamedQuery("Tag.findAll", Tag.class);
+                em.createNamedQuery(Tag.FIND_ALL, Tag.class);
         return query.getResultList();
     }
 
