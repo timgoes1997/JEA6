@@ -24,6 +24,8 @@ import java.util.List;
                 query="SELECT u FROM USERDATA u WHERE u.id = :id"),
         @NamedQuery(name=User.FIND_BY_NAME_PASSWORD,
                 query="SELECT u FROM USERDATA u WHERE u.username = :name AND u.password = :password"),
+        @NamedQuery(name=User.FIND_BY_VERIFIED_BELOW_DATE,
+                query="SELECT u FROM USERDATA u WHERE u.verified = :verified AND u.registrationDate < :date"),
         @NamedQuery(name=User.FIND_VERIFICATION_LINK,
                 query="SELECT u FROM USERDATA u WHERE u.verifyLink = :link"),
         @NamedQuery(name=User.FIND_VERIFICATION_LINK_AND_VERIFICATION,
@@ -41,6 +43,7 @@ public class User implements Serializable{
     public static final String FIND_BY_NAME_AND_EMAIL = "User.findByNameAndEmail";
     public static final String FIND_BY_NAME_PASSWORD = "User.findByNameAndPassword";
     public static final String FIND_BY_ID = "User.findByID";
+    public static final String FIND_BY_VERIFIED_BELOW_DATE = "User.findByVerified";
     public static final String FIND_VERIFICATION_LINK = "User.findVerificationLink";
     public static final String FIND_VERIFICATION_LINK_AND_VERIFICATION = "User.findVerificationLinkAndVerified";
 
@@ -107,6 +110,10 @@ public class User implements Serializable{
     @Column(name = "BIRTHDAY")
     private Date birthDay;
 
+    @Temporal(TemporalType.DATE)
+    @Column(name = "BIRTHDAY", nullable = false)
+    private Date registrationDate;
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PINNED_MESSAGE")
     private Message pinnedMessage;
@@ -142,6 +149,7 @@ public class User implements Serializable{
         this.email = email;
         this.telephoneNumber = telephoneNumber;
         this.verified = verified;
+        this.registrationDate = new Date();
     }
 
     public User(String username, String password, UserRole role, String firstName, String middleName, String lastName, String email, String telephoneNumber, Boolean verified){
@@ -154,6 +162,7 @@ public class User implements Serializable{
         this.email = email;
         this.telephoneNumber = telephoneNumber;
         this.verified = verified;
+        this.registrationDate = new Date();
     }
 
     public String getUsername() {

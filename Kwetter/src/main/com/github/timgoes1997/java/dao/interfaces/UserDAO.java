@@ -4,12 +4,16 @@ import com.github.timgoes1997.java.entity.user.User;
 import com.sun.org.apache.xpath.internal.operations.Bool;
 
 import javax.security.auth.login.LoginException;
+import java.util.Date;
+import java.util.List;
 
 public interface UserDAO {
 
     void create(User user);
 
     void edit(User user);
+
+    void remove(User user);
 
     User find(long id);
 
@@ -18,6 +22,8 @@ public interface UserDAO {
     User findByUsernameAndEmail(String userName, String email);
 
     User findByVerificationLink(String link);
+
+    List<User> getUnverifiedAccounts(Date lowerThanThisDate);
 
     boolean usernameExists(String username);
 

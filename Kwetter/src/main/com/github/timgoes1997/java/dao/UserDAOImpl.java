@@ -10,6 +10,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import java.util.Date;
+import java.util.List;
 
 @Stateless
 public class UserDAOImpl implements UserDAO {
@@ -28,6 +30,11 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
+    public void remove(User user) {
+        em.remove(user);
+    }
+
+    @Override
     public User find(long id) {
         TypedQuery<User> query =
                 em.createNamedQuery(User.FIND_BY_ID, User.class);
@@ -38,8 +45,8 @@ public class UserDAOImpl implements UserDAO {
     public User findByUsernameAndEmail(String userName, String email) {
         TypedQuery<User> query = em.createNamedQuery(User.FIND_BY_NAME_AND_EMAIL, User.class);
         return query.setParameter("name", userName)
-                    .setParameter("email", email)
-                    .getSingleResult();
+                .setParameter("email", email)
+                .getSingleResult();
     }
 
     @Override
@@ -49,9 +56,17 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public User findByVerificationLink(String link){
+    public User findByVerificationLink(String link) {
         TypedQuery<User> query = em.createNamedQuery(User.FIND_VERIFICATION_LINK, User.class);
         return query.setParameter("link", link).getSingleResult();
+    }
+
+    @Override
+    public List<User> getUnverifiedAccounts(Date lowerThanThisDate) {
+        TypedQuery<User> query = em.createNamedQuery(User.FIND_BY_VERIFIED_BELOW_DATE, User.class);
+        return query.setParameter("verified", false)
+                .setParameter("date", lowerThanThisDate)
+                .getResultList();
     }
 
     @Override
@@ -70,8 +85,8 @@ public class UserDAOImpl implements UserDAO {
     public boolean usernameAndEmailExists(String username, String email) {
         TypedQuery<User> query = em.createNamedQuery(User.FIND_BY_NAME_AND_EMAIL, User.class);
         return query.setParameter("name", username)
-                    .setParameter("email", email)
-                    .getResultList().size() > 0;
+                .setParameter("email", email)
+                .getResultList().size() > 0;
     }
 
     @Override
@@ -81,11 +96,11 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public boolean hasBeenVerified(String link){
+    public boolean hasBeenVerified(String link) {
         TypedQuery<User> query = em.createNamedQuery(User.FIND_VERIFICATION_LINK_AND_VERIFICATION, User.class);
         return query.setParameter("link", link)
-                    .setParameter("verified", true)
-                    .getResultList().size() > 0;
+                .setParameter("verified", true)
+                .getResultList().size() > 0;
     }
 
     @Override
@@ -108,14 +123,14 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     public User authenticate(String username, String encryptedPassword) {
-        TypedQuery<User> query = em.createNamedQuery(User.FIND_BY_NAME_PASSWORD,User.class);
+        TypedQuery<User> query = em.createNamedQuery(User.FIND_BY_NAME_PASSWORD, User.class);
         query.setParameter("name", username);
-        query.setParameter("password",  encryptedPassword);
+        query.setParameter("password", encryptedPassword);
 
         User user = query.getSingleResult();
-        if(user == null){
+        if (user == null) {
             throw new SecurityException("Entered a invalid username or password");
-        }else{
+        } else {
             return user;
         }
     }
