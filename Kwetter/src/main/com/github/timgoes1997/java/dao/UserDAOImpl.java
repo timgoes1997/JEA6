@@ -35,6 +35,14 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
+    public User findByUsernameAndEmail(String userName, String email) {
+        TypedQuery<User> query = em.createNamedQuery(User.FIND_BY_NAME_AND_EMAIL, User.class);
+        return query.setParameter("name", userName)
+                    .setParameter("email", email)
+                    .getSingleResult();
+    }
+
+    @Override
     public User findByUsername(String userName) {
         TypedQuery<User> query = em.createNamedQuery(User.FIND_BY_NAME, User.class);
         return query.setParameter("name", userName).getSingleResult();
@@ -47,9 +55,37 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
+    public boolean usernameExists(String username) {
+        TypedQuery<User> query = em.createNamedQuery(User.FIND_BY_NAME, User.class);
+        return query.setParameter("name", username).getResultList().size() > 0;
+    }
+
+    @Override
+    public boolean emailExists(String email) {
+        TypedQuery<User> query = em.createNamedQuery(User.FIND_BY_EMAIL, User.class);
+        return query.setParameter("email", email).getResultList().size() > 0;
+    }
+
+    @Override
+    public boolean usernameAndEmailExists(String username, String email) {
+        TypedQuery<User> query = em.createNamedQuery(User.FIND_BY_NAME_AND_EMAIL, User.class);
+        return query.setParameter("name", username)
+                    .setParameter("email", email)
+                    .getResultList().size() > 0;
+    }
+
+    @Override
     public boolean verificationLinkExists(String link) {
         TypedQuery<User> query = em.createNamedQuery(User.FIND_VERIFICATION_LINK, User.class);
         return query.setParameter("link", link).getResultList().size() > 0;
+    }
+
+    @Override
+    public boolean hasBeenVerified(String link){
+        TypedQuery<User> query = em.createNamedQuery(User.FIND_VERIFICATION_LINK_AND_VERIFICATION, User.class);
+        return query.setParameter("link", link)
+                    .setParameter("verified", true)
+                    .getResultList().size() > 0;
     }
 
     @Override

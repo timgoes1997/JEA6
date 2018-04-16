@@ -16,12 +16,18 @@ import java.util.List;
                 query="SELECT u FROM USERDATA u"),
         @NamedQuery(name=User.FIND_BY_NAME,
                 query="SELECT u FROM USERDATA u WHERE u.username = :name"),
+        @NamedQuery(name=User.FIND_BY_EMAIL,
+                query="SELECT u FROM USERDATA u WHERE u.email = :email"),
+        @NamedQuery(name=User.FIND_BY_NAME_AND_EMAIL,
+                query="SELECT u FROM USERDATA u WHERE u.username = :name AND u.email = :email"),
         @NamedQuery(name=User.FIND_BY_ID,
                 query="SELECT u FROM USERDATA u WHERE u.id = :id"),
         @NamedQuery(name=User.FIND_BY_NAME_PASSWORD,
                 query="SELECT u FROM USERDATA u WHERE u.username = :name AND u.password = :password"),
         @NamedQuery(name=User.FIND_VERIFICATION_LINK,
                 query="SELECT u FROM USERDATA u WHERE u.verifyLink = :link"),
+        @NamedQuery(name=User.FIND_VERIFICATION_LINK_AND_VERIFICATION,
+                query="SELECT u FROM USERDATA u WHERE u.verifyLink = :link AND u.verified = :verified"),
 })
 public class User implements Serializable{
 
@@ -31,9 +37,12 @@ public class User implements Serializable{
 
     public static final String FIND_ALL = "User.findAll";
     public static final String FIND_BY_NAME = "User.findByName";
+    public static final String FIND_BY_EMAIL = "User.findByEmail";
+    public static final String FIND_BY_NAME_AND_EMAIL = "User.findByNameAndEmail";
     public static final String FIND_BY_NAME_PASSWORD = "User.findByNameAndPassword";
     public static final String FIND_BY_ID = "User.findByID";
     public static final String FIND_VERIFICATION_LINK = "User.findVerificationLink";
+    public static final String FIND_VERIFICATION_LINK_AND_VERIFICATION = "User.findVerificationLinkAndVerified";
 
     private static final long serialVersionUID = 1941556366358043294L;
 
@@ -83,7 +92,7 @@ public class User implements Serializable{
     private String location;
 
     @Size(min=0, max=320)
-    @Column(name = "EMAIL")
+    @Column(name = "EMAIL", unique = true)
     private String email;
 
     @Size(min=0, max=100)

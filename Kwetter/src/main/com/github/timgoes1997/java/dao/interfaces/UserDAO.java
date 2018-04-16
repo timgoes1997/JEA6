@@ -15,9 +15,19 @@ public interface UserDAO {
 
     User findByUsername(String userName);
 
+    User findByUsernameAndEmail(String userName, String email);
+
     User findByVerificationLink(String link);
 
+    boolean usernameExists(String username);
+
+    boolean emailExists(String email);
+
+    boolean usernameAndEmailExists(String username, String email);
+
     boolean verificationLinkExists(String link);
+
+    boolean hasBeenVerified(String link);
 
     void addFollower(User accToFollow, User accToFollowing);
 

@@ -6,6 +6,7 @@ import com.github.timgoes1997.java.authentication.token.TokenProvider;
 import com.github.timgoes1997.java.dao.interfaces.UserDAO;
 import com.github.timgoes1997.java.entity.user.User;
 import com.github.timgoes1997.java.entity.user.UserRole;
+import com.github.timgoes1997.java.services.EmailService;
 import org.eclipse.persistence.internal.libraries.antlr.runtime.Token;
 
 import javax.annotation.PostConstruct;
@@ -43,8 +44,8 @@ public class UserBean {
     @Inject
     private TokenProvider tokenProvider;
 
-    @Resource(name="mail/kwetter")
-    private Session session;
+    @Inject
+    private EmailService emailService;
 
     @POST
     @Path("/login")
@@ -76,19 +77,50 @@ public class UserBean {
                              @FormParam("lastName") String lastName,
                              @FormParam("telephone") String telephone){
         try{
+            if(userDAO.usernameExists(username) || userDAO.emailExists(email)){
+                return Response.status(Response.Status.CONFLICT).build();
+            }
+
             userDAO.create(new User(username, password, UserRole.User, firstName, middleName, lastName, email, telephone, false));
 
             logger.info("Created new account for user: " + username);
 
             User user = userDAO.findByUsername(username);
-            user.setVerifyLink(generateVerificationLink(user));
+            user.setVerifyLink(emailService.generateVerificationLink(user));
             userDAO.edit(user);
 
-            sendVerificationMail(user);
+            emailService.sendVerificationMail(user);
 
             return authenticate(username, password);
         }catch (Exception e){
             return Response.status(Response.Status.BAD_REQUEST).entity(e).build();
+        }
+    }
+
+    @GET
+    @Path("/verify/{token}")
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    public Response confirmRegistration(@PathParam("token") String token){
+        try{
+            if(!userDAO.verificationLinkExists(token)){
+                return Response.status(Response.Status.NOT_ACCEPTABLE).build();
+            }
+
+            if(userDAO.hasBeenVerified(token)){
+                return Response.status(Response.Status.CONFLICT).entity("You have already verified your account").build();
+            }
+
+            User user = userDAO.findByVerificationLink(token);
+            if(user == null){
+                return Response.serverError().build();
+            }
+            user.setVerified(true);
+            userDAO.edit(user);
+
+            return Response.ok("Account has been verified").build();
+
+        }catch(Exception e){
+            return Response.status(Response.Status.UNAUTHORIZED).build();
         }
     }
 
@@ -106,62 +138,4 @@ public class UserBean {
     public Response tokenGetRequest(){
         return Response.ok("Hello").build();
     }
-
-    private String generateVerificationLink(User user){
-        Random random = new SecureRandom();
-        random.setSeed(user.getId());
-        String token = new BigInteger(130, random).toString(32);
-        if(userDAO.verificationLinkExists(token)){
-            return generateVerificationLink(user);
-        }else{
-            return token;
-        }
-    }
-
-    private void sendVerificationMail(User user) throws MessagingException {
-        Message message = new MimeMessage(session);
-
-        logger.info("Set subject");
-        message.setSubject("Verify email for Kwetter");
-
-        logger.info("Set from");
-        message.setFrom();
-
-        logger.info("Set body");
-        BodyPart messageGreeting = new MimeBodyPart();
-        messageGreeting.setText("Hello " + user.getFirstName() + ",");
-
-        BodyPart messageBody = new MimeBodyPart();
-        messageBody.setText(System.lineSeparator()
-                            + "Please use this verification link to verify your email:"
-                            + System.lineSeparator()
-                            + "http://localhost:8080/Kwetter/api/user/verify/" + user.getVerifyLink());
-
-        BodyPart signatureBody = new MimeBodyPart();
-        signatureBody.setText(System.lineSeparator()
-                            + "Team Kwetter");
-
-        logger.info("Set multipart");
-        Multipart multipart = new MimeMultipart();
-        multipart.addBodyPart(messageGreeting, 0);
-        multipart.addBodyPart(messageBody, 1);
-        multipart.addBodyPart(signatureBody, 2);
-
-        logger.info("Set content message");
-        message.setContent(multipart);
-
-        logger.info("Set header mail");
-        message.setHeader("X-mailer", "Java Mail API");
-
-        logger.info("Set send date");
-        message.setSentDate(new Date());
-
-        logger.info("Set recipient");
-        message.setRecipient(Message.RecipientType.TO, InternetAddress.parse(user.getEmail(), false)[0]);
-
-        logger.info("Send mail");
-        Transport.send(message);
-    }
-
-
 }
