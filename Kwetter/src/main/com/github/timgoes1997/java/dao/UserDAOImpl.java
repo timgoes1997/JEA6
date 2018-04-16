@@ -3,6 +3,7 @@ package com.github.timgoes1997.java.dao;
 import com.github.timgoes1997.java.dao.interfaces.UserDAO;
 import com.github.timgoes1997.java.entity.tag.Tag;
 import com.github.timgoes1997.java.entity.user.User;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -37,6 +38,18 @@ public class UserDAOImpl implements UserDAO {
     public User findByUsername(String userName) {
         TypedQuery<User> query = em.createNamedQuery(User.FIND_BY_NAME, User.class);
         return query.setParameter("name", userName).getSingleResult();
+    }
+
+    @Override
+    public User findByVerificationLink(String link){
+        TypedQuery<User> query = em.createNamedQuery(User.FIND_VERIFICATION_LINK, User.class);
+        return query.setParameter("link", link).getSingleResult();
+    }
+
+    @Override
+    public boolean verificationLinkExists(String link) {
+        TypedQuery<User> query = em.createNamedQuery(User.FIND_VERIFICATION_LINK, User.class);
+        return query.setParameter("link", link).getResultList().size() > 0;
     }
 
     @Override

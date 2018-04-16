@@ -20,6 +20,8 @@ import java.util.List;
                 query="SELECT u FROM USERDATA u WHERE u.id = :id"),
         @NamedQuery(name=User.FIND_BY_NAME_PASSWORD,
                 query="SELECT u FROM USERDATA u WHERE u.username = :name AND u.password = :password"),
+        @NamedQuery(name=User.FIND_VERIFICATION_LINK,
+                query="SELECT u FROM USERDATA u WHERE u.verifyLink = :link"),
 })
 public class User implements Serializable{
 
@@ -31,6 +33,7 @@ public class User implements Serializable{
     public static final String FIND_BY_NAME = "User.findByName";
     public static final String FIND_BY_NAME_PASSWORD = "User.findByNameAndPassword";
     public static final String FIND_BY_ID = "User.findByID";
+    public static final String FIND_VERIFICATION_LINK = "User.findVerificationLink";
 
     private static final long serialVersionUID = 1941556366358043294L;
 
@@ -42,6 +45,9 @@ public class User implements Serializable{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
     private long id;
+
+    @Column(name = "VERIFIED", nullable = false)
+    private Boolean verified;
 
     //@Pattern(regexp = "[^a-zA-Z0-9_]+$")
     @Size(min=3, max=40)
@@ -84,6 +90,10 @@ public class User implements Serializable{
     @Column(name = "WEBSITE")
     private String website;
 
+    @Size(min=0, max=32)
+    @Column(name = "VERIFICATION_LINK")
+    private String verifyLink;
+
     @Temporal(TemporalType.DATE)
     @Column(name = "BIRTHDAY")
     private Date birthDay;
@@ -114,7 +124,7 @@ public class User implements Serializable{
 
     }
 
-    public User(String username, String password, UserRole role, String firstName, String lastName, String email, String telephoneNumber){
+    public User(String username, String password, UserRole role, String firstName, String lastName, String email, String telephoneNumber, Boolean verified){
         this.username = username;
         this.password = password;
         this.firstName = firstName;
@@ -122,9 +132,10 @@ public class User implements Serializable{
         this.role = role;
         this.email = email;
         this.telephoneNumber = telephoneNumber;
+        this.verified = verified;
     }
 
-    public User(String username, String password, UserRole role, String firstName, String middleName, String lastName, String email, String telephoneNumber){
+    public User(String username, String password, UserRole role, String firstName, String middleName, String lastName, String email, String telephoneNumber, Boolean verified){
         this.username = username;
         this.password = password;
         this.firstName = firstName;
@@ -133,6 +144,7 @@ public class User implements Serializable{
         this.role = role;
         this.email = email;
         this.telephoneNumber = telephoneNumber;
+        this.verified = verified;
     }
 
     public String getUsername() {
@@ -277,5 +289,21 @@ public class User implements Serializable{
 
     public long getId() {
         return id;
+    }
+
+    public String getVerifyLink() {
+        return verifyLink;
+    }
+
+    public void setVerifyLink(String verifyLink) {
+        this.verifyLink = verifyLink;
+    }
+
+    public Boolean getVerified() {
+        return verified;
+    }
+
+    public void setVerified(Boolean verified) {
+        this.verified = verified;
     }
 }
