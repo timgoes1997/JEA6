@@ -111,7 +111,7 @@ public class User implements Serializable{
     private Date birthDay;
 
     @Temporal(TemporalType.DATE)
-    @Column(name = "BIRTHDAY", nullable = false)
+    @Column(name = "REGISTRATION_DATE", nullable = false)
     private Date registrationDate;
 
     @OneToOne(fetch = FetchType.LAZY)
@@ -323,5 +323,13 @@ public class User implements Serializable{
 
     public void setVerified(Boolean verified) {
         this.verified = verified;
+    }
+
+    public Date getRegistrationDate() {
+        return registrationDate;
+    }
+
+    public void setRegistrationDate(Date registrationDate) {
+        this.registrationDate = registrationDate;
     }
 }

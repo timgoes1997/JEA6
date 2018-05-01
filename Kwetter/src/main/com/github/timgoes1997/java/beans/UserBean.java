@@ -87,6 +87,7 @@ public class UserBean {
 
             User user = userDAO.findByUsername(username);
             user.setVerifyLink(emailService.generateVerificationLink(user));
+            user.setRegistrationDate(new Date());
             userDAO.edit(user);
 
             emailService.sendVerificationMail(user);

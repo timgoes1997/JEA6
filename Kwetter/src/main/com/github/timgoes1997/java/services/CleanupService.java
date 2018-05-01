@@ -17,7 +17,7 @@ public class CleanupService {
 
     private static final long validationPeriod = 3 * 24 * 60 * 60; //3days;
 
-    @Schedule(dayOfWeek="*/1")
+    @Schedule(dayOfWeek="fri-mon")
     public void cleanupUnverifiedAccounts(){
         long now = new Date().getTime();
         long min = now - validationPeriod;
