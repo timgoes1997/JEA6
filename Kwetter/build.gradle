@@ -27,6 +27,12 @@ dependencies {
     compile group: 'org.eclipse.persistence', name: 'eclipselink', version: '2.7.1'
     compile 'io.jsonwebtoken:jjwt:0.9.0'
 
+    // for json testing
+    testCompile 'io.rest-assured:rest-assured:3.1.0'
+    compile 'io.rest-assured:json-path:3.1.0'
+    testCompile 'io.rest-assured:json-schema-validator:3.1.0'
+
+    // for multipart data
     compile group: 'org.jvnet.mimepull', name: 'mimepull', version: '1.9.7'
     compile group: 'org.glassfish.jersey.media', name: 'jersey-media-multipart', version: '2.26'
     compile group: 'org.glassfish.jersey.media', name: 'jersey-media-json-jackson', version: '2.26'

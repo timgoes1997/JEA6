@@ -48,6 +48,7 @@ public class User implements Serializable{
     public static final String FIND_BY_VERIFIED_BELOW_DATE = "User.findByVerified";
     public static final String FIND_VERIFICATION_LINK = "User.findVerificationLink";
     public static final String FIND_VERIFICATION_LINK_AND_VERIFICATION = "User.findVerificationLinkAndVerified";
+    public static final String IS_FOLLOWING_USER = "User.isFollowing";
 
     private static final long serialVersionUID = 1941556366358043294L;
 
@@ -132,7 +133,7 @@ public class User implements Serializable{
             inverseJoinColumns = { @JoinColumn(name="FOLLOWER_ID", referencedColumnName="ID")})
     private List<User> following;
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true)
     @JoinTable(name = "USER_MESSAGES",
             joinColumns = { @JoinColumn(name="USER_ID", referencedColumnName="ID")},
             inverseJoinColumns = { @JoinColumn(name="MESSAGE_ID", referencedColumnName="ID")})

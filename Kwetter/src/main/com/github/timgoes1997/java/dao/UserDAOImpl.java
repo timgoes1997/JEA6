@@ -31,7 +31,11 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     public void remove(User user) {
-        em.remove(user);
+        User toRemove = user;
+        if(!em.contains(toRemove)){
+            toRemove = em.merge(toRemove);
+        }
+        em.remove(toRemove);
     }
 
     @Override

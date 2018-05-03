@@ -20,6 +20,8 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.ws.rs.*;
+import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -46,6 +48,19 @@ public class UserBean {
 
     @Inject
     private EmailService emailService;
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/id/{id}")
+    public Response getUserByID(@PathParam("id") long id) {
+        try {
+            User user = userDAO.find(id);
+            return Response.ok().entity(user).build();
+        } catch (Exception e) {
+            logger.severe(e.getMessage());
+            return Response.status(Response.Status.NOT_FOUND).entity(e).build();
+        }
+    }
 
     @POST
     @Path("/login")
@@ -100,7 +115,7 @@ public class UserBean {
 
     @GET
     @Path("/verify/{token}")
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response confirmRegistration(@PathParam("token") String token){
         try{
             if(!userDAO.verificationLinkExists(token)){
@@ -122,6 +137,61 @@ public class UserBean {
 
         }catch(Exception e){
             return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+    }
+
+    @GET
+    @Path("{username}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getByUsername(@PathParam("username") String username) {
+        try {
+            User user = userDAO.findByUsername(username);
+            return Response.ok().entity(user).build();
+        } catch (Exception e) {
+            logger.severe(e.getMessage());
+            return Response.status(Response.Status.NOT_FOUND).entity(e).build();
+        }
+    }
+
+    @POST
+    @Path("/{username}/follow")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response follow(@Context ContainerRequestContext request, @PathParam("username") String username){
+        try{
+            if(!userDAO.usernameExists(username)){
+                return Response.status(Response.Status.NOT_FOUND).build();
+            }
+
+            User currentUser = (User)request.getProperty(Constants.USER_REQUEST_STRING);
+
+            User userToFollow = userDAO.findByUsername(username);
+
+            return  Response.ok().build();
+        }catch (Exception e){
+            return Response.status(Response.Status.BAD_REQUEST).entity(e).build();
+        }
+    }
+
+    @DELETE
+    @Path("/{username}/delete")
+    @UserAuthorization({UserRole.User})
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response delete(@Context ContainerRequestContext request, @PathParam("username") String username){
+        try{
+            if(!userDAO.usernameExists(username)){
+                return Response.status(Response.Status.NOT_FOUND).build();
+            }
+
+            User currentUser = (User)request.getProperty(Constants.USER_REQUEST_STRING);
+            User userToDelete = userDAO.findByUsername(username);
+
+            if(currentUser.getId() == userToDelete.getId()){
+                userDAO.remove(currentUser);
+            }
+
+            return  Response.ok().build();
+        }catch (Exception e){
+            return Response.status(Response.Status.BAD_REQUEST).entity(e).build();
         }
     }
 

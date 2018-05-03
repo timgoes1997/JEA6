@@ -12,7 +12,7 @@ import java.util.Date;
 import java.util.List;
 
 @Entity(name="MESSAGE")
-@DiscriminatorColumn(name="TYPE", discriminatorType =DiscriminatorType.STRING)
+@DiscriminatorColumn(name="TYPE", discriminatorType =DiscriminatorType.INTEGER)
 @DiscriminatorValue("0")
 @NamedQueries({
         @NamedQuery(name=Message.FIND_ALL,
@@ -51,8 +51,11 @@ public abstract class Message implements Serializable {
     protected String text;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "TYPE")
+    @Column(name = "MESSAGETYPE")
     protected MessageType type; //To check wether a message is directed towards your followers or visible for everyone.
+
+    @Column(name = "TYPE")
+    private int discriminator;
 
     @OneToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "MESSAGE_TAGS",
@@ -64,7 +67,8 @@ public abstract class Message implements Serializable {
     @Column(name = "DATE")
     protected Date date;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.EAGER, orphanRemoval = true)
+    @JoinColumn(name = "MESSAGERO")
     protected User messager;
 
     @OneToMany(fetch = FetchType.LAZY)
