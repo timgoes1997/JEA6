@@ -1,10 +1,13 @@
 package com.github.timgoes1997.java.beans;
 
+import com.github.timgoes1997.java.dao.interfaces.MessageDAO;
 import com.github.timgoes1997.java.entity.message.InitialMessage;
 import com.github.timgoes1997.java.entity.message.Message;
 
 import javax.annotation.PostConstruct;
+import javax.ejb.Stateless;
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -17,39 +20,28 @@ import javax.ws.rs.core.Response;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
-@Named
-@ApplicationScoped
+@Stateless
 @Path("message")
 public class MessageBean {
 
-    @PersistenceContext
-    private EntityManager em;
+    @Inject
+    private MessageDAO messageDAO;
 
-    private List<Message> messageList;
-
-    @PostConstruct
-    public void init(){
-        messageList = new ArrayList<>();
-        /*
-        messageList.add(new InitialMessage("Hello"));
-        messageList.add(new InitialMessage("Hello"));
-        messageList.add(new InitialMessage("Hello"));
-        messageList.add(new InitialMessage("Hello"));
-        messageList.add(new InitialMessage("Hello"));*/
-    }
+    @Inject
+    private Logger logger;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("{id}")
-    public Response getMessageByID(@PathParam("id") int id){
-        if(messageList.size() > id){
-            /*Message test = new InitialMessage("Hello");
-            em.persist(test);*/
-            return Response.ok(messageList.get(id)).build();
-        }
-        else{
-            return Response.status(Response.Status.NOT_FOUND).entity("Entity not found for ID: " + id).build();
+    public Response getMessageByID(@PathParam("id") int id) {
+        try {
+            Message message = messageDAO.find(id);
+            return Response.status(Response.Status.OK).entity(message).build();
+        } catch (Exception e) {
+            logger.severe(e.getMessage());
+            return Response.status(Response.Status.NOT_FOUND).entity(e).build();
         }
     }
 

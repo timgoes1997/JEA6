@@ -29,7 +29,6 @@ public class Tag implements Serializable {
     //==      Fields      ==
     //======================
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
