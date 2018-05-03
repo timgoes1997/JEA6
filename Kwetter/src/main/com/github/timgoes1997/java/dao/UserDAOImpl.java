@@ -37,7 +37,12 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     public void remove(User user) {
+        List<Message> messages = messageDAO.findMessagesByUser(user);
         messageDAO.nullMessagers(user);
+
+        for(Message m : messages){
+            messageDAO.remove(m);
+        }
 
         User toRemove = user;
         if(!em.contains(toRemove)){
