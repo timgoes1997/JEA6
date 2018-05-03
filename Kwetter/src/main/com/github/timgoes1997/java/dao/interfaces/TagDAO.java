@@ -14,5 +14,7 @@ public interface TagDAO {
 
     Tag findTagByName(String tagName);
 
+    boolean hasTag(String tagName);
+
     List<Tag> getAllTags();
 }

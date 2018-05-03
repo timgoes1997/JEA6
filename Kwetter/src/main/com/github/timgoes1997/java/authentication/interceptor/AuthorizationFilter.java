@@ -38,6 +38,8 @@ public class AuthorizationFilter implements ContainerRequestFilter {
             logger.info("Valid token: " + token);
 
             User user = tokenProvider.extractUser(token);
+
+            requestContext.setProperty("user", user);
             logger.info("User for token: " + token);
         }catch (Exception e){
             logger.severe("Invalid token: " + token);

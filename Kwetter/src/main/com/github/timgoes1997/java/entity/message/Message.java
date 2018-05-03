@@ -12,7 +12,7 @@ import java.util.Date;
 import java.util.List;
 
 @Entity(name="MESSAGE")
-@DiscriminatorColumn(name="TYPE", discriminatorType =DiscriminatorType.INTEGER)
+@DiscriminatorColumn(name="TYPE", discriminatorType =DiscriminatorType.STRING)
 @DiscriminatorValue("0")
 @NamedQueries({
         @NamedQuery(name=Message.FIND_ALL,
@@ -64,7 +64,7 @@ public abstract class Message implements Serializable {
     @Column(name = "DATE")
     protected Date date;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.EAGER)
     protected User messager;
 
     @OneToMany(fetch = FetchType.LAZY)

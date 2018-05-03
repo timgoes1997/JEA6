@@ -41,6 +41,13 @@ public class TagDAOImpl implements TagDAO {
     }
 
     @Override
+    public boolean hasTag(String tagName) {
+        TypedQuery<Tag> query =
+                em.createNamedQuery(Tag.FIND_BY_NAME, Tag.class);
+        return query.setParameter("name", tagName).getResultList().size() > 0;
+    }
+
+    @Override
     public List<Tag> getAllTags() {
         TypedQuery<Tag> query =
                 em.createNamedQuery(Tag.FIND_ALL, Tag.class);

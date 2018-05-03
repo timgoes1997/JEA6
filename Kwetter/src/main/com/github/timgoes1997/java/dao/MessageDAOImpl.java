@@ -112,10 +112,11 @@ public class MessageDAOImpl implements MessageDAO {
         List<Tag> tags= new ArrayList<>();
         while (mat.find()) {
             String tag = mat.group(1);
-            try {
+            if(tagDAO.hasTag(tag)){
                 tags.add(tagDAO.findTagByName(tag));
-            }catch (NoResultException exception){
-                tagDAO.create(new Tag(mat.group(1)));
+            }else{
+                Tag newTag = new Tag(tag);
+                tagDAO.create(newTag);
                 tags.add(tagDAO.findTagByName(tag));
             }
         }
