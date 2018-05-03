@@ -20,6 +20,8 @@ public interface MessageDAO {
 
     List<Message> findMessagesByUser(User user, int firstResult, int maxResults);
 
+    boolean exists(long id);
+
     List<ReplyMessage> getMessageReplies(Message message);
 
     List<ReplyMessage> getMessageReplies(Message message, int firstResult, int maxResults);

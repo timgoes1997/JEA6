@@ -67,6 +67,13 @@ public class MessageDAOImpl implements MessageDAO {
     }
 
     @Override
+    public boolean exists(long id) {
+        TypedQuery<Message> query =
+                em.createNamedQuery(Message.FIND_ID, Message.class);
+        return query.setParameter("id", id).getResultList().size() > 0;
+    }
+
+    @Override
     public List<ReplyMessage> getMessageReplies(Message message) {
         TypedQuery<ReplyMessage> query =
                 em.createNamedQuery(ReplyMessage.FIND_REPLY_FOR_MESSAGE_ID, ReplyMessage.class);

@@ -19,9 +19,9 @@ import java.util.List;
         @NamedQuery(name=ReplyMessage.FIND_ALL,
                 query="SELECT r FROM ReplyMessage r"),
         @NamedQuery(name=ReplyMessage.FIND_ALL_BY_TYPE,
-                query="SELECT r FROM ReplyMessage r WHERE r.type=2"),
+                query="SELECT r FROM ReplyMessage r WHERE r.type='2'"),
         @NamedQuery(name=ReplyMessage.FIND_REPLY_FOR_MESSAGE_ID,
-                query="SELECT r FROM ReplyMessage r WHERE r.type=2 AND r.message.id = :id"),
+                query="SELECT r FROM ReplyMessage r WHERE r.message.id = :id"), // r.type='2' AND
 })
 public class ReplyMessage extends Message implements Serializable {
 

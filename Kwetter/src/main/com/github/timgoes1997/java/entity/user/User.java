@@ -5,6 +5,8 @@ import com.github.timgoes1997.java.entity.message.Message;
 import javax.persistence.*;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -165,6 +167,7 @@ public class User implements Serializable{
         this.registrationDate = new Date();
     }
 
+    @XmlAttribute
     public String getUsername() {
         return username;
     }
@@ -173,6 +176,7 @@ public class User implements Serializable{
         this.username = username;
     }
 
+    @XmlTransient
     public String getPassword() {
         return password;
     }
@@ -181,6 +185,7 @@ public class User implements Serializable{
         this.password = password;
     }
 
+    @XmlAttribute
     public UserRole getRole() {
         return role;
     }
@@ -305,10 +310,12 @@ public class User implements Serializable{
         this.following.remove(user);
     }
 
+    @XmlAttribute
     public long getId() {
         return id;
     }
 
+    @XmlTransient
     public String getVerifyLink() {
         return verifyLink;
     }

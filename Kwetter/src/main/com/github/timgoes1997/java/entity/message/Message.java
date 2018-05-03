@@ -47,7 +47,7 @@ public abstract class Message implements Serializable {
     private Long id;
 
     @Size(min=1, max=280)
-    @Column(name = "TEXT", unique = true)
+    @Column(name = "TEXT")
     protected String text;
 
     @Enumerated(EnumType.STRING)

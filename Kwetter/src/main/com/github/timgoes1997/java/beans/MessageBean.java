@@ -1,10 +1,12 @@
 package com.github.timgoes1997.java.beans;
 
+import com.github.timgoes1997.java.authentication.Constants;
 import com.github.timgoes1997.java.authentication.interceptor.UserAuthorization;
 import com.github.timgoes1997.java.dao.interfaces.MessageDAO;
 import com.github.timgoes1997.java.entity.message.InitialMessage;
 import com.github.timgoes1997.java.entity.message.Message;
 import com.github.timgoes1997.java.entity.message.MessageType;
+import com.github.timgoes1997.java.entity.message.ReplyMessage;
 import com.github.timgoes1997.java.entity.tag.Tag;
 import com.github.timgoes1997.java.entity.user.User;
 import com.github.timgoes1997.java.entity.user.UserRole;
@@ -41,10 +43,28 @@ public class MessageBean {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("{id}")
-    public Response getMessageByID(@PathParam("id") int id) {
+    public Response getMessageByID(@PathParam("id") long id) {
         try {
             Message message = messageDAO.find(id);
             return Response.ok().entity(message).build();
+        } catch (Exception e) {
+            logger.severe(e.getMessage());
+            return Response.status(Response.Status.NOT_FOUND).entity(e).build();
+        }
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("{id}/replies")
+    public Response getMessageRepliesByMessageID(@PathParam("id") long id) {
+        try {
+            if(!messageDAO.exists(id)){
+                return Response.status(Response.Status.NOT_FOUND).build();
+            }
+
+            Message message = messageDAO.find(id);
+            List<ReplyMessage> replyMessages = messageDAO.getMessageReplies(message);
+            return Response.ok().entity(replyMessages).build();
         } catch (Exception e) {
             logger.severe(e.getMessage());
             return Response.status(Response.Status.NOT_FOUND).entity(e).build();
@@ -57,7 +77,7 @@ public class MessageBean {
     @Path("create")
     public Response createMessage(@Context ContainerRequestContext request, @FormParam("message") String message, @FormParam("messageType")MessageType messageType) {
         try {
-            User currentUser = (User)request.getProperty("user");
+            User currentUser = (User)request.getProperty(Constants.USER_REQUEST_STRING);
             List<Tag> tags = messageDAO.generateTags(message);
             List<User> mentions = messageDAO.generateMentions(message);
 
@@ -71,5 +91,28 @@ public class MessageBean {
         }
     }
 
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @UserAuthorization({UserRole.User})
+    @Path("{id}/reply")
+    public Response createReply(@Context ContainerRequestContext request, @PathParam("id") long messageID, @FormParam("text") String text, @FormParam("messageType")MessageType messageType) {
+        try {
+            if(!messageDAO.exists(messageID)){
+                return Response.status(Response.Status.NOT_FOUND).build();
+            }
+
+            Message message = messageDAO.find(messageID);
+            User currentUser = (User)request.getProperty(Constants.USER_REQUEST_STRING);
+            List<Tag> tags = messageDAO.generateTags(text);
+            List<User> mentions = messageDAO.generateMentions(text);
+            ReplyMessage reply = new ReplyMessage(text, messageType, currentUser, new Date(), tags, mentions, message);
+            messageDAO.create(reply);
+
+            return Response.ok().entity(reply).build();
+        } catch (Exception e) {
+            logger.severe(e.getMessage());
+            return Response.status(Response.Status.NOT_FOUND).entity(e).build();
+        }
+    }
 
 }

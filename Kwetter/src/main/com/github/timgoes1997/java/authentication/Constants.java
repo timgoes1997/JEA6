@@ -5,6 +5,8 @@ public class Constants {
 
     public static final String BEARER = "Bearer ";
 
+    public static final String USER_REQUEST_STRING = "user";
+
     /*
     public static final String ADMIN = "ROLE_ADMIN";
 

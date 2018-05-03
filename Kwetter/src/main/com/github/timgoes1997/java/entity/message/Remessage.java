@@ -14,9 +14,9 @@ import java.util.List;
         @NamedQuery(name=Remessage.FIND_ALL,
                 query="SELECT r FROM Remessage r"),
         @NamedQuery(name=Remessage.FIND_ALL_BY_TYPE,
-                query="SELECT r FROM Remessage r WHERE r.type=3"),
+                query="SELECT r FROM Remessage r WHERE r.type='3'"),
         @NamedQuery(name=Remessage.FIND_REMESSAGE_FOR_MESSAGE_ID,
-                query="SELECT r FROM Remessage r WHERE r.type=3 AND r.message.id = :id"),
+                query="SELECT r FROM Remessage r WHERE r.type='3' AND r.message.id = :id"),
 })
 public class Remessage extends ReplyMessage implements Serializable {
     //======================
