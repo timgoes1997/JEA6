@@ -1,11 +1,14 @@
 package com.github.timgoes1997.java.dao;
 
+import com.github.timgoes1997.java.dao.interfaces.MessageDAO;
 import com.github.timgoes1997.java.dao.interfaces.UserDAO;
+import com.github.timgoes1997.java.entity.message.Message;
 import com.github.timgoes1997.java.entity.tag.Tag;
 import com.github.timgoes1997.java.entity.user.User;
 import com.sun.org.apache.xpath.internal.operations.Bool;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
@@ -19,6 +22,9 @@ public class UserDAOImpl implements UserDAO {
     @PersistenceContext
     private EntityManager em;
 
+    @Inject
+    private MessageDAO messageDAO;
+
     @Override
     public void create(User user) {
         em.persist(user);
@@ -31,6 +37,8 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     public void remove(User user) {
+        messageDAO.nullMessagers(user);
+
         User toRemove = user;
         if(!em.contains(toRemove)){
             toRemove = em.merge(toRemove);

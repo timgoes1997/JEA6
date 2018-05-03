@@ -46,6 +46,18 @@ public class MessageDAOImpl implements MessageDAO {
     }
 
     @Override
+    public void nullMessagers(User user) {
+        List<Message> messages = findMessagesByUser(user);
+
+        for (Message m : messages) {
+            m.setMessager(null);
+            m.getMentions().remove(user);
+            m.getLikes().remove(user);
+            em.merge(m);
+        }
+    }
+
+    @Override
     public Message find(long id) {
         TypedQuery<Message> query =
                 em.createNamedQuery(Message.FIND_ID, Message.class);
@@ -116,12 +128,12 @@ public class MessageDAOImpl implements MessageDAO {
     public List<Tag> generateTags(String text) {
         Pattern tagPattern = Pattern.compile("#(\\w+)");
         Matcher mat = tagPattern.matcher(text);
-        List<Tag> tags= new ArrayList<>();
+        List<Tag> tags = new ArrayList<>();
         while (mat.find()) {
             String tag = mat.group(1);
-            if(tagDAO.hasTag(tag)){
+            if (tagDAO.hasTag(tag)) {
                 tags.add(tagDAO.findTagByName(tag));
-            }else{
+            } else {
                 Tag newTag = new Tag(tag);
                 tagDAO.create(newTag);
                 tags.add(tagDAO.findTagByName(tag));
@@ -134,12 +146,12 @@ public class MessageDAOImpl implements MessageDAO {
     public List<User> generateMentions(String text) {
         Pattern mentionPattern = Pattern.compile("@(\\w+)");
         Matcher mat = mentionPattern.matcher(text);
-        List<User> mentions= new ArrayList<>();
+        List<User> mentions = new ArrayList<>();
         while (mat.find()) {
             try {
                 User user = userDAO.findByUsername(mat.group(1));
-                mentions.add(user);
-            } catch (NoResultException exception){
+                if(!mentions.contains(user)) mentions.add(user);
+            } catch (NoResultException exception) {
                  /*Add something to notify user and don't throw a exception which causes the tweet not to be posted
                    Because on twitter you also can use the @ without a valid user. Someone might want to send a ssh link and it would be retarded to make it crash.
                   */

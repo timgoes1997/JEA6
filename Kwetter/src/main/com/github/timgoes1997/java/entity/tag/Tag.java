@@ -3,6 +3,7 @@ package com.github.timgoes1997.java.entity.tag;
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.util.Objects;
 
 @Entity(name="TAG")
 @NamedQueries({
@@ -52,5 +53,19 @@ public class Tag implements Serializable {
 
     public String getTagName(){
         return tagName;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Tag)) return false;
+        Tag tag = (Tag) o;
+        return Objects.equals(id, tag.id);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id);
     }
 }

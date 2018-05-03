@@ -14,6 +14,8 @@ public interface MessageDAO {
 
     void remove(Message message);
 
+    void nullMessagers(User user);
+
     Message find(long id);
 
     List<Message> findMessagesByUser(User user);

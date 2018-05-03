@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Entity(name="MESSAGE")
 @DiscriminatorColumn(name="TYPE", discriminatorType =DiscriminatorType.INTEGER)
@@ -19,10 +20,8 @@ import java.util.List;
                 query="SELECT m FROM MESSAGE m"),
         @NamedQuery(name=Message.FIND_ID,
                 query="SELECT m FROM MESSAGE m WHERE m.id = :id"),
-        /*@NamedQuery(name="Message.findByUser",
-                query="SELECT m FROM MESSAGE m WHERE m.messager.id = :id"),*/
         @NamedQuery(name=Message.FIND_USER,
-                query="SELECT m FROM MESSAGE m WHERE m.messager.id = :id ORDER BY m.date DESC"),
+                query="SELECT m FROM MESSAGE m WHERE m.messager.id = :id"), // ORDER BY m.date DESC
         @NamedQuery(name=Message.GET_LIKES_BY_MESSAGE,
                 query="SELECT COUNT(m.likes) FROM MESSAGE m WHERE m.id = :id"),
 })
@@ -67,8 +66,7 @@ public abstract class Message implements Serializable {
     @Column(name = "DATE")
     protected Date date;
 
-    @OneToOne(fetch = FetchType.EAGER, orphanRemoval = true)
-    @JoinColumn(name = "MESSAGERO")
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE, orphanRemoval = true)
     protected User messager;
 
     @OneToMany(fetch = FetchType.LAZY)
@@ -100,6 +98,8 @@ public abstract class Message implements Serializable {
         return id;
     }
 
+    public int getDiscriminator() { return discriminator; }
+
     public String getText() {
         return text;
     }
@@ -122,5 +122,51 @@ public abstract class Message implements Serializable {
 
     public List<User> getMentions() {
         return mentions;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public void setType(MessageType type) {
+        this.type = type;
+    }
+
+    public void setTags(List<Tag> tags) {
+        this.tags = tags;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    public void setMessager(User messager) {
+        this.messager = messager;
+    }
+
+    public void setMentions(List<User> mentions) {
+        this.mentions = mentions;
+    }
+
+    public List<User> getLikes() {
+        return likes;
+    }
+
+    public void setLikes(List<User> likes) {
+        this.likes = likes;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Message)) return false;
+        Message message = (Message) o;
+        return Objects.equals(id, message.id);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id);
     }
 }

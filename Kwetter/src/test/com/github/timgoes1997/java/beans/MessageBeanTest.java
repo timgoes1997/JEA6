@@ -51,14 +51,13 @@ public class MessageBeanTest {
 
     @After
     public void tearDown() throws Exception {
-        /*
         given()
                 .header("Authorization", token)
                 .pathParam("username", username)
                 .when()
                 .delete("http://localhost:8080/Kwetter/api/user/{username}/delete")
                 .then()
-                .statusCode(200);*/
+                .statusCode(200);
     }
 
     @Test
@@ -68,7 +67,7 @@ public class MessageBeanTest {
         //System.out.println("test " + data);
         int id = given()
                 .header("Authorization", token)
-                .formParam("message", "Dit is een geweldig bericht #geweldig @" + username)
+                .formParam("message", "Dit is een geweldig bericht #geweldig @" + username + " @" + username)
                 .formParam("messageType", MessageType.Public)
                 .when()
                 .post("http://localhost:8080/Kwetter/api/message/create")
