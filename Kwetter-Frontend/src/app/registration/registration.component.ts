@@ -48,7 +48,11 @@ export class RegistrationComponent implements OnInit {
       formModel.controls.lastName.value,
       formModel.controls.telephone.value,
     );
-    this.authService.register(registrationObject);
+    this.authService.register(registrationObject).subscribe(
+      (data: any) => {
+        console.log(data);
+      }
+    );
 
     // logger.info('login called');
     // this.submitted = true;
