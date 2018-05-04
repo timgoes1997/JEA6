@@ -54,7 +54,7 @@ public class MessageDAOImpl implements MessageDAO {
         logger.info("Removing replies from tweet " + String.valueOf(message.getId()));
 
         List<ReplyMessage> replyMessages = getMessageReplies(message);
-        for(ReplyMessage rm : replyMessages){
+        for (ReplyMessage rm : replyMessages) {
             rm.setMessage(null);
             em.merge(rm);
             logger.info("Reply from " + rm.getMessager().getUsername() + " removed from message " + String.valueOf(message.getId()));
@@ -63,14 +63,14 @@ public class MessageDAOImpl implements MessageDAO {
         logger.info("Removing remessages from tweet " + String.valueOf(message.getId()));
 
         List<Remessage> remessages = getMessageRemessages(message);
-        for(Remessage r : remessages){
+        for (Remessage r : remessages) {
             r.setMessage(null);
             em.merge(r);
             logger.info("Remessage from " + r.getMessager().toString() + " removed from message " + String.valueOf(message.getId()));
         }
         em.flush();
 
-        if(userDAO.removeUserMessage(message)){
+        if (userDAO.removeUserMessage(message)) {
             logger.info("Succesfully removed from user messages");
         }
 
@@ -88,14 +88,15 @@ public class MessageDAOImpl implements MessageDAO {
     }
 
     @Override
-    public void nullMessagers(User user) {
-        List<Message> messages = findMessagesByUser(user);
-
-        for (Message m : messages) {
-            m.setMessager(null);
+    public void clearUserFromLikesAndMentions(User user) {
+        List<Message> mentions = findMessagesByMention(user);
+        for (Message m : mentions) {
             m.getMentions().remove(user);
+        }
+
+        List<Message> likes = findMessagesByLikes(user);
+        for (Message m : likes) {
             m.getLikes().remove(user);
-            em.merge(m);
         }
     }
 
@@ -104,6 +105,23 @@ public class MessageDAOImpl implements MessageDAO {
         TypedQuery<Message> query =
                 em.createNamedQuery(Message.FIND_ID, Message.class);
         return query.setParameter("id", id).getSingleResult();
+    }
+
+    @Override
+    public List<Message> findMessagesByMention(User user) {
+        return em.createNativeQuery("SELECT * " +
+                "FROM MESSAGE WHERE ID " +
+                "IN (SELECT MESSAGE_ID m_ID FROM MESSAGE_MENTIONS " +
+                "WHERE MENTION_ACCOUNT_ID = ?1)", Message.class)
+                .setParameter(1, user.getId()).getResultList();
+    }
+
+    @Override
+    public List<Message> findMessagesByLikes(User user) {
+        return em.createNativeQuery("SELECT * FROM MESSAGE " +
+                "WHERE ID IN (SELECT MESSAGE_ID m_ID " +
+                "FROM MESSAGE_LIKES WHERE LIKED_ACCOUNT_ID = ?1)", Message.class)
+                .setParameter(1, user.getId()).getResultList();
     }
 
     @Override
@@ -125,6 +143,23 @@ public class MessageDAOImpl implements MessageDAO {
         TypedQuery<Message> query =
                 em.createNamedQuery(Message.FIND_ID, Message.class);
         return query.setParameter("id", id).getResultList().size() > 0;
+    }
+
+    @Override
+    public List<Message> getAllMessages() {
+        TypedQuery<Message> query =
+                em.createNamedQuery(Message.FIND_ALL, Message.class);
+        return query.getResultList();
+    }
+
+    @Override
+    public void likeMessage(Message message, User user) throws Exception {
+        Message m = message;
+        if (m.getLikes().contains(user)) {
+            throw new Exception("This user has already liked this message");
+        }
+        m.getLikes().add(user);
+        em.merge(m);
     }
 
     @Override
@@ -192,7 +227,7 @@ public class MessageDAOImpl implements MessageDAO {
         while (mat.find()) {
             try {
                 User user = userDAO.findByUsername(mat.group(1));
-                if(!mentions.contains(user)) mentions.add(user);
+                if (!mentions.contains(user)) mentions.add(user);
             } catch (NoResultException exception) {
                  /*Add something to notify user and don't throw a exception which causes the tweet not to be posted
                    Because on twitter you also can use the @ without a valid user. Someone might want to send a ssh link and it would be retarded to make it crash.
@@ -211,11 +246,15 @@ public class MessageDAOImpl implements MessageDAO {
         this.em = em;
     }
 
-    public void setUserDAO(UserDAO userDAO){
+    public void setUserDAO(UserDAO userDAO) {
         this.userDAO = userDAO;
     }
 
-    public void setTagDAO(TagDAO tagDAO){
+    public void setTagDAO(TagDAO tagDAO) {
         this.tagDAO = tagDAO;
+    }
+
+    public void setLogger() {
+        this.logger = Logger.getLogger(MessageDAOImpl.class.getName());
     }
 }

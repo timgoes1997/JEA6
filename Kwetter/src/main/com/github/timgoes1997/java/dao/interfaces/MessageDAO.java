@@ -10,35 +10,30 @@ import java.util.Date;
 import java.util.List;
 
 public interface MessageDAO {
+    void clearUserFromLikesAndMentions(User user);
     void create(Message message);
 
-    void remove(Message message);
-
-    void nullMessageData(Message message);
-
-    void nullMessagers(User user);
-
     Message find(long id);
-
+    List<Message> findMessagesByMention(User user);
+    List<Message> findMessagesByLikes(User user);
     List<Message> findMessagesByUser(User user);
-
     List<Message> findMessagesByUser(User user, int firstResult, int maxResults);
 
     boolean exists(long id);
 
-    List<ReplyMessage> getMessageReplies(Message message);
-
-    List<ReplyMessage> getMessageReplies(Message message, int firstResult, int maxResults);
-
-    List<Remessage> getMessageRemessages(Message message);
-
-    List<Remessage> getMessageRemessages(Message message, int firstResult, int maxResults);
-
-    Long getMessageLikes(Message message);
-
-    Date getCurrentLocalDateTime();
-
-    List<Tag> generateTags(String text);
-
     List<User> generateMentions(String text);
+    List<Tag> generateTags(String text);
+    Date getCurrentLocalDateTime();
+    List<Remessage> getMessageRemessages(Message message);
+    List<Remessage> getMessageRemessages(Message message, int firstResult, int maxResults);
+    Long getMessageLikes(Message message);
+    List<ReplyMessage> getMessageReplies(Message message);
+    List<ReplyMessage> getMessageReplies(Message message, int firstResult, int maxResults);
+    List<Message> getAllMessages();
+
+    void likeMessage(Message message, User user) throws Exception;
+
+    void nullMessageData(Message message);
+
+    void remove(Message message);
 }

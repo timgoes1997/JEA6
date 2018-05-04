@@ -22,11 +22,11 @@ public interface UserDAO {
 
     User findByUsername(String userName);
 
-    //User findByMessage(Message message);
-
     User findByUsernameAndEmail(String userName, String email);
 
     User findByVerificationLink(String link);
+
+    List<User> getAllUsers();
 
     List<User> getUnverifiedAccounts(Date lowerThanThisDate);
 

@@ -44,19 +44,13 @@ public class UserDAOImpl implements UserDAO {
     @Override
     public void remove(User user) {
         //First delete all the messages of the user self
+        messageDAO.clearUserFromLikesAndMentions(user);
+
         CopyOnWriteArrayList<Message> messages = new CopyOnWriteArrayList<Message>(user.getMessages());
         ListIterator<Message> iterator = messages.listIterator();
         while (iterator.hasNext()) {
             messageDAO.remove(iterator.next());
         }
-        messageDAO.nullMessagers(user);
-
-        /*
-        //Delete all references messages
-        List<Message> messages = messageDAO.findMessagesByUser(user);
-        for(Message m : messages){
-            messageDAO.remove(m);
-        }*/
 
         User toRemove = find(user.getId());
         em.remove(toRemove);
@@ -109,6 +103,13 @@ public class UserDAOImpl implements UserDAO {
     public User findByVerificationLink(String link) {
         TypedQuery<User> query = em.createNamedQuery(User.FIND_VERIFICATION_LINK, User.class);
         return query.setParameter("link", link).getSingleResult();
+    }
+
+    @Override
+    public List<User> getAllUsers() {
+        TypedQuery<User> query =
+                em.createNamedQuery(User.FIND_ALL, User.class);
+        return query.getResultList();
     }
 
     @Override
@@ -196,5 +197,9 @@ public class UserDAOImpl implements UserDAO {
 
     public void setMessageDAO(MessageDAO messageDAO){
         this.messageDAO = messageDAO;
+    }
+
+    public void setLogger(){
+        this.logger = Logger.getLogger(MessageDAOImpl.class.getName());
     }
 }
