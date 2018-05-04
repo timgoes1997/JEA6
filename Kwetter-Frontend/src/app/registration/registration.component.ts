@@ -1,4 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {Router} from '@angular/router';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {logger} from 'codelyzer/util/logger';
+import {AuthService} from '../auth.service';
+import {AuthRegistrationObject} from '../AuthRegistrationObject';
 
 @Component({
   selector: 'app-registration',
@@ -7,9 +12,47 @@ import { Component, OnInit } from '@angular/core';
 })
 export class RegistrationComponent implements OnInit {
 
-  constructor() { }
+  submitted = false;
+
+  loginForm: FormGroup;
+
+  constructor(private fb: FormBuilder,
+              private authService: AuthService,
+              private router: Router) {
+    this.createForm();
+  }
+
+  createForm() {
+    this.loginForm = this.fb.group({
+      userName: '',
+      password: '',
+      email: '',
+      firstName: '',
+      middleName: '',
+      lastName: '',
+      telephone: '',
+    });
+  }
 
   ngOnInit() {
+  }
+
+  OnRegister() {
+    const formModel = this.loginForm;
+    const registrationObject = new AuthRegistrationObject(
+      formModel.controls.userName.value,
+      formModel.controls.password.value,
+      formModel.controls.email.value,
+      formModel.controls.firstName.value,
+      formModel.controls.middleName.value,
+      formModel.controls.lastName.value,
+      formModel.controls.telephone.value,
+    );
+    this.authService.register(registrationObject);
+
+    // logger.info('login called');
+    // this.submitted = true;
+    // this.router.navigateByUrl('/');
   }
 
 }
