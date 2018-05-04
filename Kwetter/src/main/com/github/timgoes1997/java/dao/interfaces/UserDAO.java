@@ -1,5 +1,6 @@
 package com.github.timgoes1997.java.dao.interfaces;
 
+import com.github.timgoes1997.java.entity.message.Message;
 import com.github.timgoes1997.java.entity.user.User;
 import com.sun.org.apache.xpath.internal.operations.Bool;
 
@@ -15,9 +16,13 @@ public interface UserDAO {
 
     void remove(User user);
 
+    boolean removeUserMessage(Message message);
+
     User find(long id);
 
     User findByUsername(String userName);
+
+    User findByMessage(Message message);
 
     User findByUsernameAndEmail(String userName, String email);
 

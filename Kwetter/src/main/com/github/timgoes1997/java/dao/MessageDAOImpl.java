@@ -11,6 +11,7 @@ import com.github.timgoes1997.java.entity.user.User;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
@@ -20,6 +21,7 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -35,14 +37,45 @@ public class MessageDAOImpl implements MessageDAO {
     @EJB
     private TagDAO tagDAO;
 
+    @Inject
+    private Logger logger;
+
     @Override
     public void create(Message message) {
         em.persist(message);
+        em.flush();
+        User user = message.getMessager();
+        user.getMessages().add(message);
+        userDAO.edit(user);
     }
 
     @Override
     public void remove(Message message) {
+        userDAO.removeUserMessage(message);
+
+        List<ReplyMessage> replyMessages = getMessageReplies(message);
+        for(ReplyMessage rm : replyMessages){
+            User user = rm.getMessager();
+            logger.info(user.toString());
+            rm.setMessage(null);
+            nullMessageData(rm);
+        }
+
+        List<Remessage> remessages = getMessageRemessages(message);
+        for(Remessage r : remessages){
+            r.setMessage(null);
+            nullMessageData(r);
+        }
+
         em.remove(message);
+    }
+
+    @Override
+    public void nullMessageData(Message message) {
+        message.setMessager(null);
+        message.setMentions(null);
+        message.setLikes(null);
+        em.merge(message);
     }
 
     @Override

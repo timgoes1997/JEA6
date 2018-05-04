@@ -62,9 +62,6 @@ public class MessageBeanTest {
 
     @Test
     public void createAndGetMessageByID() {
-        //Response response = given().pathParam("id", 1).when().get("http://localhost:8080/Kwetter/api/message/{id}");
-        //String data = response.asString();
-        //System.out.println("test " + data);
         int id = given()
                 .header("Authorization", token)
                 .formParam("message", "Dit is een geweldig bericht #geweldig @" + username + " @" + username)
@@ -88,9 +85,42 @@ public class MessageBeanTest {
                         "messager.username", equalTo(username));
     }
 
-    /*
     @Test
-    public void postRegisterAccount() {
-        System.out.println("test");
-    }*/
+    public void deleteMessageWithReply() {
+        int initialId = given()
+                .header("Authorization", token)
+                .formParam("message", "Dit is een geweldig bericht #geweldig @" + username + " @" + username)
+                .formParam("messageType", MessageType.Public)
+                .when()
+                .post("http://localhost:8080/Kwetter/api/message/create")
+                .then()
+                .statusCode(200)
+                .body("messager.username", equalTo(username))
+                .extract()
+                .path("id");
+
+        int replyId = given()
+                .header("Authorization", token)
+                .pathParam("id", initialId)
+                .formParam("text", "Dit is een geweldig bericht #geweldig @" + username + " @" + username)
+                .formParam("messageType", MessageType.Public)
+                .when()
+                .post("http://localhost:8080/Kwetter/api/message/{id}/reply")
+                .then()
+                .statusCode(200)
+                .body("messager.username", equalTo(username))
+                .body("message.id", equalTo(initialId))
+                .extract()
+                .path("id");
+
+        assertEquals(true, replyId > 0);
+
+        given()
+                .header("Authorization", token)
+                .pathParam("id", initialId)
+                .when()
+                .delete("http://localhost:8080/Kwetter/api/message/{id}/remove")
+                .then()
+                .statusCode(200);
+    }
 }

@@ -44,11 +44,20 @@ public class UserDAOImpl implements UserDAO {
             messageDAO.remove(m);
         }
 
+        /*
         User toRemove = user;
         if(!em.contains(toRemove)){
             toRemove = em.merge(toRemove);
-        }
-        em.remove(toRemove);
+        }*/
+        em.remove(user);
+    }
+
+    @Override
+    public boolean removeUserMessage(Message message) {
+        User user = findByMessage(message);
+        user.getMessages().remove(message); //TODO: nullpointer need to fix
+        User merged = em.merge(user);
+        return !merged.getMessages().contains(message);
     }
 
     @Override
@@ -70,6 +79,13 @@ public class UserDAOImpl implements UserDAO {
     public User findByUsername(String userName) {
         TypedQuery<User> query = em.createNamedQuery(User.FIND_BY_NAME, User.class);
         return query.setParameter("name", userName).getSingleResult();
+    }
+
+    @Override
+    public User findByMessage(Message message) {
+        TypedQuery<User> query =
+                em.createNamedQuery(User.FIND_BY_MESSAGE, User.class);
+        return query.setParameter("id", message.getId()).getSingleResult();
     }
 
     @Override

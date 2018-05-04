@@ -3,6 +3,7 @@ package com.github.timgoes1997.java.beans;
 import com.github.timgoes1997.java.authentication.Constants;
 import com.github.timgoes1997.java.authentication.interceptor.UserAuthorization;
 import com.github.timgoes1997.java.dao.interfaces.MessageDAO;
+import com.github.timgoes1997.java.dao.interfaces.UserDAO;
 import com.github.timgoes1997.java.entity.message.InitialMessage;
 import com.github.timgoes1997.java.entity.message.Message;
 import com.github.timgoes1997.java.entity.message.MessageType;
@@ -17,6 +18,7 @@ import javax.ejb.Stateless;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.management.relation.Role;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.ws.rs.*;
@@ -36,6 +38,9 @@ public class MessageBean {
 
     @Inject
     private MessageDAO messageDAO;
+
+    @Inject
+    private UserDAO userDAO;
 
     @Inject
     private Logger logger;
@@ -109,6 +114,33 @@ public class MessageBean {
             messageDAO.create(reply);
 
             return Response.ok().entity(reply).build();
+        } catch (Exception e) {
+            logger.severe(e.getMessage());
+            return Response.status(Response.Status.NOT_FOUND).entity(e).build();
+        }
+    }
+
+    @DELETE
+    @Produces(MediaType.APPLICATION_JSON)
+    @UserAuthorization({UserRole.User})
+    @Path("{id}/remove")
+    public Response removeMessage(@Context ContainerRequestContext request, @PathParam("id") long messageID) {
+        try {
+            if(!messageDAO.exists(messageID)){
+                return Response.status(Response.Status.NOT_FOUND).build();
+            }
+
+            Message message = messageDAO.find(messageID);
+            User currentUser = (User)request.getProperty(Constants.USER_REQUEST_STRING);
+            if(!(message.getMessager().getId() == currentUser.getId()
+                    || currentUser.getRole() == UserRole.Moderator
+                    || currentUser.getRole() == UserRole.Admin)){
+                return Response.status(Response.Status.UNAUTHORIZED).build();
+            }
+
+            messageDAO.remove(message);
+
+            return Response.ok().build();
         } catch (Exception e) {
             logger.severe(e.getMessage());
             return Response.status(Response.Status.NOT_FOUND).entity(e).build();

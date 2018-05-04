@@ -1,6 +1,7 @@
 package com.github.timgoes1997.java.dao;
 
 import com.github.timgoes1997.java.dao.interfaces.MessageDAO;
+import com.github.timgoes1997.java.dao.interfaces.UserDAO;
 import com.github.timgoes1997.java.entity.message.InitialMessage;
 import helper.PersistenceHelper;
 import org.junit.After;
@@ -18,6 +19,7 @@ public class MessageDAOImplTest {
     private EntityManager em;
 
     private MessageDAO mDao;
+    private UserDAO userDAO;
 
     @Rule
     public ExpectedException exception = ExpectedException.none();
@@ -26,8 +28,13 @@ public class MessageDAOImplTest {
     public void setUp() throws Exception {
         em = PersistenceHelper.getEntityManager();
         MessageDAOImpl impl = new MessageDAOImpl();
+        UserDAOImpl userDAOImpl = new UserDAOImpl();
         impl.setEntityManager(em);
+        userDAOImpl.setEntityManager(em);
         mDao = impl;
+        userDAO = userDAOImpl;
+
+
     }
 
     @After

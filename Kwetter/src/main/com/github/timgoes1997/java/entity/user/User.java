@@ -1,5 +1,7 @@
 package com.github.timgoes1997.java.entity.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.timgoes1997.java.entity.message.Message;
 
 import javax.persistence.*;
@@ -13,6 +15,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+import static com.fasterxml.jackson.annotation.JsonProperty.Access.*;
+
 @Entity(name = "USERDATA")
 @NamedQueries({
         @NamedQuery(name=User.FIND_ALL,
@@ -25,14 +29,14 @@ import java.util.Objects;
                 query="SELECT u FROM USERDATA u WHERE u.username = :name AND u.email = :email"),
         @NamedQuery(name=User.FIND_BY_ID,
                 query="SELECT u FROM USERDATA u WHERE u.id = :id"),
+        @NamedQuery(name=User.FIND_BY_MESSAGE,
+                query="SELECT u FROM USERDATA u JOIN u.messages m WHERE m.id = :id"),
         @NamedQuery(name=User.FIND_BY_NAME_PASSWORD,
                 query="SELECT u FROM USERDATA u WHERE u.username = :name AND u.password = :password"),
         @NamedQuery(name=User.FIND_BY_VERIFIED_BELOW_DATE,
                 query="SELECT u FROM USERDATA u WHERE u.verified = :verified AND u.registrationDate < :date"),
         @NamedQuery(name=User.FIND_VERIFICATION_LINK,
                 query="SELECT u FROM USERDATA u WHERE u.verifyLink = :link"),
-        @NamedQuery(name=User.FIND_VERIFICATION_LINK_AND_VERIFICATION,
-                query="SELECT u FROM USERDATA u WHERE u.verifyLink = :link AND u.verified = :verified"),
 })
 public class User implements Serializable{
 
@@ -47,9 +51,9 @@ public class User implements Serializable{
     public static final String FIND_BY_NAME_PASSWORD = "User.findByNameAndPassword";
     public static final String FIND_BY_ID = "User.findByID";
     public static final String FIND_BY_VERIFIED_BELOW_DATE = "User.findByVerified";
+    public static final String FIND_BY_MESSAGE = "User.findByMessage";
     public static final String FIND_VERIFICATION_LINK = "User.findVerificationLink";
     public static final String FIND_VERIFICATION_LINK_AND_VERIFICATION = "User.findVerificationLinkAndVerified";
-    public static final String IS_FOLLOWING_USER = "User.isFollowing";
 
     private static final long serialVersionUID = 1941556366358043294L;
 
@@ -276,14 +280,20 @@ public class User implements Serializable{
         this.pinnedMessage = pinnedMessage;
     }
 
+    @JsonIgnore
+    @XmlTransient
     public List<User> getFollowers() {
         return followers;
     }
 
+    @JsonIgnore
+    @XmlTransient
     public List<User> getFollowing() {
         return following;
     }
 
+    @JsonIgnore
+    @XmlTransient
     public List<Message> getMessages() {
         return messages;
     }
