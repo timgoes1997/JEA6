@@ -66,7 +66,7 @@ public abstract class Message implements Serializable {
     @Column(name = "DATE")
     protected Date date;
 
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToOne(fetch = FetchType.EAGER)
     protected User messager;
 
     @OneToMany(fetch = FetchType.LAZY)

@@ -51,23 +51,32 @@ public class MessageDAOImpl implements MessageDAO {
 
     @Override
     public void remove(Message message) {
-        userDAO.removeUserMessage(message);
+        logger.info("Removing replies from tweet " + String.valueOf(message.getId()));
 
         List<ReplyMessage> replyMessages = getMessageReplies(message);
         for(ReplyMessage rm : replyMessages){
-            User user = rm.getMessager();
-            logger.info(user.toString());
             rm.setMessage(null);
-            nullMessageData(rm);
+            em.merge(rm);
+            logger.info("Reply from " + rm.getMessager().getUsername() + " removed from message " + String.valueOf(message.getId()));
         }
+        em.flush();
+        logger.info("Removing remessages from tweet " + String.valueOf(message.getId()));
 
         List<Remessage> remessages = getMessageRemessages(message);
         for(Remessage r : remessages){
             r.setMessage(null);
-            nullMessageData(r);
+            em.merge(r);
+            logger.info("Remessage from " + r.getMessager().toString() + " removed from message " + String.valueOf(message.getId()));
+        }
+        em.flush();
+
+        if(userDAO.removeUserMessage(message)){
+            logger.info("Succesfully removed from user messages");
         }
 
+        logger.info("Removing tweet" + String.valueOf(message.getId()));
         em.remove(message);
+        logger.info("Succesfully removed tweet");
     }
 
     @Override
@@ -200,5 +209,13 @@ public class MessageDAOImpl implements MessageDAO {
      */
     public void setEntityManager(EntityManager em) {
         this.em = em;
+    }
+
+    public void setUserDAO(UserDAO userDAO){
+        this.userDAO = userDAO;
+    }
+
+    public void setTagDAO(TagDAO tagDAO){
+        this.tagDAO = tagDAO;
     }
 }

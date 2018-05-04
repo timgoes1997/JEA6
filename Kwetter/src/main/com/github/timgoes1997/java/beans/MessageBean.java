@@ -11,7 +11,6 @@ import com.github.timgoes1997.java.entity.message.ReplyMessage;
 import com.github.timgoes1997.java.entity.tag.Tag;
 import com.github.timgoes1997.java.entity.user.User;
 import com.github.timgoes1997.java.entity.user.UserRole;
-import com.sun.deploy.net.HttpRequest;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
@@ -89,7 +88,8 @@ public class MessageBean {
             InitialMessage initialMessage = new InitialMessage(message, messageType, currentUser, new Date(), tags, mentions);
             messageDAO.create(initialMessage);
 
-            return Response.ok().entity(initialMessage).build();
+            Message created = messageDAO.find(initialMessage.getId());
+            return Response.ok().entity(created).build();
         } catch (Exception e) {
             logger.severe(e.getMessage());
             return Response.status(Response.Status.NOT_FOUND).entity(e).build();

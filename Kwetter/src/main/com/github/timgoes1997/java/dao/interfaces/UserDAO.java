@@ -22,7 +22,7 @@ public interface UserDAO {
 
     User findByUsername(String userName);
 
-    User findByMessage(Message message);
+    //User findByMessage(Message message);
 
     User findByUsernameAndEmail(String userName, String email);
 

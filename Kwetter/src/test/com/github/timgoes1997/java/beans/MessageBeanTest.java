@@ -47,6 +47,7 @@ public class MessageBeanTest {
                 .statusCode(200)
                 .extract()
                 .path("id");
+        System.out.println("Made a username with the following id: " + String.valueOf(id));
     }
 
     @After
@@ -60,6 +61,7 @@ public class MessageBeanTest {
                 .statusCode(200);
     }
 
+    /*
     @Test
     public void createAndGetMessageByID() {
         int id = given()
@@ -83,7 +85,7 @@ public class MessageBeanTest {
                 .statusCode(200)
                 .body("id", equalTo(id),
                         "messager.username", equalTo(username));
-    }
+    }*/
 
     @Test
     public void deleteMessageWithReply() {

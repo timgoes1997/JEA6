@@ -15,6 +15,9 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import java.util.Date;
 import java.util.List;
+import java.util.ListIterator;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.logging.Logger;
 
 @Stateless
 public class UserDAOImpl implements UserDAO {
@@ -24,6 +27,9 @@ public class UserDAOImpl implements UserDAO {
 
     @Inject
     private MessageDAO messageDAO;
+
+    @Inject
+    private Logger logger;
 
     @Override
     public void create(User user) {
@@ -37,26 +43,36 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     public void remove(User user) {
-        List<Message> messages = messageDAO.findMessagesByUser(user);
+        //First delete all the messages of the user self
+        CopyOnWriteArrayList<Message> messages = new CopyOnWriteArrayList<Message>(user.getMessages());
+        ListIterator<Message> iterator = messages.listIterator();
+        while (iterator.hasNext()) {
+            messageDAO.remove(iterator.next());
+        }
         messageDAO.nullMessagers(user);
 
+        /*
+        //Delete all references messages
+        List<Message> messages = messageDAO.findMessagesByUser(user);
         for(Message m : messages){
             messageDAO.remove(m);
-        }
-
-        /*
-        User toRemove = user;
-        if(!em.contains(toRemove)){
-            toRemove = em.merge(toRemove);
         }*/
-        em.remove(user);
+
+        User toRemove = find(user.getId());
+        em.remove(toRemove);
     }
 
     @Override
     public boolean removeUserMessage(Message message) {
-        User user = findByMessage(message);
+        User user = message.getMessager();
+        if(user == null){
+            logger.severe("username null for message removal" + message.getId());
+        }
+
+        logger.info("Removing message from " + user.getUsername());
         user.getMessages().remove(message); //TODO: nullpointer need to fix
         User merged = em.merge(user);
+        em.flush();
         return !merged.getMessages().contains(message);
     }
 
@@ -81,12 +97,13 @@ public class UserDAOImpl implements UserDAO {
         return query.setParameter("name", userName).getSingleResult();
     }
 
+    /*
     @Override
     public User findByMessage(Message message) {
         TypedQuery<User> query =
                 em.createNamedQuery(User.FIND_BY_MESSAGE, User.class);
         return query.setParameter("id", message.getId()).getSingleResult();
-    }
+    }*/
 
     @Override
     public User findByVerificationLink(String link) {
@@ -175,5 +192,9 @@ public class UserDAOImpl implements UserDAO {
      */
     public void setEntityManager(EntityManager em) {
         this.em = em;
+    }
+
+    public void setMessageDAO(MessageDAO messageDAO){
+        this.messageDAO = messageDAO;
     }
 }

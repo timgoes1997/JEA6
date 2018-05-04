@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.timgoes1997.java.entity.message.Message;
 
+import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.*;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -138,6 +139,8 @@ public class User implements Serializable{
             inverseJoinColumns = { @JoinColumn(name="FOLLOWER_ID", referencedColumnName="ID")})
     private List<User> following;
 
+    @JsonIgnore
+    @XmlTransient
     @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true)
     @JoinTable(name = "USER_MESSAGES",
             joinColumns = { @JoinColumn(name="USER_ID", referencedColumnName="ID")},
@@ -182,7 +185,7 @@ public class User implements Serializable{
         this.username = username;
     }
 
-    @XmlTransient
+    @JsonbTransient
     public String getPassword() {
         return password;
     }
@@ -224,6 +227,7 @@ public class User implements Serializable{
         this.lastName = lastName;
     }
 
+    @JsonbTransient
     public String getTelephoneNumber() {
         return telephoneNumber;
     }
@@ -281,18 +285,21 @@ public class User implements Serializable{
     }
 
     @JsonIgnore
+    @JsonbTransient
     @XmlTransient
     public List<User> getFollowers() {
         return followers;
     }
 
     @JsonIgnore
+    @JsonbTransient
     @XmlTransient
     public List<User> getFollowing() {
         return following;
     }
 
     @JsonIgnore
+    @JsonbTransient
     @XmlTransient
     public List<Message> getMessages() {
         return messages;
@@ -327,7 +334,7 @@ public class User implements Serializable{
         return id;
     }
 
-    @XmlTransient
+    @JsonbTransient
     public String getVerifyLink() {
         return verifyLink;
     }
@@ -336,6 +343,7 @@ public class User implements Serializable{
         this.verifyLink = verifyLink;
     }
 
+    @JsonbTransient
     public Boolean getVerified() {
         return verified;
     }
