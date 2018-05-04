@@ -49,8 +49,10 @@ export class RegistrationComponent implements OnInit {
       formModel.controls.telephone.value,
     );
     this.authService.register(registrationObject).subscribe(
-      (data: any) => {
-        console.log(data);
+      resp => {
+          const keys = resp.headers.keys();
+          console.log(resp.status);
+          console.log(resp.headers.get('Authorization'));
       }
     );
 
