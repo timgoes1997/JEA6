@@ -54,7 +54,7 @@ public class UserBean {
             User user = userDAO.find(id);
             return Response.ok().entity(user).build();
         } catch (Exception e) {
-            logger.severe(e.getMessage());
+            //logger.severe(e.getMessage());
             return Response.status(Response.Status.NOT_FOUND).entity(e).build();
         }
     }
@@ -93,7 +93,7 @@ public class UserBean {
                 return Response.status(Response.Status.CONFLICT).build();
             }
 
-            userDAO.create(new User(username, password, UserRole.User, firstName, middleName, lastName, email, telephone, false));
+            userDAO.create(new User(username.toLowerCase(), password, UserRole.User, firstName, middleName, lastName, email, telephone, false));
 
             logger.info("Created new account for user: " + username);
 
@@ -142,10 +142,10 @@ public class UserBean {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getByUsername(@PathParam("username") String username) {
         try {
-            User user = userDAO.findByUsername(username);
+            User user = userDAO.findByUsername(username.toLowerCase());
             return Response.ok().entity(user).build();
         } catch (Exception e) {
-            logger.severe(e.getMessage());
+            //logger.severe(e.getMessage());
             return Response.status(Response.Status.NOT_FOUND).entity(e).build();
         }
     }

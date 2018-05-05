@@ -108,6 +108,20 @@ public class MessageDAOImpl implements MessageDAO {
     }
 
     @Override
+    public Message find(String username, long id) {
+        TypedQuery<Message> query =
+                em.createNamedQuery(Message.FIND_USER_ID, Message.class);
+        return query.setParameter("id", id).setParameter("name", username ).getSingleResult();
+    }
+
+    @Override
+    public List<Message> findProfileMessages(String username) {
+        TypedQuery<Message> query =
+                em.createNamedQuery(Message.FIND_MESSAGES, Message.class);
+        return query.getResultList();
+    }
+
+    @Override
     public List<Message> findMessagesByMention(User user) {
         return em.createNativeQuery("SELECT * " +
                 "FROM MESSAGE WHERE ID " +
@@ -226,7 +240,7 @@ public class MessageDAOImpl implements MessageDAO {
         List<User> mentions = new ArrayList<>();
         while (mat.find()) {
             try {
-                User user = userDAO.findByUsername(mat.group(1));
+                User user = userDAO.findByUsername(mat.group(1).toLowerCase());
                 if (!mentions.contains(user)) mentions.add(user);
             } catch (NoResultException exception) {
                  /*Add something to notify user and don't throw a exception which causes the tweet not to be posted

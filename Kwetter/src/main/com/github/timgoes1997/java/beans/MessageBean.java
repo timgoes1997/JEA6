@@ -75,6 +75,40 @@ public class MessageBean {
         }
     }
 
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/user/{username}/{id}")
+    public Response getMessageByUsernameAndID(@PathParam("username") String username, @PathParam("id") long id){
+        try {
+            if(!userDAO.exists(username) || !messageDAO.exists(id)){
+                return Response.status(Response.Status.NOT_FOUND).build();
+            }
+
+            Message message = messageDAO.find(username, id);
+            return Response.ok().entity(message).build();
+        } catch (Exception e) {
+            logger.severe(e.getMessage());
+            return Response.status(Response.Status.NOT_FOUND).entity(e).build();
+        }
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/user/{username}/messages")
+    public Response getMessageByUsernameAndID(@PathParam("username") String username){
+        try {
+            if(!userDAO.exists(username)){
+                return Response.status(Response.Status.NOT_FOUND).build();
+            }
+
+            List<Message> messages = messageDAO.findProfileMessages(username);
+            return Response.ok().entity(messages).build();
+        } catch (Exception e) {
+            logger.severe(e.getMessage());
+            return Response.status(Response.Status.NOT_FOUND).entity(e).build();
+        }
+    }
+
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @UserAuthorization({UserRole.User})

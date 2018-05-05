@@ -42,6 +42,12 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
+    public boolean exists(String username) {
+        TypedQuery<User> query = em.createNamedQuery(User.FIND_BY_NAME, User.class);
+        return query.setParameter("name", username).getResultList().size() > 0;
+    }
+
+    @Override
     public void remove(User user) {
         //First delete all the messages of the user self
         messageDAO.clearUserFromLikesAndMentions(user);

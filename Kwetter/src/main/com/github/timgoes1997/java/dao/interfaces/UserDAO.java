@@ -13,6 +13,7 @@ public interface UserDAO {
     void create(User user);
 
     void edit(User user);
+    boolean exists(String username);
 
     void remove(User user);
 
