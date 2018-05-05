@@ -4,6 +4,8 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {logger} from 'codelyzer/util/logger';
 import {AuthService} from '../auth.service';
 import {AuthRegistrationObject} from '../AuthRegistrationObject';
+import {HttpResponse} from '@angular/common/http';
+import {CookieService} from 'ng2-cookies';
 
 @Component({
   selector: 'app-registration',
@@ -18,6 +20,7 @@ export class RegistrationComponent implements OnInit {
 
   constructor(private fb: FormBuilder,
               private authService: AuthService,
+              private cookieService: CookieService,
               private router: Router) {
     this.createForm();
   }
@@ -50,15 +53,20 @@ export class RegistrationComponent implements OnInit {
     );
     this.authService.register(registrationObject).subscribe(
       resp => {
-          const keys = resp.headers.keys();
-          console.log(resp.status);
-          console.log(resp.headers.get('Authorization'));
+        this.OnReceive(resp);
       }
     );
+    this.submitted = true;
+    this.router.navigateByUrl('/');
+  }
 
-    // logger.info('login called');
-    // this.submitted = true;
-    // this.router.navigateByUrl('/');
+  private OnReceive(http: HttpResponse<any>) {
+    const authKey = 'Authorization';
+    const authValue = http.headers.get(authKey);
+    this.cookieService.set(authKey, authValue);
+
+    console.log(authKey);
+    // cookies.put(authKey);
   }
 
 }

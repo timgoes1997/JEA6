@@ -40,7 +40,6 @@ export class LoginComponent implements OnInit {
     const password = formModel.controls.password.value;
     this.authService.login(username, password).subscribe(
       (res: HttpResponse<any>) => {
-        console.log(res.headers.keys());
         this.OnReceive(res);
       });
   }
@@ -49,8 +48,6 @@ export class LoginComponent implements OnInit {
     const authKey = 'Authorization';
     const authValue = http.headers.get(authKey);
     this.cookieService.set(authKey, authValue);
-
-    console.log(authKey);
-    // cookies.put(authKey);
+    console.log(authValue);
   }
 }

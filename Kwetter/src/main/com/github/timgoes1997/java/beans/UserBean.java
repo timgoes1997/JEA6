@@ -200,10 +200,10 @@ public class UserBean {
     }
 
     @GET
-    @Path("/token")
+    @Path("/authenticated")
     @UserAuthorization
     @Produces(MediaType.APPLICATION_JSON)
-    public Response tokenGetRequest(){
-        return Response.ok("Hello").build();
+    public Response tokenGetRequest(@Context ContainerRequestContext request){
+        return Response.ok((User)request.getProperty(Constants.USER_REQUEST_STRING)).build();
     }
 }
