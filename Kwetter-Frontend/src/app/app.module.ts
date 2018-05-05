@@ -12,6 +12,8 @@ import {LoginComponent} from './login/login.component';
 import {CookieService} from 'ng2-cookies';
 import {UserComponent} from './user/user.component';
 import {UserService} from './user.service';
+import { MessageDetailsComponent } from './message-details/message-details.component';
+import {KweetService} from './kweet.service';
 
 
 @NgModule({
@@ -19,7 +21,8 @@ import {UserService} from './user.service';
     AppComponent,
     RegistrationComponent,
     LoginComponent,
-    UserComponent
+    UserComponent,
+    MessageDetailsComponent
   ],
   imports: [
     BrowserModule,
@@ -32,7 +35,8 @@ import {UserService} from './user.service';
     AuthService,
     MessageService,
     CookieService,
-    UserService
+    UserService,
+    KweetService
   ],
   bootstrap: [AppComponent]
 })

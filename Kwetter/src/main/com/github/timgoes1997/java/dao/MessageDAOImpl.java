@@ -118,7 +118,7 @@ public class MessageDAOImpl implements MessageDAO {
     public List<Message> findProfileMessages(String username) {
         TypedQuery<Message> query =
                 em.createNamedQuery(Message.FIND_MESSAGES, Message.class);
-        return query.getResultList();
+        return query.setParameter("name" , username ).getResultList();
     }
 
     @Override

@@ -21,7 +21,7 @@ import java.util.Objects;
         @NamedQuery(name=Message.FIND_ID,
                 query="SELECT m FROM MESSAGE m WHERE m.id = :id"),
         @NamedQuery(name=Message.FIND_MESSAGES,
-                query="SELECT m FROM MESSAGE m WHERE m.discriminator=1 OR m.discriminator=3"), // ORDER BY m.date DESC
+                query="SELECT m FROM MESSAGE m WHERE m.messager.username = :name AND (m.discriminator=1 OR m.discriminator=3)"), // ORDER BY m.date DESC
         @NamedQuery(name=Message.FIND_USER,
                 query="SELECT m FROM MESSAGE m WHERE m.messager.id = :id"),
         @NamedQuery(name=Message.FIND_USER_ID,
