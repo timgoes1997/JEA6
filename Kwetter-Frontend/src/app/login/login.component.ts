@@ -4,6 +4,7 @@ import {Router} from '@angular/router';
 import {AuthService} from '../auth.service';
 import {AuthRegistrationObject} from '../AuthRegistrationObject';
 import {HttpResponse} from '@angular/common/http';
+import {CookieService} from 'ng2-cookies';
 
 @Component({
   selector: 'app-login',
@@ -18,6 +19,7 @@ export class LoginComponent implements OnInit {
 
   constructor(private fb: FormBuilder,
               private authService: AuthService,
+              private cookieService: CookieService,
               private router: Router) {
     this.createForm();
   }
@@ -38,15 +40,17 @@ export class LoginComponent implements OnInit {
     const password = formModel.controls.password.value;
     this.authService.login(username, password).subscribe(
       (res: HttpResponse<any>) => {
-        console.log(res.headers.keys())
+        console.log(res.headers.keys());
         this.OnReceive(res);
       });
   }
 
   private OnReceive(http: HttpResponse<any>) {
-    console.log(http);
-    console.log(http.status);
-    console.log(http.headers.get('Authorization'));
-    console.log(http.headers);
+    const authKey = 'Authorization';
+    const authValue = http.headers.get(authKey);
+    this.cookieService.set(authKey, authValue);
+
+    console.log(authKey);
+    // cookies.put(authKey);
   }
 }

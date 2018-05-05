@@ -21,10 +21,7 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.ws.rs.*;
 import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import javax.ws.rs.core.*;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.Date;
@@ -74,7 +71,7 @@ public class UserBean {
 
             String token = tokenProvider.issueToken(user.getUsername(), authorities, false); //TODO: remember me implementation
 
-            return Response.ok().header(HttpHeaders.AUTHORIZATION, Constants.BEARER + token).entity(user).build();
+            return Response.ok().header(HttpHeaders.AUTHORIZATION, Constants.BEARER + token).entity(user).build(); //.cookie(new NewCookie(HttpHeaders.AUTHORIZATION, Constants.BEARER + token))
 
         }catch(Exception e){
             return Response.status(Response.Status.UNAUTHORIZED).build();

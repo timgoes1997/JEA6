@@ -9,6 +9,7 @@ import {AuthService} from './auth.service';
 import {MessageService} from './message.service';
 import {HttpClientModule} from '@angular/common/http';
 import { LoginComponent } from './login/login.component';
+import {CookieService} from 'ng2-cookies';
 
 
 @NgModule({
@@ -26,7 +27,8 @@ import { LoginComponent } from './login/login.component';
   ],
   providers: [
     AuthService,
-    MessageService
+    MessageService,
+    CookieService
   ],
   bootstrap: [AppComponent]
 })
