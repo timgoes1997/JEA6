@@ -7,19 +7,12 @@ import {MessageService} from './message.service';
 import {AuthRegistrationObject} from './AuthRegistrationObject';
 import {catchError, map, tap} from 'rxjs/operators';
 
-
-const httpOptions = {
-  headers: new HttpHeaders({
-    'Content-Type': 'application/x-www-form-urlencoded'
-  }), observe: 'response'
-}
-
-
-// const httpOptions = { headers: new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' }), observe: 'response' };
+const headers = new HttpHeaders({
+  'Content-Type': 'application/x-www-form-urlencoded'
+});
 
 @Injectable()
 export class AuthService {
-
   private authURL = 'http://localhost:8080/Kwetter/api/user';
 
   constructor(private http: HttpClient,
@@ -36,14 +29,24 @@ export class AuthService {
       .set('middleName', registrationObject.middleName)
       .set('lastName', registrationObject.lastName)
       .set('telephone', registrationObject.telephone);
+    /** const options = { observe: 'response', headers: headers}; dunno why but can't give this as
+     * param need to make the object itself otherwise compile error...*/
     return this.http.post(
       registrationURL,
-      body, httpOptions)/**.pipe(
-      tap(_ => this.log(_.toString())),
-      catchError(this.handleError<any>('register'))
-    )*/;
+      body, {observe: 'response', headers: headers})/**.pipe(
+     tap(_ => this.log(_.toString())),
+     catchError(this.handleError<any>('register'))
+     )*/;
   }
 
+  login(username: string,
+               password: string): Observable<HttpResponse<any>> {
+    const loginURL = `${this.authURL}/login`;
+    const params = new HttpParams()
+      .set('username', username)
+      .set('password', password);
+    return this.http.get(loginURL, {observe: 'response', headers: headers, params: params});
+  }
 
   /**
    * Handle Http operation that failed.
