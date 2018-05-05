@@ -40,12 +40,12 @@ export class AuthService {
   }
 
   login(username: string,
-               password: string): Observable<HttpResponse<any>> {
+        password: string): Observable<HttpResponse<any>> {
     const loginURL = `${this.authURL}/login`;
-    const params = new HttpParams()
+    const body = new HttpParams()
       .set('username', username)
       .set('password', password);
-    return this.http.get(loginURL, {observe: 'response', headers: headers, params: params});
+    return this.http.post(loginURL, body, {observe: 'response', headers: headers, withCredentials: true});
   }
 
   /**

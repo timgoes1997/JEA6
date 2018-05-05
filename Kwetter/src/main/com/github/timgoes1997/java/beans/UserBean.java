@@ -74,7 +74,7 @@ public class UserBean {
 
             String token = tokenProvider.issueToken(user.getUsername(), authorities, false); //TODO: remember me implementation
 
-            return Response.ok().header(HttpHeaders.AUTHORIZATION, Constants.BEARER + token).build();
+            return Response.ok().header(HttpHeaders.AUTHORIZATION, Constants.BEARER + token).entity(user).build();
 
         }catch(Exception e){
             return Response.status(Response.Status.UNAUTHORIZED).build();

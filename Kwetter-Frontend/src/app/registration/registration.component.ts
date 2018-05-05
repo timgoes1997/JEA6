@@ -14,7 +14,7 @@ export class RegistrationComponent implements OnInit {
 
   submitted = false;
 
-  loginForm: FormGroup;
+  registrationForm: FormGroup;
 
   constructor(private fb: FormBuilder,
               private authService: AuthService,
@@ -23,7 +23,7 @@ export class RegistrationComponent implements OnInit {
   }
 
   createForm() {
-    this.loginForm = this.fb.group({
+    this.registrationForm = this.fb.group({
       userName: '',
       password: '',
       email: '',
@@ -38,7 +38,7 @@ export class RegistrationComponent implements OnInit {
   }
 
   OnRegister() {
-    const formModel = this.loginForm;
+    const formModel = this.registrationForm;
     const registrationObject = new AuthRegistrationObject(
       formModel.controls.userName.value,
       formModel.controls.password.value,
