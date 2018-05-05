@@ -4,7 +4,7 @@ import {Observable} from 'rxjs/Observable';
 import {of} from 'rxjs/observable/of';
 import {HttpClient, HttpHeaders, HttpParams, HttpResponse} from '@angular/common/http';
 import {MessageService} from './message.service';
-import {AuthRegistrationObject} from './AuthRegistrationObject';
+import {AuthRegistrationObject} from './entities/AuthRegistrationObject';
 import {catchError, map, tap} from 'rxjs/operators';
 
 const headers = new HttpHeaders({
@@ -29,14 +29,13 @@ export class AuthService {
       .set('middleName', registrationObject.middleName)
       .set('lastName', registrationObject.lastName)
       .set('telephone', registrationObject.telephone);
-    /** const options = { observe: 'response', headers: headers}; dunno why but can't give this as
-     * param need to make the object itself otherwise compile error...*/
     return this.http.post(
       registrationURL,
-      body, {observe: 'response', headers: headers})/**.pipe(
+      body, {observe: 'response', headers: headers});
+    /**.pipe(
      tap(_ => this.log(_.toString())),
      catchError(this.handleError<any>('register'))
-     )*/;
+     )*/
   }
 
   login(username: string,

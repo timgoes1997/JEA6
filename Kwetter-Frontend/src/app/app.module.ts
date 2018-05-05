@@ -1,6 +1,6 @@
 import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
-import {FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 import {AppComponent} from './app.component';
 import {AppRoutingModule} from './app-routing/app-routing.module';
@@ -8,15 +8,18 @@ import {RegistrationComponent} from './registration/registration.component';
 import {AuthService} from './auth.service';
 import {MessageService} from './message.service';
 import {HttpClientModule} from '@angular/common/http';
-import { LoginComponent } from './login/login.component';
+import {LoginComponent} from './login/login.component';
 import {CookieService} from 'ng2-cookies';
+import {UserComponent} from './user/user.component';
+import {UserService} from './user.service';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     RegistrationComponent,
-    LoginComponent
+    LoginComponent,
+    UserComponent
   ],
   imports: [
     BrowserModule,
@@ -28,7 +31,8 @@ import {CookieService} from 'ng2-cookies';
   providers: [
     AuthService,
     MessageService,
-    CookieService
+    CookieService,
+    UserService
   ],
   bootstrap: [AppComponent]
 })

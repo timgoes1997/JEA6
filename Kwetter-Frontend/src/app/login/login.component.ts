@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {Router} from '@angular/router';
 import {AuthService} from '../auth.service';
-import {AuthRegistrationObject} from '../AuthRegistrationObject';
+import {AuthRegistrationObject} from '../entities/AuthRegistrationObject';
 import {HttpResponse} from '@angular/common/http';
 import {CookieService} from 'ng2-cookies';
 
