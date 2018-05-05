@@ -19,9 +19,16 @@ public class InitialMessage extends Message {
 
     public InitialMessage(){
         super();
+        this.discriminator = 1;
     }
 
     public InitialMessage(String text, MessageType type, User messager, Date date, List<Tag> tags, List<User> mentions){
         super(text, type, messager, date, tags, mentions);
+        this.discriminator = 1;
     }
+
+//    @Override
+//    public int getDiscriminator() {
+//        return this.getDiscriminator();
+//    }
 }

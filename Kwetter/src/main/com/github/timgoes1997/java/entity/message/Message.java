@@ -60,7 +60,7 @@ public abstract class Message implements Serializable {
     protected MessageType type; //To check wether a message is directed towards your followers or visible for everyone.
 
     @Column(name = "TYPE")
-    private int discriminator;
+    protected int discriminator;
 
     @OneToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "MESSAGE_TAGS",
@@ -105,6 +105,10 @@ public abstract class Message implements Serializable {
     }
 
     public int getDiscriminator() { return discriminator; }
+
+    public void setDiscriminator(int discriminator) {
+        this.discriminator = discriminator;
+    }
 
     public String getText() {
         return text;

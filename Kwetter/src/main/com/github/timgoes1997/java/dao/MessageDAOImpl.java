@@ -139,6 +139,14 @@ public class MessageDAOImpl implements MessageDAO {
     }
 
     @Override
+    public List<Message> findMessagesByTag(Tag tag) {
+        return em.createNativeQuery("SELECT * FROM MESSAGE m " +
+                "WHERE ID IN (SELECT MESSAGE_ID m_ID FROM MESSAGE_TAGS " +
+                "WHERE TAG_ID =?1) ORDER BY DATE", Message.class)
+                .setParameter(1, tag.getId()).getResultList();
+    }
+
+    @Override
     public List<Message> findMessagesByUser(User user) {
         TypedQuery<Message> query =
                 em.createNamedQuery(Message.FIND_USER, Message.class);
@@ -221,7 +229,7 @@ public class MessageDAOImpl implements MessageDAO {
         Matcher mat = tagPattern.matcher(text);
         List<Tag> tags = new ArrayList<>();
         while (mat.find()) {
-            String tag = mat.group(1);
+            String tag = mat.group(1).toLowerCase();
             if (tagDAO.hasTag(tag)) {
                 tags.add(tagDAO.findTagByName(tag));
             } else {

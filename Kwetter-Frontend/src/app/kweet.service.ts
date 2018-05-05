@@ -7,6 +7,7 @@ import {Kweet} from './entities/Kweet';
 @Injectable()
 export class KweetService {
   private userURL = 'http://localhost:8080/Kwetter/api/message';
+  private tagURL = 'http://localhost:8080/Kwetter/api/tag';
 
   constructor(private http: HttpClient,
               private authService: AuthService) {
@@ -15,5 +16,15 @@ export class KweetService {
   getKweet(name: string, id: number): Observable<any> {
     const requestURL = `${this.userURL}/user/${name}/${id}`;
     return this.http.get<Kweet>(requestURL, {observe: 'response'});
+  }
+
+  getKweets(name: string): Observable<any> {
+    const requestURL = `${this.userURL}/user/${name}/messages`;
+    return this.http.get<Kweet[]>(requestURL, {observe: 'response'});
+  }
+
+  getTagKweets(tagName: string): Observable<any> {
+    const requestURL = `${this.tagURL}/${tagName}`;
+    return this.http.get<Kweet[]>(requestURL, {observe: 'response'});
   }
 }

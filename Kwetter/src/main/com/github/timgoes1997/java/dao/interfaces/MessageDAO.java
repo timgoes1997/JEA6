@@ -18,6 +18,7 @@ public interface MessageDAO {
     List<Message> findProfileMessages(String username);
     List<Message> findMessagesByMention(User user);
     List<Message> findMessagesByLikes(User user);
+    List<Message> findMessagesByTag(Tag tag);
     List<Message> findMessagesByUser(User user);
     List<Message> findMessagesByUser(User user, int firstResult, int maxResults);
 

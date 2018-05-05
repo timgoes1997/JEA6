@@ -22,6 +22,13 @@ public class TagDAOImpl implements TagDAO {
     }
 
     @Override
+    public boolean exists(String tagName) {
+        TypedQuery<Tag> query =
+                em.createNamedQuery(Tag.FIND_BY_NAME, Tag.class);
+        return query.setParameter("name", tagName).getResultList().size() > 0;
+    }
+
+    @Override
     public void remove(Tag tag) {
         em.remove(tag);
     }

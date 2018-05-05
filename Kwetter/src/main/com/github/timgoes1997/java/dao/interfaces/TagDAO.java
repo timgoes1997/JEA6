@@ -8,6 +8,8 @@ public interface TagDAO {
 
     void create(Tag tag);
 
+    boolean exists(String tagName);
+
     void remove(Tag tag);
 
     Tag find(long id);

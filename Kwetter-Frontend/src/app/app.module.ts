@@ -14,6 +14,7 @@ import {UserComponent} from './user/user.component';
 import {UserService} from './user.service';
 import { MessageDetailsComponent } from './message-details/message-details.component';
 import {KweetService} from './kweet.service';
+import { TagDetailsComponent } from './tag-details/tag-details.component';
 
 
 @NgModule({
@@ -22,7 +23,8 @@ import {KweetService} from './kweet.service';
     RegistrationComponent,
     LoginComponent,
     UserComponent,
-    MessageDetailsComponent
+    MessageDetailsComponent,
+    TagDetailsComponent
   ],
   imports: [
     BrowserModule,

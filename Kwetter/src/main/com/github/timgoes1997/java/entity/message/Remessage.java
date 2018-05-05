@@ -39,10 +39,17 @@ public class Remessage extends ReplyMessage implements Serializable {
 
     public Remessage(){
         super();
+        this.discriminator = 2;
     }
+
+//    @Override
+//    public int getDiscriminator() {
+//        return this.getDiscriminator();
+//    }
 
     public Remessage(String text, MessageType type, User messager, Date date, List<Tag> tags, List<User> mentions, Message message){
         super(text, type, messager, date, tags, mentions, message);
+        this.discriminator = 2;
         this.hasText = text.length() > 0;
     }
 

@@ -8,6 +8,8 @@ import {catchError, tap} from 'rxjs/operators';
 import {Observable} from 'rxjs/Observable';
 import {of} from 'rxjs/observable/of';
 import {MessageService} from '../message.service';
+import {Kweet} from '../entities/Kweet';
+import {KweetService} from '../kweet.service';
 
 @Component({
   selector: 'app-user',
@@ -18,28 +20,50 @@ export class UserComponent implements OnInit {
 
   user: User;
 
+  kweets: Kweet[];
+
   constructor(private userService: UserService,
               private cookieService: CookieService,
               private messageService: MessageService,
+              private kweetService: KweetService,
               private route: ActivatedRoute,
               private router: Router) {
   }
 
   ngOnInit() {
     const name = this.route.snapshot.paramMap.get('name');
+    this.getUser(name);
+    this.getUserKweets(name);
+  }
+
+  getUser(name: string) {
     this.userService.getUser(name).pipe(
       tap(_ => this.log(`fetched user named ${name}`)),
       catchError(this.handleError<HttpResponse<User>>(`getHero name=${name}`))
-    ).subscribe(user => this.OnReceive(user));
+    ).subscribe(user => this.OnReceiveUser(user));
   }
 
-  OnReceive(response: HttpResponse<User>) {
+  getUserKweets(name: string) {
+    this.kweetService.getKweets(name).pipe(
+      tap(_ => this.log(`fetched kweets for user named ${name}`)),
+      catchError(this.handleError<HttpResponse<Kweet[]>>(`getHero name=${name}`))
+    ).subscribe(kweets => this.OnReceiveUserKweets(kweets));
+  }
+
+  OnReceiveUser(response: HttpResponse<User>) {
     if (response) {
       this.user = response.body;
       console.log('received user');
     } else {
       this.router.navigateByUrl('/');
       console.log('user tried to visit non existing user');
+    }
+  }
+
+  OnReceiveUserKweets(response: HttpResponse<Kweet[]>) {
+    if (response) {
+      this.kweets = response.body;
+      console.log('received kweet list');
     }
   }
 
