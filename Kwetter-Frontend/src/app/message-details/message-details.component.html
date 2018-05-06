@@ -8,5 +8,14 @@
     </div>
     <p>{{kweet.date}}</p>
     <p>Kweet type {{kweet.discriminator | kweetType}}</p>
+
+    <div class="options">
+      <li>
+        <ul *ngIf="equalsModeratorAdminOrUser()">
+          <button (click)="Delete()">remove</button>
+        </ul>
+      </li>
+    </div>
+
   </div>
 </div>

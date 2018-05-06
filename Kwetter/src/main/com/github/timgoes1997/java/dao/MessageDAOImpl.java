@@ -111,14 +111,14 @@ public class MessageDAOImpl implements MessageDAO {
     public Message find(String username, long id) {
         TypedQuery<Message> query =
                 em.createNamedQuery(Message.FIND_USER_ID, Message.class);
-        return query.setParameter("id", id).setParameter("name", username ).getSingleResult();
+        return query.setParameter("id", id).setParameter("name", username).getSingleResult();
     }
 
     @Override
     public List<Message> findProfileMessages(String username) {
         TypedQuery<Message> query =
                 em.createNamedQuery(Message.FIND_MESSAGES, Message.class);
-        return query.setParameter("name" , username ).getResultList();
+        return query.setParameter("name", username).getResultList();
     }
 
     @Override
@@ -247,13 +247,10 @@ public class MessageDAOImpl implements MessageDAO {
         Matcher mat = mentionPattern.matcher(text);
         List<User> mentions = new ArrayList<>();
         while (mat.find()) {
-            try {
-                User user = userDAO.findByUsername(mat.group(1).toLowerCase());
+            String username = mat.group(1).toLowerCase();
+            if (userDAO.exists(username)) {
+                User user = userDAO.findByUsername(username);
                 if (!mentions.contains(user)) mentions.add(user);
-            } catch (NoResultException exception) {
-                 /*Add something to notify user and don't throw a exception which causes the tweet not to be posted
-                   Because on twitter you also can use the @ without a valid user. Someone might want to send a ssh link and it would be retarded to make it crash.
-                  */
             }
         }
         return mentions;

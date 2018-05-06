@@ -14,6 +14,8 @@ export class KweetMessagePipe implements PipeTransform {
     // TODO: Remove other html tags before generating mentions and hashtags.
     if (message.indexOf('<i>') !== -1) {
       return message.replace('<i>', '').replace('<\/i>', '');
+    } else {
+      return message;
     }
   }
 

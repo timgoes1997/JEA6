@@ -72,13 +72,17 @@ export class AuthService {
   }
 
   retreiveAuthenticatedUser() {
-    const authValue = this.cookieService.get(authHeaderKey);
+    const authValue = this.getAuthToken(authHeaderKey);
     if (authValue) {
       this.getAuthenticatedUser(authHeaderKey, authValue).subscribe(
         (res: HttpResponse<any>) => {
           this.authenticatedUserReceive(res);
         });
     }
+  }
+
+  getAuthToken(authKey: string): string {
+    return this.cookieService.get(authKey);
   }
 
   getAuthenticatedUser(authKey: string, authValue: string): Observable<any> {

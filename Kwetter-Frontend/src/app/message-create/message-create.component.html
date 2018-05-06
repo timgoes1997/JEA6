@@ -1,7 +1,13 @@
 <div class="container">
   <div class="kweet">
-    <form>
-      <button type="submit" class="btn btn-success">Register</button>
+    <form [formGroup]="kweetForm" (ngSubmit)="OnKweet()">
+
+      <div class="form-group">
+        <label for="text">Post your kweet</label>
+        <textarea class="form-control" id="text" formControlName="text" rows="3" minlength="1" maxlength="240"></textarea>
+      </div>
+
+      <button type="submit" class="btn btn-success">Kweet</button>
     </form>
   </div>
 </div>

@@ -35,6 +35,9 @@ export class UserComponent implements OnInit {
     this.authService.loggedInUser.subscribe(value => {
       this.currentLoggedInUser = value;
     });
+    this.kweetService.userCreateKweet.subscribe(value => {
+      this.onReceiveUserCreatedKweet(value);
+    });
   }
 
   ngOnInit() {
@@ -63,6 +66,12 @@ export class UserComponent implements OnInit {
       tap(_ => this.log(`fetched kweets for user named ${name}`)),
       catchError(this.handleError<HttpResponse<Kweet[]>>(`getHero name=${name}`))
     ).subscribe(kweets => this.OnReceiveUserKweets(kweets));
+  }
+
+  onReceiveUserCreatedKweet(kweet: Kweet) {
+    if (kweet && this.kweets) {
+      this.kweets.unshift(kweet);
+    }
   }
 
   OnReceiveUser(response: HttpResponse<User>) {

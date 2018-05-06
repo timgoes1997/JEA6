@@ -115,6 +115,9 @@ public class MessageBean {
     @Path("create")
     public Response createMessage(@Context ContainerRequestContext request, @FormParam("message") String message, @FormParam("messageType")MessageType messageType) {
         try {
+            if(message.length() < 1 || message.length() > 240)
+                return Response.status(Response.Status.NOT_ACCEPTABLE).build();
+
             User currentUser = (User)request.getProperty(Constants.USER_REQUEST_STRING);
             List<Tag> tags = messageDAO.generateTags(message);
             List<User> mentions = messageDAO.generateMentions(message);
@@ -134,7 +137,7 @@ public class MessageBean {
     @Produces(MediaType.APPLICATION_JSON)
     @UserAuthorization({UserRole.User})
     @Path("{id}/reply")
-    public Response createReply(@Context ContainerRequestContext request, @PathParam("id") long messageID, @FormParam("text") String text, @FormParam("messageType")MessageType messageType) {
+    public Response createReply(@Context ContainerRequestContext request, @PathParam("id") long messageID, @FormParam("text") String text) {
         try {
             if(!messageDAO.exists(messageID)){
                 return Response.status(Response.Status.NOT_FOUND).build();
@@ -144,7 +147,7 @@ public class MessageBean {
             User currentUser = (User)request.getProperty(Constants.USER_REQUEST_STRING);
             List<Tag> tags = messageDAO.generateTags(text);
             List<User> mentions = messageDAO.generateMentions(text);
-            ReplyMessage reply = new ReplyMessage(text, messageType, currentUser, new Date(), tags, mentions, message);
+            ReplyMessage reply = new ReplyMessage(text, message.getType(), currentUser, new Date(), tags, mentions, message);
             messageDAO.create(reply);
 
             return Response.ok().entity(reply).build();
@@ -174,7 +177,7 @@ public class MessageBean {
 
             messageDAO.remove(message);
 
-            return Response.ok().build();
+            return Response.ok(message).build();
         } catch (Exception e) {
             logger.severe(e.getMessage());
             return Response.status(Response.Status.NOT_FOUND).entity(e).build();

@@ -10,6 +10,7 @@ import {HttpResponse} from '@angular/common/http';
 import {Kweet} from '../entities/Kweet';
 import {KweetService} from '../services/kweet.service';
 import {catchError, tap} from 'rxjs/operators';
+import {AuthService} from '../services/auth.service';
 
 @Component({
   selector: 'app-message-details',
@@ -20,11 +21,20 @@ export class MessageDetailsComponent implements OnInit {
 
   kweet: Kweet;
 
+  currentUser: User;
+
   constructor(private kweetService: KweetService,
               private cookieService: CookieService,
               private messageService: MessageService,
+              private authService: AuthService,
               private route: ActivatedRoute,
               private router: Router) {
+    this.kweetService.userDeletedKweet.subscribe(value => {
+      this.onReceiveDeleteKweet(value);
+    });
+    this.authService.loggedInUser.subscribe(value => {
+      this.onReceiveUser(value);
+    });
   }
 
   ngOnInit() {
@@ -45,6 +55,34 @@ export class MessageDetailsComponent implements OnInit {
       const name = this.route.snapshot.paramMap.get('name');
       this.router.navigateByUrl(`user/${name}`);
       console.log('user tried to visit non existing user');
+    }
+  }
+
+  onReceiveUser(user: User) {
+    this.currentUser = user;
+  }
+
+  onReceiveDeleteKweet(kweet: Kweet) {
+    if (kweet && this.kweet && this.kweet.id === kweet.id) {
+      const name = this.route.snapshot.paramMap.get('name');
+      this.router.navigateByUrl(`user/${name}`);
+    }
+  }
+
+  Delete() {
+    console.log('test');
+    this.kweetService.deleteKweet(this.kweet);
+  }
+
+  equalsAdminOrUser(): boolean {
+    if (this.kweet && this.currentUser && this.kweet.messager) {
+      return this.currentUser.role === 'admin' || this.currentUser.id === this.kweet.messager.id;
+    }
+  }
+
+  equalsModeratorAdminOrUser(): boolean {
+    if (this.kweet && this.currentUser && this.kweet.messager) {
+      return this.currentUser.role === 'admin' || this.currentUser.role === 'moderator' ||this.currentUser.id === this.kweet.messager.id;
     }
   }
 
