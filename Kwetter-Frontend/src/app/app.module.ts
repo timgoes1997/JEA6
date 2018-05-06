@@ -19,6 +19,7 @@ import {KweetTypePipe} from './pipes/kweet-type.pipe';
 import {KweetMessagePipe} from './pipes/kweet-message.pipe';
 import { NavBarComponent } from './nav-bar/nav-bar.component';
 import { LogoutComponent } from './logout/logout.component';
+import { MessageCreateComponent } from './message-create/message-create.component';
 
 
 @NgModule({
@@ -32,7 +33,8 @@ import { LogoutComponent } from './logout/logout.component';
     KweetTypePipe,
     KweetMessagePipe,
     NavBarComponent,
-    LogoutComponent
+    LogoutComponent,
+    MessageCreateComponent
   ],
   imports: [
     BrowserModule,

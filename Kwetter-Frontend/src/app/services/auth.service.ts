@@ -28,7 +28,7 @@ export class AuthService {
               private router: Router) {
   }
 
-  register(registrationObject: AuthRegistrationObject): Observable<HttpResponse<any>> {
+  register(registrationObject: AuthRegistrationObject) {
     const registrationURL = `${this.authURL}/register`;
     const body = new HttpParams()
       .set('username', registrationObject.username)
@@ -38,9 +38,13 @@ export class AuthService {
       .set('middleName', registrationObject.middleName)
       .set('lastName', registrationObject.lastName)
       .set('telephone', registrationObject.telephone);
-    return this.http.post(
+    this.http.post(
       registrationURL,
-      body, {observe: 'response', headers: headers});
+      body, {observe: 'response', headers: headers}).subscribe(
+      resp => {
+        this.registerReceive(resp);
+      }
+    );
     /**.pipe(
      tap(_ => this.log(_.toString())),
      catchError(this.handleError<any>('register'))
@@ -80,6 +84,11 @@ export class AuthService {
       observe: 'response',
       headers: testHeaders
     });
+  }
+
+  private registerReceive(http: HttpResponse<any>) {
+    console.log('received register response');
+    this.loginReceive(http);
   }
 
   private loginReceive(http: HttpResponse<any>) {

@@ -51,11 +51,7 @@ export class RegistrationComponent implements OnInit {
       formModel.controls.lastName.value,
       formModel.controls.telephone.value,
     );
-    this.authService.register(registrationObject).subscribe(
-      resp => {
-        this.OnReceive(resp);
-      }
-    );
+    this.authService.register(registrationObject);
     this.submitted = true;
     this.router.navigateByUrl('/');
   }
