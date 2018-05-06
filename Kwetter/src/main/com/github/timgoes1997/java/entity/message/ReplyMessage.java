@@ -45,7 +45,7 @@ public class ReplyMessage extends Message implements Serializable {
 
     public ReplyMessage(){
         super();
-        this.discriminator = 3;
+        this.discriminator = 2;
     }
 
 //    @Override
@@ -56,7 +56,7 @@ public class ReplyMessage extends Message implements Serializable {
     public ReplyMessage(String text, MessageType type, User messager, Date date, List<Tag> tags, List<User> mentions, Message message){
         super(text, type, messager, date, tags, mentions);
         this.message = message;
-        this.discriminator = 3;
+        this.discriminator = 2;
     }
 
     public Message getMessage() {

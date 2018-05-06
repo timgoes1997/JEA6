@@ -12,7 +12,7 @@
   <div class="messagelist">
     <li *ngFor="let kweet of kweets">
       <div class="message">
-        <p>Kweet type {{kweet.discriminator}}</p>
+        <p>Kweet type {{kweet.discriminator | kweetType}} </p>
 
         <a routerLink="/user/{{kweet.messager.username}}">
           <h4>{{kweet.messager.username}} </h4>

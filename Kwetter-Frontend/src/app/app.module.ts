@@ -5,16 +5,18 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {AppComponent} from './app.component';
 import {AppRoutingModule} from './app-routing/app-routing.module';
 import {RegistrationComponent} from './registration/registration.component';
-import {AuthService} from './auth.service';
-import {MessageService} from './message.service';
+import {AuthService} from './services/auth.service';
+import {MessageService} from './services/message.service';
 import {HttpClientModule} from '@angular/common/http';
 import {LoginComponent} from './login/login.component';
 import {CookieService} from 'ng2-cookies';
 import {UserComponent} from './user/user.component';
-import {UserService} from './user.service';
+import {UserService} from './services/user.service';
 import { MessageDetailsComponent } from './message-details/message-details.component';
-import {KweetService} from './kweet.service';
+import {KweetService} from './services/kweet.service';
 import { TagDetailsComponent } from './tag-details/tag-details.component';
+import { KweetTypePipe } from './pipes/kweet-type.pipe';
+import { KweetMessagePipe } from './pipes/kweet-message.pipe';
 
 
 @NgModule({
@@ -24,7 +26,9 @@ import { TagDetailsComponent } from './tag-details/tag-details.component';
     LoginComponent,
     UserComponent,
     MessageDetailsComponent,
-    TagDetailsComponent
+    TagDetailsComponent,
+    KweetTypePipe,
+    KweetMessagePipe
   ],
   imports: [
     BrowserModule,

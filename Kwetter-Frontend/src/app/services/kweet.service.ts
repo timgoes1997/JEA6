@@ -1,8 +1,8 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs/Observable';
 import {AuthService} from './auth.service';
-import {Kweet} from './entities/Kweet';
+import {Kweet} from '../entities/Kweet';
 
 @Injectable()
 export class KweetService {
@@ -27,4 +27,19 @@ export class KweetService {
     const requestURL = `${this.tagURL}/${tagName}`;
     return this.http.get<Kweet[]>(requestURL, {observe: 'response'});
   }
+
+  getKweetType(kweet: Kweet): string {
+    switch (kweet.discriminator) {
+      case 1:
+        return 'Message';
+      case 2:
+        return 'Reply';
+      case 3:
+        return 'Remessage';
+      default:
+        return 'Unknown';
+    }
+  }
+
+  // createKweetHTML
 }

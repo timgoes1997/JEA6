@@ -1,9 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {Kweet} from '../entities/Kweet';
-import {KweetService} from '../kweet.service';
+import {KweetService} from '../services/kweet.service';
 import {Observable} from 'rxjs/Observable';
 import {of} from 'rxjs/observable/of';
-import {MessageService} from '../message.service';
+import {MessageService} from '../services/message.service';
 import {ActivatedRoute} from '@angular/router';
 import {catchError, tap} from 'rxjs/operators';
 import {HttpResponse} from '@angular/common/http';
@@ -17,7 +17,7 @@ export class TagDetailsComponent implements OnInit {
 
   kweets: Kweet[];
 
-  constructor(private kweetService: KweetService,
+  constructor(public kweetService: KweetService,
               private messageService: MessageService,
               private route: ActivatedRoute) {
   }

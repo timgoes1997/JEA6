@@ -40,7 +40,7 @@ public class MockDBBean {
         User user5 = userDAO.findByUsername("user5");
         User user6 = userDAO.findByUsername("user6");
 
-        String testBericht = "<h1>Dit is een test bericht <h1> <p> test </p>";
+        String testBericht = "<b>Dit is een test bericht </b> <i> test </i>";
 
         String generated = generateTags(generateMentions(testBericht, new String[]{
                 "user1",

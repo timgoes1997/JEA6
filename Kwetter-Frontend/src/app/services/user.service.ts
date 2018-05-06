@@ -3,7 +3,7 @@ import {HttpClient, HttpHeaders, HttpParams, HttpResponse} from '@angular/common
 import {MessageService} from './message.service';
 import {AuthService} from './auth.service';
 import {Observable} from 'rxjs/Observable';
-import {User} from './entities/User';
+import {User} from '../entities/User';
 import {of} from 'rxjs/observable/of';
 import {catchError, tap} from 'rxjs/operators';
 

@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {UserService} from '../user.service';
+import {UserService} from '../services/user.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {CookieService} from 'ng2-cookies';
 import {User} from '../entities/User';
@@ -7,9 +7,9 @@ import {HttpResponse} from '@angular/common/http';
 import {catchError, tap} from 'rxjs/operators';
 import {Observable} from 'rxjs/Observable';
 import {of} from 'rxjs/observable/of';
-import {MessageService} from '../message.service';
+import {MessageService} from '../services/message.service';
 import {Kweet} from '../entities/Kweet';
-import {KweetService} from '../kweet.service';
+import {KweetService} from '../services/kweet.service';
 
 @Component({
   selector: 'app-user',

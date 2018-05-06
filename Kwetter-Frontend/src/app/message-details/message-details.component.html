@@ -5,7 +5,6 @@
     </a>
     <p>{{kweet.text}}</p>
     <p>{{kweet.date}}</p>
-    <p>Kweet type {{kweet.discriminator}}</p>
-    {{kweet.getKweetHTML()}}
+    <p>Kweet type {{kweet.discriminator | kweetType}}</p>
   </div>
 </div>

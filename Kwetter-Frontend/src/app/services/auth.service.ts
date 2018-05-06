@@ -4,7 +4,7 @@ import {Observable} from 'rxjs/Observable';
 import {of} from 'rxjs/observable/of';
 import {HttpClient, HttpHeaders, HttpParams, HttpResponse} from '@angular/common/http';
 import {MessageService} from './message.service';
-import {AuthRegistrationObject} from './entities/AuthRegistrationObject';
+import {AuthRegistrationObject} from '../entities/AuthRegistrationObject';
 import {catchError, map, tap} from 'rxjs/operators';
 
 const headers = new HttpHeaders({
