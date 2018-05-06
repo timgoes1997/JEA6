@@ -3,7 +3,9 @@
     <a routerLink="/user/{{kweet.messager.username}}">
     <h4>{{kweet.messager.username}} </h4>
     </a>
-    <p>{{kweet.text}}</p>
+    <div [innerHTML]="kweet | kweetMessage">
+
+    </div>
     <p>{{kweet.date}}</p>
     <p>Kweet type {{kweet.discriminator | kweetType}}</p>
   </div>
