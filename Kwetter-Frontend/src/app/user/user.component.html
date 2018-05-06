@@ -26,6 +26,13 @@
         <a routerLink="/user/{{kweet.messager.username}}/{{kweet.id}}">
           <p>{{kweet.date}}</p>
         </a>
+
+        <div class="options">
+          <div class="delete" *ngIf="equalsModeratorAdminOrUser(kweet)">
+            <button (click)="Delete(kweet)">remove</button>
+          </div>
+        </div>
+
       </div>
     </li>
   </div>

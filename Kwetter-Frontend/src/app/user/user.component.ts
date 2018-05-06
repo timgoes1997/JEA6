@@ -38,6 +38,9 @@ export class UserComponent implements OnInit {
     this.kweetService.userCreateKweet.subscribe(value => {
       this.onReceiveUserCreatedKweet(value);
     });
+    this.kweetService.userDeletedKweet.subscribe(value => {
+      this.onReceiveUserKweetDelete(value);
+    });
   }
 
   ngOnInit() {
@@ -88,6 +91,28 @@ export class UserComponent implements OnInit {
     if (response) {
       this.kweets = response.body;
       console.log('received kweet list');
+    }
+  }
+
+  Delete(kweet: Kweet) {
+    console.log('test');
+    this.kweetService.deleteKweet(kweet);
+  }
+
+  private onReceiveUserKweetDelete(kweet: Kweet) {
+    if (kweet && this.kweets) {
+      for (const i in this.kweets) {
+        if (this.kweets[i].id === kweet.id) {
+          this.kweets.splice(+i, 1);
+        }
+      }
+    }
+  }
+
+  equalsModeratorAdminOrUser(kweet: Kweet): boolean {
+    if (kweet && this.currentLoggedInUser && kweet.messager) {
+      return this.currentLoggedInUser.role === 'Admin' || this.currentLoggedInUser.role === 'Moderator'
+        || this.currentLoggedInUser.id === kweet.messager.id;
     }
   }
 

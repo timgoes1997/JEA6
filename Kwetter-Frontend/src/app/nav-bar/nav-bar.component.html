@@ -1,7 +1,7 @@
 <div class="topnav">
   <a class="active" routerLink="/">Kwetter</a>
   <div *ngIf="loggedIn">
-    <a routerLink="/user/{{loggedIn.username}}">User</a>
+    <a routerLink="/user/{{loggedIn.username}}">{{loggedIn.username}}</a>
     <a href="#contact">Profile</a>
     <a routerLink="/logout">Logout</a>
   </div>

@@ -21,7 +21,7 @@ export class MessageDetailsComponent implements OnInit {
 
   kweet: Kweet;
 
-  currentUser: User;
+  currentLoggedInUser: User;
 
   constructor(private kweetService: KweetService,
               private cookieService: CookieService,
@@ -59,7 +59,7 @@ export class MessageDetailsComponent implements OnInit {
   }
 
   onReceiveUser(user: User) {
-    this.currentUser = user;
+    this.currentLoggedInUser = user;
   }
 
   onReceiveDeleteKweet(kweet: Kweet) {
@@ -74,15 +74,10 @@ export class MessageDetailsComponent implements OnInit {
     this.kweetService.deleteKweet(this.kweet);
   }
 
-  equalsAdminOrUser(): boolean {
-    if (this.kweet && this.currentUser && this.kweet.messager) {
-      return this.currentUser.role === 'admin' || this.currentUser.id === this.kweet.messager.id;
-    }
-  }
-
   equalsModeratorAdminOrUser(): boolean {
-    if (this.kweet && this.currentUser && this.kweet.messager) {
-      return this.currentUser.role === 'admin' || this.currentUser.role === 'moderator' ||this.currentUser.id === this.kweet.messager.id;
+    if (this.kweet && this.currentLoggedInUser && this.kweet.messager) {
+      return this.currentLoggedInUser.role === 'Admin' || this.currentLoggedInUser.role === 'Moderator'
+        || this.currentLoggedInUser.id === this.kweet.messager.id;
     }
   }
 
