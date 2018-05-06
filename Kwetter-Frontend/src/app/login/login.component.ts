@@ -38,18 +38,7 @@ export class LoginComponent implements OnInit {
     const formModel = this.loginForm;
     const username = formModel.controls.userName.value;
     const password = formModel.controls.password.value;
-    this.authService.login(username, password).subscribe(
-      (res: HttpResponse<any>) => {
-        this.OnReceive(res);
-      });
-  }
-
-  private OnReceive(http: HttpResponse<any>) {
-    const authKey = 'Authorization';
-    const authValue = http.headers.get(authKey);
-    this.cookieService.set(authKey, authValue);
-    console.log(authValue);
-    this.router.navigateByUrl('/');
+    this.authService.login(username, password);
   }
 
   btnRegisterClick() {

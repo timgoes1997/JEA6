@@ -8,17 +8,24 @@ import {AuthRegistrationObject} from '../entities/AuthRegistrationObject';
 import {catchError, map, tap} from 'rxjs/operators';
 import {User} from '../entities/User';
 import {CookieService} from 'ng2-cookies';
+import {BehaviorSubject} from 'rxjs/BehaviorSubject';
+import {Router} from '@angular/router';
 
 const headers = new HttpHeaders({
   'Content-Type': 'application/x-www-form-urlencoded'
 });
+const authHeaderKey = 'Authorization';
 
 @Injectable()
 export class AuthService {
   private authURL = 'http://localhost:8080/Kwetter/api/user';
 
+  public loggedInUser: BehaviorSubject<User> = new BehaviorSubject<User>(null);
+
   constructor(private http: HttpClient,
-              private messageService: MessageService) {
+              private messageService: MessageService,
+              private cookieService: CookieService,
+              private router: Router) {
   }
 
   register(registrationObject: AuthRegistrationObject): Observable<HttpResponse<any>> {
@@ -41,21 +48,58 @@ export class AuthService {
   }
 
   login(username: string,
-        password: string): Observable<HttpResponse<any>> {
+        password: string) {
     const loginURL = `${this.authURL}/login`;
     const body = new HttpParams()
       .set('username', username)
       .set('password', password);
-    return this.http.post(loginURL, body, {observe: 'response', headers: headers, withCredentials: true});
+    this.http.post(loginURL, body, {observe: 'response', headers: headers, withCredentials: true}).subscribe(
+      (res: HttpResponse<any>) => {
+        this.loginReceive(res);
+      });
   }
 
-  isUserAuthenticated(authKey: string, authValue: string): Observable<any> {
+  logout() {
+    this.loggedInUser.next(null);
+  }
+
+  isUserAuthenticated() {
+    const authValue = this.cookieService.get(authHeaderKey);
+    if (authValue) {
+      this.getAuthenticatedUser(authHeaderKey, authValue).subscribe(
+        (res: HttpResponse<any>) => {
+          this.logoutReceive(res);
+        });
+    }
+  }
+
+  getAuthenticatedUser(authKey: string, authValue: string): Observable<any> {
     const requestURL = `${this.authURL}/authenticated`;
     const testHeaders = new HttpHeaders().append(authKey, authValue);
     return this.http.get<User>(requestURL, {
       observe: 'response',
       headers: testHeaders
     });
+  }
+
+  private loginReceive(http: HttpResponse<any>) {
+    if (http.status === 200) {
+      const authKey = 'Authorization';
+      const authValue = http.headers.get(authKey);
+      this.cookieService.set(authKey, authValue);
+      this.loggedInUser.next(http.body);
+      console.log(authValue);
+      this.router.navigateByUrl('/');
+    }
+  }
+
+  private logoutReceive(http: HttpResponse<any>) {
+    if (http.status === 200) {
+      this.loggedInUser.next(http.body);
+      this.router.navigateByUrl('/');
+    } else {
+      console.log('login failed');
+    }
   }
 
   /**

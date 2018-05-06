@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {CookieService} from 'ng2-cookies';
 import {Router} from '@angular/router';
+import {AuthService} from '../services/auth.service';
 
 const authKey = 'Authorization';
 
@@ -12,7 +13,7 @@ const authKey = 'Authorization';
 export class LogoutComponent implements OnInit {
 
   constructor(private cookieService: CookieService,
-              private router: Router) {
+              private authService: AuthService) {
   }
 
   ngOnInit() {
@@ -21,6 +22,6 @@ export class LogoutComponent implements OnInit {
 
   OnLogOut() {
     this.cookieService.delete(authKey);
-    this.router.navigateByUrl('/');
+    this.authService.logout();
   }
 }
