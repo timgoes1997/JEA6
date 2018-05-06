@@ -67,12 +67,16 @@ export class AuthService {
     this.loggedInUser.next(null);
   }
 
-  isUserAuthenticated() {
+  isLoggedInUser(user: User): boolean {
+    return user.id === this.loggedInUser.getValue().id;
+  }
+
+  retreiveAuthenticatedUser() {
     const authValue = this.cookieService.get(authHeaderKey);
     if (authValue) {
       this.getAuthenticatedUser(authHeaderKey, authValue).subscribe(
         (res: HttpResponse<any>) => {
-          this.logoutReceive(res);
+          this.authenticatedUserReceive(res);
         });
     }
   }
@@ -102,10 +106,9 @@ export class AuthService {
     }
   }
 
-  private logoutReceive(http: HttpResponse<any>) {
+  private authenticatedUserReceive(http: HttpResponse<any>) {
     if (http.status === 200) {
       this.loggedInUser.next(http.body);
-      this.router.navigateByUrl('/');
     } else {
       console.log('login failed');
     }

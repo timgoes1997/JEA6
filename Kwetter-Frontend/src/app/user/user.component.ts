@@ -10,6 +10,7 @@ import {of} from 'rxjs/observable/of';
 import {MessageService} from '../services/message.service';
 import {Kweet} from '../entities/Kweet';
 import {KweetService} from '../services/kweet.service';
+import {AuthService} from '../services/auth.service';
 
 @Component({
   selector: 'app-user',
@@ -20,20 +21,34 @@ export class UserComponent implements OnInit {
 
   user: User;
 
+  currentLoggedInUser: User;
+
   kweets: Kweet[];
 
   constructor(private userService: UserService,
+              private authService: AuthService,
               private cookieService: CookieService,
               private messageService: MessageService,
               private kweetService: KweetService,
               private route: ActivatedRoute,
               private router: Router) {
+    this.authService.loggedInUser.subscribe(value => {
+      this.currentLoggedInUser = value;
+    });
   }
 
   ngOnInit() {
     const name = this.route.snapshot.paramMap.get('name');
     this.getUser(name);
     this.getUserKweets(name);
+  }
+
+  isUserLoggedInUser(): boolean {
+    if (this.user && this.currentLoggedInUser) {
+      return this.user.id === this.currentLoggedInUser.id;
+    } else {
+      return false;
+    }
   }
 
   getUser(name: string) {

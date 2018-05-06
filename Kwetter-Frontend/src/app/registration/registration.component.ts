@@ -55,14 +55,4 @@ export class RegistrationComponent implements OnInit {
     this.submitted = true;
     this.router.navigateByUrl('/');
   }
-
-  private OnReceive(http: HttpResponse<any>) {
-    const authKey = 'Authorization';
-    const authValue = http.headers.get(authKey);
-    this.cookieService.set(authKey, authValue);
-
-    console.log(authKey);
-    // cookies.put(authKey);
-  }
-
 }

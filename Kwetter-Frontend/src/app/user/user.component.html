@@ -9,6 +9,7 @@
     <p>{{user.registrationDate}}</p>
     <p>{{user.role}}</p>
   </div>
+  <app-message-create *ngIf="isUserLoggedInUser()"></app-message-create>
   <div class="messagelist">
     <li *ngFor="let kweet of kweets">
       <div class="message">

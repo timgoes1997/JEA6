@@ -23,7 +23,7 @@ export class NavBarComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.authService.isUserAuthenticated();
+    this.authService.retreiveAuthenticatedUser();
   }
 
   loginNavBar(user: User) {
