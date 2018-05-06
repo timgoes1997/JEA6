@@ -23,5 +23,4 @@ export class UserService {
     const requestURL = `${this.userURL}/${name}`;
     return this.http.get<User>(requestURL, {observe: 'response'});
   }
-
 }

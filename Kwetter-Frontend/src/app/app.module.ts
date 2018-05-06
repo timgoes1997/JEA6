@@ -12,11 +12,13 @@ import {LoginComponent} from './login/login.component';
 import {CookieService} from 'ng2-cookies';
 import {UserComponent} from './user/user.component';
 import {UserService} from './services/user.service';
-import { MessageDetailsComponent } from './message-details/message-details.component';
+import {MessageDetailsComponent} from './message-details/message-details.component';
 import {KweetService} from './services/kweet.service';
-import { TagDetailsComponent } from './tag-details/tag-details.component';
-import { KweetTypePipe } from './pipes/kweet-type.pipe';
-import { KweetMessagePipe } from './pipes/kweet-message.pipe';
+import {TagDetailsComponent} from './tag-details/tag-details.component';
+import {KweetTypePipe} from './pipes/kweet-type.pipe';
+import {KweetMessagePipe} from './pipes/kweet-message.pipe';
+import { NavBarComponent } from './nav-bar/nav-bar.component';
+import { LogoutComponent } from './logout/logout.component';
 
 
 @NgModule({
@@ -28,7 +30,9 @@ import { KweetMessagePipe } from './pipes/kweet-message.pipe';
     MessageDetailsComponent,
     TagDetailsComponent,
     KweetTypePipe,
-    KweetMessagePipe
+    KweetMessagePipe,
+    NavBarComponent,
+    LogoutComponent
   ],
   imports: [
     BrowserModule,
@@ -47,4 +51,5 @@ import { KweetMessagePipe } from './pipes/kweet-message.pipe';
   bootstrap: [AppComponent]
 })
 export class AppModule {
+
 }

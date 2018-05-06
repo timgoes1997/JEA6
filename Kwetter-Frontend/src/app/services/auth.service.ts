@@ -6,6 +6,8 @@ import {HttpClient, HttpHeaders, HttpParams, HttpResponse} from '@angular/common
 import {MessageService} from './message.service';
 import {AuthRegistrationObject} from '../entities/AuthRegistrationObject';
 import {catchError, map, tap} from 'rxjs/operators';
+import {User} from '../entities/User';
+import {CookieService} from 'ng2-cookies';
 
 const headers = new HttpHeaders({
   'Content-Type': 'application/x-www-form-urlencoded'
@@ -45,6 +47,15 @@ export class AuthService {
       .set('username', username)
       .set('password', password);
     return this.http.post(loginURL, body, {observe: 'response', headers: headers, withCredentials: true});
+  }
+
+  isUserAuthenticated(authKey: string, authValue: string): Observable<any> {
+    const requestURL = `${this.authURL}/authenticated`;
+    const testHeaders = new HttpHeaders().append(authKey, authValue);
+    return this.http.get<User>(requestURL, {
+      observe: 'response',
+      headers: testHeaders
+    });
   }
 
   /**

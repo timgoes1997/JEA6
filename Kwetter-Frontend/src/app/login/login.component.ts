@@ -49,5 +49,10 @@ export class LoginComponent implements OnInit {
     const authValue = http.headers.get(authKey);
     this.cookieService.set(authKey, authValue);
     console.log(authValue);
+    this.router.navigateByUrl('/');
+  }
+
+  btnRegisterClick() {
+    this.router.navigateByUrl('/registration');
   }
 }
