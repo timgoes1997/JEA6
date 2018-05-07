@@ -58,6 +58,9 @@ public class UserDAOImpl implements UserDAO {
             messageDAO.remove(iterator.next());
         }
 
+        removeUserFollowers(user);
+        removeUserFollowing(user);
+
         User toRemove = find(user.getId());
         em.remove(toRemove);
     }
@@ -127,6 +130,18 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
+    public long getAmountOfFollowers(User user) {
+        return ((Number)em.createNativeQuery("SELECT  COUNT(*) FROM USER_FOLLOWERS WHERE USER_ID = ?1")
+                .setParameter(1, user.getId()).getSingleResult()).longValue();
+    }
+
+    @Override
+    public long getAmountOfFollowings(User user) {
+        return ((Number)em.createNativeQuery("SELECT  COUNT(*) FROM USER_FOLLOWING WHERE USER_ID = ?1")
+                .setParameter(1, user.getId()).getSingleResult()).longValue();
+    }
+
+    @Override
     public boolean usernameExists(String username) {
         TypedQuery<User> query = em.createNamedQuery(User.FIND_BY_NAME, User.class);
         return query.setParameter("name", username).getResultList().size() > 0;
@@ -161,8 +176,21 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
+    public boolean isFollowing(User loggedIn, User loggedInFollowing) {
+        return em.createNativeQuery("SELECT * FROM USERDATA WHERE ID " +
+                "IN (SELECT USER_ID FROM USER_FOLLOWING " +
+                "WHERE USER_ID = ?1 AND FOLLOWER_ID = ?2)", User.class)
+                .setParameter(1, loggedInFollowing.getId())
+                .setParameter(2, loggedIn.getId())
+                .getResultList()
+                .size() > 0;
+    }
+
+    @Override
     public void addFollower(User userFollow, User accToFollow) {
         //Question: Do I need to do a database optimized add instead of this (might cause to much memory usage)
+        if(userFollow.getId() == accToFollow.getId()) return;
+
         userFollow.addFollower(accToFollow);
         accToFollow.addFollowing(userFollow);
         edit(userFollow);
@@ -172,10 +200,26 @@ public class UserDAOImpl implements UserDAO {
     @Override
     public void removeFollower(User userFollow, User accToRemoveFollow) {
         //Question: Do I need to do a database optimized remove instead of this (might cause to much memory usage)
+        if(userFollow.getId() == accToRemoveFollow.getId()) return;
+
         userFollow.removeFollower(accToRemoveFollow);
         accToRemoveFollow.removeFollowing(userFollow);
         edit(userFollow);
         edit(accToRemoveFollow);
+    }
+
+    @Override
+    public long removeUserFollowing(User user) {
+        return ((Number)em.createNativeQuery("DELETE FROM USER_FOLLOWING WHERE USER_ID = ?1 OR FOLLOWER_ID = ?2")
+                .setParameter(1, user.getId())
+                .setParameter(2, user.getId()).executeUpdate()).longValue();
+    }
+
+    @Override
+    public long removeUserFollowers(User user) {
+        return ((Number)em.createNativeQuery("DELETE FROM USER_FOLLOWERS WHERE USER_ID = ?1 OR FOLLOWER_ID = ?2")
+                .setParameter(1, user.getId())
+                .setParameter(2, user.getId()).executeUpdate()).longValue();
     }
 
     @Override

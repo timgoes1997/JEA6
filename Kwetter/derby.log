@@ -1,13 +1,13 @@
 ----------------------------------------------------------------
-Fri May 04 17:52:01 CEST 2018:
-Booting Derby version The Apache Software Foundation - Apache Derby - 10.14.1.0 - (1808820): instance a816c00e-0163-2bda-5d19-000006491508 
-on database directory memory:/home/tim/Documents/GitProjects/JEA6/Kwetter/testDB with class loader sun.misc.Launcher$AppClassLoader@18b4aac2 
-Loaded from file:/home/tim/.gradle/caches/modules-2/files-2.1/org.apache.derby/derby/10.14.1.0/3bcd8b1af3f8cd022d54d331e00064776be04f9c/derby-10.14.1.0.jar
+Mon May 07 07:40:43 CEST 2018:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.14.1.0 - (1808820): instance a816c00e-0163-391d-c8c4-00000cc7b660 
+on database directory memory:D:\School\S6\JEA6\Software\JEA6\Kwetter\testDB with class loader sun.misc.Launcher$AppClassLoader@18b4aac2 
+Loaded from file:/C:/Users/tim_g/.gradle/caches/modules-2/files-2.1/org.apache.derby/derby/10.14.1.0/3bcd8b1af3f8cd022d54d331e00064776be04f9c/derby-10.14.1.0.jar
 java.vendor=Oracle Corporation
-java.runtime.version=1.8.0_172-solus-b00
-user.dir=/home/tim/Documents/GitProjects/JEA6/Kwetter
-os.name=Linux
+java.runtime.version=1.8.0_161-b12
+user.dir=D:\School\S6\JEA6\Software\JEA6\Kwetter
+os.name=Windows 10
 os.arch=amd64
-os.version=4.9.88-83.lts
+os.version=10.0
 derby.system.home=null
 Database Class Loader started - derby.database.classpath=''

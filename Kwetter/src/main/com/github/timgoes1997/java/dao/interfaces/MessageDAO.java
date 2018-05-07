@@ -10,12 +10,18 @@ import java.util.Date;
 import java.util.List;
 
 public interface MessageDAO {
+    boolean addLike(Message message, User user);
+    boolean removeLike(Message message, User user);
+    boolean hasLiked(Message message, User user);
+
+
     void clearUserFromLikesAndMentions(User user);
     void create(Message message);
 
     Message find(long id);
     Message find(String username, long id);
     List<Message> findProfileMessages(String username);
+    List<Message> findProfileMessagesWithReplies(String username);
     List<Message> findMessagesByMention(User user);
     List<Message> findMessagesByLikes(User user);
     List<Message> findMessagesByTag(Tag tag);
@@ -27,6 +33,7 @@ public interface MessageDAO {
     List<User> generateMentions(String text);
     List<Tag> generateTags(String text);
     Date getCurrentLocalDateTime();
+    List<Message> getUserTimeLine(User user);
     List<Remessage> getMessageRemessages(Message message);
     List<Remessage> getMessageRemessages(Message message, int firstResult, int maxResults);
     Long getMessageLikes(Message message);
@@ -34,7 +41,6 @@ public interface MessageDAO {
     List<ReplyMessage> getMessageReplies(Message message, int firstResult, int maxResults);
     List<Message> getAllMessages();
 
-    void likeMessage(Message message, User user) throws Exception;
 
     void nullMessageData(Message message);
 

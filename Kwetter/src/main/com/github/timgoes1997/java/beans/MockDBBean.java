@@ -40,6 +40,19 @@ public class MockDBBean {
         User user5 = userDAO.findByUsername("user5");
         User user6 = userDAO.findByUsername("user6");
 
+        userDAO.addFollower(user1, user2);
+        userDAO.addFollower(user1, user5);
+        userDAO.addFollower(user1, user6);
+        userDAO.addFollower(user2, user5);
+        userDAO.addFollower(user2, user6);
+        userDAO.addFollower(user3, user2);
+        userDAO.addFollower(user4, user3);
+        userDAO.addFollower(user4, user5);
+        userDAO.addFollower(user4, user6);
+        userDAO.addFollower(user4, user1);
+        userDAO.addFollower(user5, user1);
+        userDAO.addFollower(user6, user1);
+
         String testBericht = "<b>Dit is een test bericht </b> <i> test </i>";
 
         String generated = generateTags(generateMentions(testBericht, new String[]{

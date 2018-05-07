@@ -21,7 +21,9 @@ import java.util.Objects;
         @NamedQuery(name=Message.FIND_ID,
                 query="SELECT m FROM MESSAGE m WHERE m.id = :id"),
         @NamedQuery(name=Message.FIND_MESSAGES,
-                query="SELECT m FROM MESSAGE m WHERE m.messager.username = :name AND (m.discriminator=1 OR m.discriminator=3)"), // ORDER BY m.date DESC
+                query="SELECT m FROM MESSAGE m WHERE m.messager.username = :name AND (m.discriminator=1 OR m.discriminator=3) ORDER BY m.date DESC"), // ORDER BY m.date DESC
+        @NamedQuery(name=Message.FIND_MESSAGES_REPLIES,
+                query="SELECT m FROM MESSAGE m WHERE m.messager.username = :name ORDER BY m.date DESC"), // ORDER BY m.date DESC
         @NamedQuery(name=Message.FIND_USER,
                 query="SELECT m FROM MESSAGE m WHERE m.messager.id = :id"),
         @NamedQuery(name=Message.FIND_USER_ID,
@@ -38,6 +40,7 @@ public abstract class Message implements Serializable {
     public static final String FIND_ALL = "Message.findAll";
     public static final String FIND_ID = "Message.findByID";
     public static final String FIND_MESSAGES = "Message.findMessages";
+    public static final String FIND_MESSAGES_REPLIES = "Message.findMessagesReplies";
     public static final String FIND_USER = "Message.findByUser";
     public static final String FIND_USER_ID = "Message.findByUserAndID";
     public static final String GET_LIKES_BY_MESSAGE = "Message.getLikesByID";

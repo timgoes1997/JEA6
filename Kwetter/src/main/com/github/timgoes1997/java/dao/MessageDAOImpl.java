@@ -122,6 +122,13 @@ public class MessageDAOImpl implements MessageDAO {
     }
 
     @Override
+    public List<Message> findProfileMessagesWithReplies(String username) {
+        TypedQuery<Message> query =
+                em.createNamedQuery(Message.FIND_MESSAGES_REPLIES, Message.class);
+        return query.setParameter("name", username).getResultList();
+    }
+
+    @Override
     public List<Message> findMessagesByMention(User user) {
         return em.createNativeQuery("SELECT * " +
                 "FROM MESSAGE WHERE ID " +
@@ -175,13 +182,38 @@ public class MessageDAOImpl implements MessageDAO {
     }
 
     @Override
-    public void likeMessage(Message message, User user) throws Exception {
+    public List<Message> getUserTimeLine(User user) {
+        return em.createNativeQuery("SELECT * FROM MESSAGE m " +
+                "WHERE m.MESSAGER_ID IN (SELECT USER_ID FROM USER_FOLLOWING WHERE FOLLOWER_ID = ?1) " +
+                "ORDER BY m.DATE DESC", Message.class)
+                .setParameter(1, user.getId()).getResultList();
+    }
+
+    @Override
+    public boolean addLike(Message message, User user) {
         Message m = message;
         if (m.getLikes().contains(user)) {
-            throw new Exception("This user has already liked this message");
+            return false;
         }
         m.getLikes().add(user);
         em.merge(m);
+        return true;
+    }
+
+    @Override
+    public boolean removeLike(Message message, User user) {
+        Message m = message;
+        if (!m.getLikes().contains(user)) {
+            return false;
+        }
+        m.getLikes().remove(user);
+        em.merge(m);
+        return true;
+    }
+
+    @Override
+    public boolean hasLiked(Message message, User user) {
+        return message.getLikes().contains(user);
     }
 
     @Override

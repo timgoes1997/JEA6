@@ -150,6 +150,22 @@ public class UserBean {
         }
     }
 
+    @GET
+    @Path("{username}/following")
+    @UserAuthorization
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response isFollowingUser(@Context ContainerRequestContext request,@PathParam("username") String username) {
+        try {
+            User user = userDAO.findByUsername(username.toLowerCase());
+            User currentUser = (User)request.getProperty(Constants.USER_REQUEST_STRING);
+
+            return Response.ok().entity(userDAO.isFollowing(currentUser, user)).build();
+        } catch (Exception e) {
+            //logger.severe(e.getMessage());
+            return Response.status(Response.Status.NOT_FOUND).entity(e).build();
+        }
+    }
+
     @POST
     @Path("/{username}/follow")
     @Produces(MediaType.APPLICATION_JSON)
@@ -160,8 +176,8 @@ public class UserBean {
             }
 
             User currentUser = (User)request.getProperty(Constants.USER_REQUEST_STRING);
-
             User userToFollow = userDAO.findByUsername(username);
+            userDAO.addFollower(userToFollow, currentUser);
 
             return  Response.ok().build();
         }catch (Exception e){

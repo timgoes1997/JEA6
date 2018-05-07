@@ -75,6 +75,35 @@ public class MessageDAOImplTest {
         User user5 = userDAO.findByUsername("User5");
         User user6 = userDAO.findByUsername("User6");
 
+        em.getTransaction().begin();
+        userDAO.addFollower(user1, user2);
+        userDAO.addFollower(user1, user5);
+        userDAO.addFollower(user1, user6);
+        userDAO.addFollower(user2, user5);
+        userDAO.addFollower(user2, user6);
+        userDAO.addFollower(user3, user2);
+        userDAO.addFollower(user4, user3);
+        userDAO.addFollower(user4, user5);
+        userDAO.addFollower(user4, user6);
+        userDAO.addFollower(user4, user1);
+        userDAO.addFollower(user5, user1);
+        userDAO.addFollower(user6, user1);
+        em.getTransaction().commit();
+
+        assertEquals(true, userDAO.isFollowing(user1, user5));
+        assertEquals(false, userDAO.isFollowing(user1, user4));
+        assertEquals(false, userDAO.isFollowing(user2, user1));
+        assertEquals(false, userDAO.isFollowing(user2, user2));
+        assertEquals(true, userDAO.isFollowing(user4, user3));
+        assertEquals(3, userDAO.getAmountOfFollowers(user1));
+        assertEquals(2, userDAO.getAmountOfFollowers(user2));
+        assertEquals(1, userDAO.getAmountOfFollowers(user3));
+        assertEquals(4, userDAO.getAmountOfFollowers(user4));
+        assertEquals(1, userDAO.getAmountOfFollowers(user5));
+        assertEquals(1, userDAO.getAmountOfFollowers(user6));
+        assertEquals(3, userDAO.getAmountOfFollowings(user1));
+        assertEquals(2, userDAO.getAmountOfFollowings(user2));
+
         String testBericht = "Dit is een test bericht ";
 
         String generated = generateTags(generateMentions(testBericht, new String[]{
@@ -106,6 +135,12 @@ public class MessageDAOImplTest {
         Message messageUser5 = mDao.find(5);
         mDao.create(new Remessage(generated, MessageType.Public, user6, new Date(), mDao.generateTags(generated), mDao.generateMentions(generated), messageUser5));
         Message messageUser6 = mDao.find(6);
+
+        mDao.create(new InitialMessage(generated, MessageType.Public, user2, new Date(), mDao.generateTags(generated), mDao.generateMentions(generated)));
+        mDao.create(new InitialMessage(generated, MessageType.Public, user2, new Date(), mDao.generateTags(generated), mDao.generateMentions(generated)));
+        mDao.create(new Remessage(generated, MessageType.Public, user2, new Date(), mDao.generateTags(generated), mDao.generateMentions(generated), messageUser1));
+        mDao.create(new Remessage(generated, MessageType.Public, user2, new Date(), mDao.generateTags(generated), mDao.generateMentions(generated), messageUser5));
+
         em.flush();
         em.getTransaction().commit();
 
@@ -133,7 +168,7 @@ public class MessageDAOImplTest {
         User user3 = userDAO.findByUsername("User3");
         em.getTransaction().begin();
         Message messageUser1 = mDao.find(1);
-        mDao.likeMessage(messageUser1, user3);
+        mDao.addLike(messageUser1, user3);
         em.getTransaction().commit();
 
         List<Message> messages = mDao.findMessagesByLikes(user3);
@@ -141,8 +176,20 @@ public class MessageDAOImplTest {
         assertEquals(messages.get(0).getLikes().size(), 1);
         assertEquals(messages.get(0).getLikes().get(0).getId(), user3.getId());
 
-        exception.expect(Exception.class);
-        mDao.likeMessage(messageUser1, user3);
+        List<Message> timeline = mDao.getUserTimeLine(user3);
+        assertEquals(5, timeline.size());
+
+        em.getTransaction().begin();
+        assertEquals(false, mDao.addLike(messageUser1, user3));
+        assertEquals(true, mDao.removeLike(messageUser1, user3));
+        em.getTransaction().commit();
+
+        List<Message> newMessages = mDao.findMessagesByLikes(user3);
+        assertEquals(newMessages.size(), 0);
+
+        em.getTransaction().begin();
+        assertEquals(true, mDao.addLike(messageUser1, user3));
+        em.getTransaction().commit();
     }
 
     /*
