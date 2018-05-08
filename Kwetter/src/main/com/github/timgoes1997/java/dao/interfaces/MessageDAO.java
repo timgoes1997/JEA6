@@ -14,10 +14,10 @@ public interface MessageDAO {
     boolean removeLike(Message message, User user);
     boolean hasLiked(Message message, User user);
 
-
     void clearUserFromLikesAndMentions(User user);
     void create(Message message);
 
+    boolean exists(long id);
     Message find(long id);
     Message find(String username, long id);
     List<Message> findProfileMessages(String username);
@@ -27,9 +27,6 @@ public interface MessageDAO {
     List<Message> findMessagesByTag(Tag tag);
     List<Message> findMessagesByUser(User user);
     List<Message> findMessagesByUser(User user, int firstResult, int maxResults);
-
-    boolean exists(long id);
-
     List<User> generateMentions(String text);
     List<Tag> generateTags(String text);
     Date getCurrentLocalDateTime();
@@ -40,7 +37,6 @@ public interface MessageDAO {
     List<ReplyMessage> getMessageReplies(Message message);
     List<ReplyMessage> getMessageReplies(Message message, int firstResult, int maxResults);
     List<Message> getAllMessages();
-
 
     void nullMessageData(Message message);
 

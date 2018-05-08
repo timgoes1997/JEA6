@@ -11,6 +11,7 @@ import com.github.timgoes1997.java.entity.message.ReplyMessage;
 import com.github.timgoes1997.java.entity.tag.Tag;
 import com.github.timgoes1997.java.entity.user.User;
 import com.github.timgoes1997.java.entity.user.UserRole;
+import com.github.timgoes1997.java.services.beans.MessageService;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
@@ -36,152 +37,58 @@ import java.util.logging.Logger;
 public class MessageBean {
 
     @Inject
-    private MessageDAO messageDAO;
-
-    @Inject
-    private UserDAO userDAO;
-
-    @Inject
-    private Logger logger;
+    private MessageService messageService;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("{id}")
-    public Response getMessageByID(@PathParam("id") long id) {
-        try {
-            Message message = messageDAO.find(id);
-            return Response.ok().entity(message).build();
-        } catch (Exception e) {
-            logger.severe(e.getMessage());
-            return Response.status(Response.Status.NOT_FOUND).entity(e).build();
-        }
+    public Message getMessageByID(@PathParam("id") long id) {
+        return messageService.getMessageByID(id);
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("{id}/replies")
-    public Response getMessageRepliesByMessageID(@PathParam("id") long id) {
-        try {
-            if(!messageDAO.exists(id)){
-                return Response.status(Response.Status.NOT_FOUND).build();
-            }
-
-            Message message = messageDAO.find(id);
-            List<ReplyMessage> replyMessages = messageDAO.getMessageReplies(message);
-            return Response.ok().entity(replyMessages).build();
-        } catch (Exception e) {
-            logger.severe(e.getMessage());
-            return Response.status(Response.Status.NOT_FOUND).entity(e).build();
-        }
+    public List<ReplyMessage> getMessageRepliesByMessageID(@PathParam("id") long id) {
+        return messageService.getMessageRepliesByMessageID(id);
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/user/{username}/{id}")
-    public Response getMessageByUsernameAndID(@PathParam("username") String username, @PathParam("id") long id){
-        try {
-            if(!userDAO.exists(username) || !messageDAO.exists(id)){
-                return Response.status(Response.Status.NOT_FOUND).build();
-            }
-
-            Message message = messageDAO.find(username, id);
-            return Response.ok().entity(message).build();
-        } catch (Exception e) {
-            logger.severe(e.getMessage());
-            return Response.status(Response.Status.NOT_FOUND).entity(e).build();
-        }
+    public Message getMessageByUsernameAndID(@PathParam("username") String username, @PathParam("id") long id){
+        return messageService.getMessageByUsernameAndID(username, id);
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/user/{username}/messages")
-    public Response getMessageByUsernameAndID(@PathParam("username") String username){
-        try {
-            if(!userDAO.exists(username)){
-                return Response.status(Response.Status.NOT_FOUND).build();
-            }
-
-            List<Message> messages = messageDAO.findProfileMessages(username);
-            return Response.ok().entity(messages).build();
-        } catch (Exception e) {
-            logger.severe(e.getMessage());
-            return Response.status(Response.Status.NOT_FOUND).entity(e).build();
-        }
+    public List<Message> getProfileMessagesByUsername(@PathParam("username") String username){
+        return messageService.getProfileMessagesByUsername(username);
     }
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @UserAuthorization({UserRole.User})
     @Path("create")
-    public Response createMessage(@Context ContainerRequestContext request, @FormParam("message") String message, @FormParam("messageType")MessageType messageType) {
-        try {
-            if(message.length() < 1 || message.length() > 240)
-                return Response.status(Response.Status.NOT_ACCEPTABLE).build();
-
-            User currentUser = (User)request.getProperty(Constants.USER_REQUEST_STRING);
-            List<Tag> tags = messageDAO.generateTags(message);
-            List<User> mentions = messageDAO.generateMentions(message);
-
-            InitialMessage initialMessage = new InitialMessage(message, messageType, currentUser, new Date(), tags, mentions);
-            messageDAO.create(initialMessage);
-
-            Message created = messageDAO.find(initialMessage.getId());
-            return Response.ok().entity(created).build();
-        } catch (Exception e) {
-            logger.severe(e.getMessage());
-            return Response.status(Response.Status.NOT_FOUND).entity(e).build();
-        }
+    public Message createMessage(@Context ContainerRequestContext request, @FormParam("message") String message, @FormParam("messageType")MessageType messageType) {
+        return messageService.createMessage(request, message, messageType);
     }
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @UserAuthorization({UserRole.User})
     @Path("{id}/reply")
-    public Response createReply(@Context ContainerRequestContext request, @PathParam("id") long messageID, @FormParam("text") String text) {
-        try {
-            if(!messageDAO.exists(messageID)){
-                return Response.status(Response.Status.NOT_FOUND).build();
-            }
-
-            Message message = messageDAO.find(messageID);
-            User currentUser = (User)request.getProperty(Constants.USER_REQUEST_STRING);
-            List<Tag> tags = messageDAO.generateTags(text);
-            List<User> mentions = messageDAO.generateMentions(text);
-            ReplyMessage reply = new ReplyMessage(text, message.getType(), currentUser, new Date(), tags, mentions, message);
-            messageDAO.create(reply);
-
-            return Response.ok().entity(reply).build();
-        } catch (Exception e) {
-            logger.severe(e.getMessage());
-            return Response.status(Response.Status.NOT_FOUND).entity(e).build();
-        }
+    public ReplyMessage createReply(@Context ContainerRequestContext request, @PathParam("id") long messageID, @FormParam("text") String text) {
+        return messageService.createReplyMessage(request, messageID, text);
     }
 
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     @UserAuthorization({UserRole.User})
     @Path("{id}/remove")
-    public Response removeMessage(@Context ContainerRequestContext request, @PathParam("id") long messageID) {
-        try {
-            if(!messageDAO.exists(messageID)){
-                return Response.status(Response.Status.NOT_FOUND).build();
-            }
-
-            Message message = messageDAO.find(messageID);
-            User currentUser = (User)request.getProperty(Constants.USER_REQUEST_STRING);
-            if(!(message.getMessager().getId() == currentUser.getId()
-                    || currentUser.getRole() == UserRole.Moderator
-                    || currentUser.getRole() == UserRole.Admin)){
-                return Response.status(Response.Status.UNAUTHORIZED).build();
-            }
-
-            messageDAO.remove(message);
-
-            return Response.ok(message).build();
-        } catch (Exception e) {
-            logger.severe(e.getMessage());
-            return Response.status(Response.Status.NOT_FOUND).entity(e).build();
-        }
+    public Message removeMessage(@Context ContainerRequestContext request, @PathParam("id") long messageID) {
+        return messageService.removeMessage(request, messageID);
     }
 
 }
