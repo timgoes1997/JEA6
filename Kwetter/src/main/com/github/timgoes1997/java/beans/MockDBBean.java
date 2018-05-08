@@ -22,7 +22,6 @@ public class MockDBBean {
     @Inject
     private MessageDAO messageDAO;
 
-
     @PostConstruct
     void init() {
         userDAO.create(new User("admin", "admini", UserRole.Admin, "", "", "Admin@admin.com", "", true));

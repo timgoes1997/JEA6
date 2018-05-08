@@ -1,225 +1,92 @@
 package com.github.timgoes1997.java.beans;
 
-import com.github.timgoes1997.java.authentication.Constants;
 import com.github.timgoes1997.java.authentication.interceptor.UserAuthorization;
-import com.github.timgoes1997.java.authentication.token.TokenProvider;
-import com.github.timgoes1997.java.dao.interfaces.UserDAO;
 import com.github.timgoes1997.java.entity.user.User;
 import com.github.timgoes1997.java.entity.user.UserRole;
-import com.github.timgoes1997.java.services.EmailService;
-import org.eclipse.persistence.internal.libraries.antlr.runtime.Token;
+import com.github.timgoes1997.java.services.beans.interfaces.UserService;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
-import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.mail.*;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
 import javax.ws.rs.*;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.*;
-import java.math.BigInteger;
-import java.security.SecureRandom;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
-import java.util.logging.Logger;
 
 @Stateless
 @Path("user")
 public class UserBean {
 
     @Inject
-    private UserDAO userDAO;
-
-    @Inject
-    private Logger logger;
-
-    @Inject
-    private TokenProvider tokenProvider;
-
-    @Inject
-    private EmailService emailService;
+    private UserService userService;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/id/{id}")
-    public Response getUserByID(@PathParam("id") long id) {
-        try {
-            User user = userDAO.find(id);
-            return Response.ok().entity(user).build();
-        } catch (Exception e) {
-            //logger.severe(e.getMessage());
-            return Response.status(Response.Status.NOT_FOUND).entity(e).build();
-        }
+    public User getUserByID(@PathParam("id") long id) {
+        return userService.getUserByID(id);
     }
 
     @POST
     @Path("/login")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public Response authenticate(@FormParam("username") String username, @FormParam("password") String password){
-        try{
-            User user = userDAO.authenticate(username, password); //TODO: In future encrypt password using salt and secret key.
-
-            Set<String> authorities = new HashSet<>(); //TODO: Better authorities implementation.
-            authorities.add(user.getRole().toString());
-
-            String token = tokenProvider.issueToken(user.getUsername(), authorities, false); //TODO: remember me implementation
-
-            return Response.ok().header(HttpHeaders.AUTHORIZATION, Constants.BEARER + token).entity(user).build(); //.cookie(new NewCookie(HttpHeaders.AUTHORIZATION, Constants.BEARER + token))
-
-        }catch(Exception e){
-            return Response.status(Response.Status.UNAUTHORIZED).build();
-        }
+        return userService.authenticate(username, password);
     }
 
     @POST
     @Path("/register")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public Response register(@FormParam("username") String username,
+    public User register(@FormParam("username") String username,
                              @FormParam("password") String password,
                              @FormParam("email") String email,
                              @FormParam("firstName") String firstName,
                              @FormParam("middleName") String middleName,
                              @FormParam("lastName") String lastName,
                              @FormParam("telephone") String telephone){
-        try{
-            if(userDAO.usernameExists(username) || userDAO.emailExists(email)){
-                return Response.status(Response.Status.CONFLICT).build();
-            }
-
-            userDAO.create(new User(username.toLowerCase(), password, UserRole.User, firstName, middleName, lastName, email, telephone, false));
-
-            logger.info("Created new account for user: " + username);
-
-            User user = userDAO.findByUsername(username);
-            user.setVerifyLink(emailService.generateVerificationLink(user));
-            user.setRegistrationDate(new Date());
-            userDAO.edit(user);
-
-            emailService.sendVerificationMail(user);
-
-            return authenticate(username, password);
-        }catch (Exception e){
-            return Response.status(Response.Status.BAD_REQUEST).entity(e).build();
-        }
+        return userService.registerUser(username, password, email, firstName, middleName, lastName, telephone);
     }
 
     @GET
     @Path("/verify/{token}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response confirmRegistration(@PathParam("token") String token){
-        try{
-            if(!userDAO.verificationLinkExists(token)){
-                return Response.status(Response.Status.NOT_ACCEPTABLE).build();
-            }
-
-            if(userDAO.hasBeenVerified(token)){
-                return Response.status(Response.Status.CONFLICT).entity("You have already verified your account").build();
-            }
-
-            User user = userDAO.findByVerificationLink(token);
-            if(user == null){
-                return Response.serverError().build();
-            }
-            user.setVerified(true);
-            userDAO.edit(user);
-
-            return Response.ok("Account has been verified").build();
-
-        }catch(Exception e){
-            return Response.status(Response.Status.UNAUTHORIZED).build();
-        }
+        return userService.confirmUserRegistration(token);
     }
 
     @GET
     @Path("{username}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getByUsername(@PathParam("username") String username) {
-        try {
-            User user = userDAO.findByUsername(username.toLowerCase());
-            return Response.ok().entity(user).build();
-        } catch (Exception e) {
-            //logger.severe(e.getMessage());
-            return Response.status(Response.Status.NOT_FOUND).entity(e).build();
-        }
+    public User getByUsername(@PathParam("username") String username) {
+        return userService.getByUsername(username);
     }
 
     @GET
     @Path("{username}/following")
     @UserAuthorization
     @Produces(MediaType.APPLICATION_JSON)
-    public Response isFollowingUser(@Context ContainerRequestContext request,@PathParam("username") String username) {
-        try {
-            User user = userDAO.findByUsername(username.toLowerCase());
-            User currentUser = (User)request.getProperty(Constants.USER_REQUEST_STRING);
-
-            return Response.ok().entity(userDAO.isFollowing(currentUser, user)).build();
-        } catch (Exception e) {
-            //logger.severe(e.getMessage());
-            return Response.status(Response.Status.NOT_FOUND).entity(e).build();
-        }
+    public boolean isFollowingUser(@Context ContainerRequestContext request,@PathParam("username") String username) {
+        return userService.isFollowingUser(request, username);
     }
 
     @POST
     @Path("/{username}/follow")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response follow(@Context ContainerRequestContext request, @PathParam("username") String username){
-        try{
-            if(!userDAO.usernameExists(username)){
-                return Response.status(Response.Status.NOT_FOUND).build();
-            }
-
-            User currentUser = (User)request.getProperty(Constants.USER_REQUEST_STRING);
-            User userToFollow = userDAO.findByUsername(username);
-            userDAO.addFollower(userToFollow, currentUser);
-
-            return  Response.ok().build();
-        }catch (Exception e){
-            return Response.status(Response.Status.BAD_REQUEST).entity(e).build();
-        }
+    public User follow(@Context ContainerRequestContext request, @PathParam("username") String username){
+        return userService.followUser(request, username);
     }
 
     @DELETE
     @Path("/{username}/delete")
     @UserAuthorization({UserRole.User})
     @Produces(MediaType.APPLICATION_JSON)
-    public Response delete(@Context ContainerRequestContext request, @PathParam("username") String username){
-        try{
-            if(!userDAO.usernameExists(username)){
-                return Response.status(Response.Status.NOT_FOUND).build();
-            }
-
-            User currentUser = (User)request.getProperty(Constants.USER_REQUEST_STRING);
-            User userToDelete = userDAO.findByUsername(username);
-
-            if(currentUser.getId() == userToDelete.getId()){
-                userDAO.remove(currentUser);
-            }
-
-            return  Response.ok().build();
-        }catch (Exception e){
-            return Response.status(Response.Status.BAD_REQUEST).entity(e).build();
-        }
-    }
-
-    @GET
-    @Path("/notoken")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response noTokenGetRequest(){
-        return Response.ok("Hello").build();
+    public User delete(@Context ContainerRequestContext request, @PathParam("username") String username){
+        return userService.deleteUser(request, username);
     }
 
     @GET
     @Path("/authenticated")
     @UserAuthorization
     @Produces(MediaType.APPLICATION_JSON)
-    public Response tokenGetRequest(@Context ContainerRequestContext request){
-        return Response.ok((User)request.getProperty(Constants.USER_REQUEST_STRING)).build();
+    public User getAuthenticatedUser(@Context ContainerRequestContext request){
+        return userService.getAuthenticatedUser(request);
     }
 }

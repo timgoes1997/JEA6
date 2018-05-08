@@ -7,19 +7,19 @@ import com.github.timgoes1997.java.entity.message.InitialMessage;
 import com.github.timgoes1997.java.entity.message.Message;
 import com.github.timgoes1997.java.entity.message.MessageType;
 import com.github.timgoes1997.java.entity.message.ReplyMessage;
-import com.github.timgoes1997.java.entity.tag.Tag;
 import com.github.timgoes1997.java.entity.user.User;
-import com.github.timgoes1997.java.entity.user.UserRole;
-import com.github.timgoes1997.java.services.beans.interfaces.MessageServiceInterface;
+import com.github.timgoes1997.java.services.ServiceHelper;
+import com.github.timgoes1997.java.services.beans.interfaces.MessageService;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.core.Response;
 import java.util.Date;
 import java.util.List;
 
-public class MessageService implements MessageServiceInterface {
+@Stateless
+public class MessageServiceImpl implements MessageService {
 
     @Inject
     private MessageDAO messageDAO;
@@ -46,7 +46,7 @@ public class MessageService implements MessageServiceInterface {
             Message message = messageDAO.find(username, id);
             return message;
         } catch (Exception e) {
-            checkIfWebApplicationExceptionAndThrow(e);
+            ServiceHelper.checkIfWebApplicationExceptionAndThrow(e);
             throw new NotFoundException("Couldn't find a message for given username and id!");
         }
     }
@@ -60,7 +60,7 @@ public class MessageService implements MessageServiceInterface {
             Message message = messageDAO.find(id);
             return messageDAO.getMessageReplies(message);
         } catch (Exception e) {
-            checkIfWebApplicationExceptionAndThrow(e);
+            ServiceHelper.checkIfWebApplicationExceptionAndThrow(e);
             throw new InternalServerErrorException("Couldn't find any replymessages for given id");
         }
     }
@@ -73,7 +73,7 @@ public class MessageService implements MessageServiceInterface {
             }
             return messageDAO.findProfileMessages(username);
         } catch (Exception e) {
-            checkIfWebApplicationExceptionAndThrow(e);
+            ServiceHelper.checkIfWebApplicationExceptionAndThrow(e);
             throw new NotFoundException("Could't find any profile messages for username");
         }
     }
@@ -91,7 +91,7 @@ public class MessageService implements MessageServiceInterface {
 
             return messageDAO.find(initialMessage.getId());
         } catch (Exception e) {
-            checkIfWebApplicationExceptionAndThrow(e);
+            ServiceHelper.checkIfWebApplicationExceptionAndThrow(e);
             throw new InternalServerErrorException("Couldn't retrieve message after creating, it might not have been created by the server yet!");
         }
     }
@@ -115,7 +115,7 @@ public class MessageService implements MessageServiceInterface {
 
             return reply;
         } catch (Exception e) {
-            checkIfWebApplicationExceptionAndThrow(e);
+            ServiceHelper.checkIfWebApplicationExceptionAndThrow(e);
             throw new InternalServerErrorException("Something went wrong while creating your " +
                     "reply message due to a internal server exception, please contact a administrator :(");
         }
@@ -130,16 +130,14 @@ public class MessageService implements MessageServiceInterface {
 
             Message message = messageDAO.find(messageID);
             User currentUser = (User)requestContext.getProperty(Constants.USER_REQUEST_STRING);
-            if(!(message.getMessager().getId() == currentUser.getId()
-                    || currentUser.getRole() == UserRole.Moderator
-                    || currentUser.getRole() == UserRole.Admin)){
+            if(!ServiceHelper.isCurrentUserOrModeratorOrAdmin(currentUser, message.getMessager())){
                 throw new NotAuthorizedException("User not authorized to remove message");
             }
             messageDAO.remove(message);
 
             return message;
         } catch (Exception e) {
-            checkIfWebApplicationExceptionAndThrow(e);
+            ServiceHelper.checkIfWebApplicationExceptionAndThrow(e);
             throw new InternalServerErrorException("Something went wrong while removing your " +
                     "message due to a internal server exception, please contact a administrator :(");
         }
@@ -149,12 +147,5 @@ public class MessageService implements MessageServiceInterface {
     public void basicMessageValidation(String text) {
         if(text.length() < 1 || text.length() > 240)
             throw new NotAcceptableException("Message needs to be between 1 and 240 characters");
-    }
-
-    @Override
-    public void checkIfWebApplicationExceptionAndThrow(Exception e) throws WebApplicationException {
-        if(e instanceof WebApplicationException){
-            throw (WebApplicationException)e;
-        }
     }
 }

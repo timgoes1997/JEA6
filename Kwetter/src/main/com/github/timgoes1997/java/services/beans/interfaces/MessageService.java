@@ -8,7 +8,7 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.container.ContainerRequestContext;
 import java.util.List;
 
-public interface MessageServiceInterface {
+public interface MessageService {
     Message getMessageByID(long id);
     Message getMessageByUsernameAndID(String username, long id);
     List<ReplyMessage> getMessageRepliesByMessageID(long id);
@@ -20,6 +20,4 @@ public interface MessageServiceInterface {
     Message removeMessage(ContainerRequestContext requestContext, long messageID);
 
     void basicMessageValidation(String text);
-
-    void checkIfWebApplicationExceptionAndThrow(Exception e) throws WebApplicationException;
 }

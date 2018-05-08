@@ -1,36 +1,19 @@
 package com.github.timgoes1997.java.beans;
 
-import com.github.timgoes1997.java.authentication.Constants;
 import com.github.timgoes1997.java.authentication.interceptor.UserAuthorization;
-import com.github.timgoes1997.java.dao.interfaces.MessageDAO;
-import com.github.timgoes1997.java.dao.interfaces.UserDAO;
-import com.github.timgoes1997.java.entity.message.InitialMessage;
 import com.github.timgoes1997.java.entity.message.Message;
 import com.github.timgoes1997.java.entity.message.MessageType;
 import com.github.timgoes1997.java.entity.message.ReplyMessage;
-import com.github.timgoes1997.java.entity.tag.Tag;
-import com.github.timgoes1997.java.entity.user.User;
 import com.github.timgoes1997.java.entity.user.UserRole;
-import com.github.timgoes1997.java.services.beans.MessageService;
+import com.github.timgoes1997.java.services.beans.interfaces.MessageService;
 
-import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
-import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.inject.Named;
-import javax.management.relation.Role;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.ws.rs.*;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.logging.Logger;
 
 @Stateless
 @Path("message")
