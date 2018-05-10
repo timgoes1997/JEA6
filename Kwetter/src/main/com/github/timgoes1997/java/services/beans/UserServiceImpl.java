@@ -94,9 +94,9 @@ public class UserServiceImpl implements UserService {
         }
 
         if(SessionAuth.login(request, user)){
-            return Constants.INDEX_PAGE;
+            return "messages";
         }else{
-            return Constants.LOGIN_PAGE;
+            return "error";
         }
     }
 

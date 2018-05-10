@@ -19,6 +19,14 @@ public class SessionAuth {
         return login(request.getSession(), user);
     }
 
+    public static boolean isLoggedIn(HttpServletRequest request){
+        return (UserInterface)request.getSession().getAttribute(Constants.SESSION_USER) != null;
+    }
+
+    public static UserInterface getCurrentUser(HttpServletRequest request){
+        return (UserInterface)request.getSession().getAttribute(Constants.SESSION_USER);
+    }
+
     public static boolean logout(HttpSession session){
         if(session.getAttribute(Constants.SESSION_USER) == null) return false;
         session.setAttribute(Constants.SESSION_USER, null);

@@ -81,16 +81,25 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public Message createMessage(ContainerRequestContext requestContext, String text, MessageType messageType) {
         try {
+            return createMessage((User)requestContext.getProperty(Constants.USER_REQUEST_STRING), text, messageType);
+        } catch (Exception e) {
+            ServiceHelper.checkIfWebApplicationExceptionAndThrow(e);
+            throw new InternalServerErrorException("Couldn't retrieve message after creating, it might not have been created by the server yet!");
+        }
+    }
+
+    @Override
+    public Message createMessage(User user, String text, MessageType messageType) {
+        try{
             basicMessageValidation(text);
 
-            User currentUser = (User)requestContext.getProperty(Constants.USER_REQUEST_STRING);
             InitialMessage initialMessage = new InitialMessage(text,
-                    messageType, currentUser, new Date(),
+                    messageType, user, new Date(),
                     messageDAO.generateTags(text), messageDAO.generateMentions(text));
             messageDAO.create(initialMessage);
 
             return messageDAO.find(initialMessage.getId());
-        } catch (Exception e) {
+        }catch (Exception e){
             ServiceHelper.checkIfWebApplicationExceptionAndThrow(e);
             throw new InternalServerErrorException("Couldn't retrieve message after creating, it might not have been created by the server yet!");
         }
@@ -99,6 +108,18 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public ReplyMessage createReplyMessage(ContainerRequestContext requestContext, long messageID, String text) {
         try {
+            return createReplyMessage((User)requestContext.getProperty(Constants.USER_REQUEST_STRING),
+                    messageID, text);
+        } catch (Exception e) {
+            ServiceHelper.checkIfWebApplicationExceptionAndThrow(e);
+            throw new InternalServerErrorException("Something went wrong while creating your " +
+                    "reply message due to a internal server exception, please contact a administrator :(");
+        }
+    }
+
+    @Override
+    public ReplyMessage createReplyMessage(User user, long messageID, String text) {
+        try {
             basicMessageValidation(text);
 
             if(!messageDAO.exists(messageID)){
@@ -106,9 +127,8 @@ public class MessageServiceImpl implements MessageService {
             }
 
             Message message = messageDAO.find(messageID);
-            User currentUser = (User)requestContext.getProperty(Constants.USER_REQUEST_STRING);
             ReplyMessage reply = new ReplyMessage(text,
-                    message.getType(), currentUser, new Date(),
+                    message.getType(), user, new Date(),
                     messageDAO.generateTags(text), messageDAO.generateMentions(text),
                     message);
             messageDAO.create(reply);
@@ -124,17 +144,27 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public Message removeMessage(ContainerRequestContext requestContext, long messageID) {
         try {
+            return removeMessage((User)requestContext.getProperty(Constants.USER_REQUEST_STRING),messageID);
+        } catch (Exception e) {
+            ServiceHelper.checkIfWebApplicationExceptionAndThrow(e);
+            throw new InternalServerErrorException("Something went wrong while removing your " +
+                    "message due to a internal server exception, please contact a administrator :(");
+        }
+    }
+
+    @Override
+    public Message removeMessage(User user, long messageID) {
+        try {
             if(!messageDAO.exists(messageID)){
                 throw new NotFoundException("Message you tried to remove doesn't exist");
             }
 
             Message message = messageDAO.find(messageID);
-            User currentUser = (User)requestContext.getProperty(Constants.USER_REQUEST_STRING);
-            if(!ServiceHelper.isCurrentUserOrModeratorOrAdmin(currentUser, message.getMessager())){
+            if(!ServiceHelper.isCurrentUserOrModeratorOrAdmin(user, message.getMessager())){
                 throw new NotAuthorizedException("User not authorized to remove message");
             }
-            messageDAO.remove(message);
 
+            messageDAO.remove(message);
             return message;
         } catch (Exception e) {
             ServiceHelper.checkIfWebApplicationExceptionAndThrow(e);

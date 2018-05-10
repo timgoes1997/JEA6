@@ -1,5 +1,6 @@
 package com.github.timgoes1997.java.web;
 
+import com.github.timgoes1997.java.authentication.session.auth.SessionAuth;
 import com.github.timgoes1997.java.services.beans.interfaces.UserService;
 
 import javax.enterprise.context.SessionScoped;
@@ -24,24 +25,24 @@ public class UserManager implements Serializable {
     private String password;
 
     public String login() {
-        FacesContext context = FacesContext.getCurrentInstance();
-        HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
-
         try {
-            return userService.authenticateUsingSession(request, username, password);
+            return userService.authenticateUsingSession(getCurrentRequest(), username, password);
         } catch (Exception e) {
-            return "index";
+            logger.severe(e.getMessage());
+            return "error";
         }
     }
 
+    public boolean isLoggedIn(){
+        return SessionAuth.isLoggedIn(getCurrentRequest());
+    }
+
     public String logout(){
-        FacesContext context = FacesContext.getCurrentInstance();
-        HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
         try{
-            return userService.logoutFromSession(request);
+            return userService.logoutFromSession(getCurrentRequest());
         }catch (Exception e){
             logger.severe(e.getMessage());
-            return "index";
+            return "error";
         }
     }
 
@@ -59,5 +60,10 @@ public class UserManager implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    private HttpServletRequest getCurrentRequest(){
+        FacesContext context = FacesContext.getCurrentInstance();
+        return (HttpServletRequest) context.getExternalContext().getRequest();
     }
 }

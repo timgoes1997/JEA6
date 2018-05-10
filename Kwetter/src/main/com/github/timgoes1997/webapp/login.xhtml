@@ -11,20 +11,25 @@
 </h:head>
 <h:body>
     <div class="topnav">
-        <a class="active" href="index.xhtml">Index</a>
-        <a href="login.xhtml">Login</a>
+        <h:link value="Index" outcome="index" id="active"/>
+        <h:link value="Login" outcome="login" rendered="#{!userManager.loggedIn}"/>
+        <h:link value="Logout" outcome="login" rendered="#{userManager.loggedIn}"/>
         <a href="#register">Register</a>
         <a href="#about">About</a>
     </div>
     <h:form>
         <h:panelGrid columns="2">
-            <h:outputLabel value="Username:" for="username"/>
-            <h:inputText id="username" value="#{userManager.username}"/>
+            <h:outputLabel value="Username:" for="username" rendered="#{!userManager.loggedIn}"/>
+            <h:inputText id="username" value="#{userManager.username}" rendered="#{!userManager.loggedIn}"/>
 
-            <h:outputLabel value="Password:" for="password"/>
-            <h:inputSecret id="password" value="#{userManager.password}"/>
+            <h:outputLabel value="Password:" for="password" rendered="#{!userManager.loggedIn}"/>
+            <h:inputSecret id="password" value="#{userManager.password}" rendered="#{!userManager.loggedIn}"/>
 
-            <h:commandButton action="#{userManager.login}" value="Login"/>
+            <h:commandButton action="#{userManager.login}" value="Login"
+                             rendered="#{!userManager.loggedIn}"/>
+            <h:commandButton action="#{userManager.logout}" value="Logout"
+                             rendered="#{userManager.loggedIn}"/>
+
             <!--
                         <h:commandButton action="#{userController.login}" value="#{bundle.Login_label}"
                                          rendered="#{!userController.logged}"/>
