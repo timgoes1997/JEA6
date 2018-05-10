@@ -3,7 +3,6 @@ package com.github.timgoes1997.java.authentication.interceptor;
 import com.github.timgoes1997.java.authentication.Constants;
 import com.github.timgoes1997.java.authentication.token.TokenProvider;
 import com.github.timgoes1997.java.entity.user.User;
-import org.glassfish.jersey.server.ContainerRequest;
 
 import javax.annotation.Priority;
 import javax.inject.Inject;
@@ -19,9 +18,9 @@ import java.util.logging.Logger;
 
 
 @Provider
-@UserAuthorization
+@UserTokenAuthorization
 @Priority(Priorities.AUTHENTICATION)
-public class AuthorizationFilter implements ContainerRequestFilter {
+public class TokenAuthorizationFilter implements ContainerRequestFilter {
 
     @Inject
     private Logger logger;

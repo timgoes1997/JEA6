@@ -1,6 +1,6 @@
 package com.github.timgoes1997.java.beans;
 
-import com.github.timgoes1997.java.authentication.interceptor.UserAuthorization;
+import com.github.timgoes1997.java.authentication.interceptor.UserTokenAuthorization;
 import com.github.timgoes1997.java.entity.user.User;
 import com.github.timgoes1997.java.entity.user.UserRole;
 import com.github.timgoes1997.java.services.beans.interfaces.UserService;
@@ -61,7 +61,7 @@ public class UserBean {
 
     @GET
     @Path("{username}/following")
-    @UserAuthorization
+    @UserTokenAuthorization
     @Produces(MediaType.APPLICATION_JSON)
     public boolean isFollowingUser(@Context ContainerRequestContext request,@PathParam("username") String username) {
         return userService.isFollowingUser(request, username);
@@ -76,7 +76,7 @@ public class UserBean {
 
     @DELETE
     @Path("/{username}/delete")
-    @UserAuthorization({UserRole.User})
+    @UserTokenAuthorization({UserRole.User})
     @Produces(MediaType.APPLICATION_JSON)
     public User delete(@Context ContainerRequestContext request, @PathParam("username") String username){
         return userService.deleteUser(request, username);
@@ -84,7 +84,7 @@ public class UserBean {
 
     @GET
     @Path("/authenticated")
-    @UserAuthorization
+    @UserTokenAuthorization
     @Produces(MediaType.APPLICATION_JSON)
     public User getAuthenticatedUser(@Context ContainerRequestContext request){
         return userService.getAuthenticatedUser(request);

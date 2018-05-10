@@ -1,6 +1,6 @@
 package com.github.timgoes1997.java.beans;
 
-import com.github.timgoes1997.java.authentication.interceptor.UserAuthorization;
+import com.github.timgoes1997.java.authentication.interceptor.UserTokenAuthorization;
 import com.github.timgoes1997.java.entity.message.Message;
 import com.github.timgoes1997.java.entity.message.MessageType;
 import com.github.timgoes1997.java.entity.message.ReplyMessage;
@@ -52,7 +52,7 @@ public class MessageBean {
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
-    @UserAuthorization({UserRole.User})
+    @UserTokenAuthorization({UserRole.User})
     @Path("create")
     public Message createMessage(@Context ContainerRequestContext request, @FormParam("message") String message, @FormParam("messageType")MessageType messageType) {
         return messageService.createMessage(request, message, messageType);
@@ -60,7 +60,7 @@ public class MessageBean {
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
-    @UserAuthorization({UserRole.User})
+    @UserTokenAuthorization({UserRole.User})
     @Path("{id}/reply")
     public ReplyMessage createReply(@Context ContainerRequestContext request, @PathParam("id") long messageID, @FormParam("text") String text) {
         return messageService.createReplyMessage(request, messageID, text);
@@ -68,7 +68,7 @@ public class MessageBean {
 
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
-    @UserAuthorization({UserRole.User})
+    @UserTokenAuthorization({UserRole.User})
     @Path("{id}/remove")
     public Message removeMessage(@Context ContainerRequestContext request, @PathParam("id") long messageID) {
         return messageService.removeMessage(request, messageID);

@@ -13,6 +13,6 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @NameBinding
 @Retention(RUNTIME)
 @Target({TYPE, METHOD})
-public @interface UserAuthorization {
+public @interface UserTokenAuthorization {
     UserRole[] value() default {};
 }
