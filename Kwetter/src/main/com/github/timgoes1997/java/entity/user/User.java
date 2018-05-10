@@ -3,6 +3,7 @@ package com.github.timgoes1997.java.entity.user;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.timgoes1997.java.entity.message.Message;
+import com.github.timgoes1997.java.entity.user.interfaces.UserInterface;
 
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.*;
@@ -39,7 +40,7 @@ import static com.fasterxml.jackson.annotation.JsonProperty.Access.*;
         @NamedQuery(name=User.FIND_VERIFICATION_LINK,
                 query="SELECT u FROM USERDATA u WHERE u.verifyLink = :link"),
 })
-public class User implements Serializable{
+public class User implements Serializable, UserInterface {
 
     //======================
     //==    Constansts    ==
@@ -176,7 +177,6 @@ public class User implements Serializable{
         this.registrationDate = new Date();
     }
 
-    @XmlAttribute
     public String getUsername() {
         return username;
     }
@@ -194,11 +194,12 @@ public class User implements Serializable{
         this.password = password;
     }
 
-    @XmlAttribute
+    @Override
     public UserRole getRole() {
         return role;
     }
 
+    @Override
     public void setRole(UserRole role) {
         this.role = role;
     }
@@ -284,23 +285,17 @@ public class User implements Serializable{
         this.pinnedMessage = pinnedMessage;
     }
 
-    @JsonIgnore
     @JsonbTransient
-    @XmlTransient
     public List<User> getFollowers() {
         return followers;
     }
 
-    @JsonIgnore
     @JsonbTransient
-    @XmlTransient
     public List<User> getFollowing() {
         return following;
     }
 
-    @JsonIgnore
     @JsonbTransient
-    @XmlTransient
     public List<Message> getMessages() {
         return messages;
     }
@@ -329,7 +324,6 @@ public class User implements Serializable{
         this.following.remove(user);
     }
 
-    @XmlAttribute
     public long getId() {
         return id;
     }

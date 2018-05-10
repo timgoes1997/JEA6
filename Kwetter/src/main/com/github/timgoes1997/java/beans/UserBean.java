@@ -29,7 +29,7 @@ public class UserBean {
     @Path("/login")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public Response authenticate(@FormParam("username") String username, @FormParam("password") String password){
-        return userService.authenticate(username, password);
+        return userService.authenticateUsingToken(username, password);
     }
 
     @POST

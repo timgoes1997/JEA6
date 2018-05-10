@@ -1,6 +1,7 @@
 package com.github.timgoes1997.java.services.beans;
 
 import com.github.timgoes1997.java.authentication.Constants;
+import com.github.timgoes1997.java.authentication.session.auth.SessionAuth;
 import com.github.timgoes1997.java.authentication.token.TokenProvider;
 import com.github.timgoes1997.java.dao.interfaces.UserDAO;
 import com.github.timgoes1997.java.entity.user.User;
@@ -11,6 +12,7 @@ import com.github.timgoes1997.java.services.beans.interfaces.UserService;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.NotAcceptableException;
 import javax.ws.rs.NotAuthorizedException;
@@ -28,9 +30,6 @@ public class UserServiceImpl implements UserService {
 
     @Inject
     private UserDAO userDAO;
-
-    @Inject
-    private ServiceHelper serviceHelper;
 
     @Inject
     private Logger logger;
@@ -65,7 +64,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Response authenticate(String username, String password) {
+    public Response authenticateUsingToken(String username, String password) {
         try {
             User user = userDAO.authenticate(username, password); //TODO: In future encrypt password using salt and secret key.
 
@@ -81,8 +80,23 @@ public class UserServiceImpl implements UserService {
             return Response.ok().header(HttpHeaders.AUTHORIZATION, Constants.BEARER + token).entity(user).build();
 
         } catch (Exception e) {
-            serviceHelper.checkIfWebApplicationExceptionAndThrow(e);
+            ServiceHelper.checkIfWebApplicationExceptionAndThrow(e);
             throw new NotAuthorizedException("Entered username or password is invalid, please try again!");
+        }
+    }
+
+    @Override
+    public String authenticateUsingSession(HttpServletRequest request, String username, String password) {
+        User user = userDAO.authenticate(username, password); //TODO: In future encrypt password using salt and secret key.
+
+        if (!user.getVerified()) {
+            throw new NotAuthorizedException("Please verify your e-mail before loging in!");
+        }
+
+        if(SessionAuth.login(request, user)){
+            return Constants.INDEX_PAGE;
+        }else{
+            return Constants.LOGIN_PAGE;
         }
     }
 
@@ -108,7 +122,7 @@ public class UserServiceImpl implements UserService {
                     .entity(user).tag("Registration confirmed").build();
 
         } catch (Exception e) {
-            serviceHelper.checkIfWebApplicationExceptionAndThrow(e);
+            ServiceHelper.checkIfWebApplicationExceptionAndThrow(e);
             throw new InternalServerErrorException("Unkown exception occured while registrating user, please contact administrator");
         }
     }
@@ -133,7 +147,7 @@ public class UserServiceImpl implements UserService {
 
             return user;
         } catch (Exception e) {
-            serviceHelper.checkIfWebApplicationExceptionAndThrow(e);
+            ServiceHelper.checkIfWebApplicationExceptionAndThrow(e);
             throw new InternalServerErrorException("Couldn't register user or send e-mail, try it once again or contact a administrator");
         }
     }
@@ -167,6 +181,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public String logoutFromSession(HttpServletRequest request) {
+        if(SessionAuth.logout(request)){
+            return "index";
+        }
+        logger.info("Logout failed");
+        return "index";
+    }
+
+    @Override
     public User deleteUser(ContainerRequestContext requestContext, String username) {
         try {
             if (!userDAO.usernameExists(username)) {
@@ -176,7 +199,7 @@ public class UserServiceImpl implements UserService {
             User currentUser = (User) requestContext.getProperty(Constants.USER_REQUEST_STRING);
             User userToDelete = userDAO.findByUsername(username);
 
-            if (!serviceHelper.isCurrentUserOrModeratorOrAdmin(currentUser, userToDelete)) {
+            if (!ServiceHelper.isCurrentUserOrModeratorOrAdmin(currentUser, userToDelete)) {
                 throw new NotAuthorizedException("User not authorized to remove user");
             }
 
