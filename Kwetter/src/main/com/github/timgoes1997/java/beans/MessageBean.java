@@ -1,6 +1,6 @@
 package com.github.timgoes1997.java.beans;
 
-import com.github.timgoes1997.java.authentication.interceptor.UserTokenAuthorization;
+import com.github.timgoes1997.java.authentication.token.interceptor.UserTokenAuthorization;
 import com.github.timgoes1997.java.entity.message.Message;
 import com.github.timgoes1997.java.entity.message.MessageType;
 import com.github.timgoes1997.java.entity.message.ReplyMessage;

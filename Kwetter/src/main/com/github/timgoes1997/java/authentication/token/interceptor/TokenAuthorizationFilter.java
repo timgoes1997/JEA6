@@ -1,4 +1,4 @@
-package com.github.timgoes1997.java.authentication.interceptor;
+package com.github.timgoes1997.java.authentication.token.interceptor;
 
 import com.github.timgoes1997.java.authentication.Constants;
 import com.github.timgoes1997.java.authentication.token.TokenProvider;
