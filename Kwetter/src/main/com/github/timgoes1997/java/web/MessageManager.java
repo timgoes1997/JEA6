@@ -5,7 +5,9 @@ import com.github.timgoes1997.java.entity.message.Message;
 import com.github.timgoes1997.java.entity.message.MessageType;
 import com.github.timgoes1997.java.entity.user.User;
 import com.github.timgoes1997.java.entity.user.interfaces.UserInterface;
+import com.github.timgoes1997.java.services.ServiceHelper;
 import com.github.timgoes1997.java.services.beans.interfaces.MessageService;
+import com.github.timgoes1997.java.services.beans.interfaces.UserService;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
@@ -17,13 +19,19 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 @Named
 @SessionScoped
 public class MessageManager implements Serializable {
 
+    private static final Logger logger = Logger.getLogger(UserManager.class.getName());
+
     @Inject
     private MessageService messageService;
+
+    @Inject
+    private UserService userService;
 
     private Message currentMessage;
 
@@ -43,6 +51,20 @@ public class MessageManager implements Serializable {
         return false;
     }
 
+    public boolean isCurrentUserModeratorAdmin(){
+        FacesContext fc = FacesContext.getCurrentInstance();
+        String userRequest = getUsernameParam(fc);
+        User user = (User) SessionAuth.getCurrentUser(getCurrentRequest(fc));
+        if (user != null && userRequest == null) {
+            return true;
+        }
+        if (user != null && userRequest != null) {
+            User requestUser = userService.getByUsername(userRequest);
+            return ServiceHelper.isCurrentUserOrModeratorOrAdmin(user, requestUser);
+        }
+        return false;
+    }
+
     public List<Message> retrieveMessages() {
         FacesContext fc = FacesContext.getCurrentInstance();
         String userRequest = getUsernameParam(fc);
@@ -58,15 +80,30 @@ public class MessageManager implements Serializable {
         }
     }
 
+    public String viewMessage(Message message){
+        this.currentMessage = message;
+        return "viewMessage";
+    }
+
     public String createTextMessage(){
         FacesContext fc = FacesContext.getCurrentInstance();
         User user = (User) SessionAuth.getCurrentUser(getCurrentRequest(fc));
         if(user != null){
             messageService.createMessage(user, typingMessage , MessageType.Public );
+            logger.info("created the following message: " + typingMessage);
             return "created";
         }else{
             return "error";
         }
+    }
+
+    public String removeMessage(Message message){
+        FacesContext fc = FacesContext.getCurrentInstance();
+        User user = (User) SessionAuth.getCurrentUser(getCurrentRequest(fc));
+        if(user != null){
+            messageService.removeMessage(user, message.getId());
+        }
+        return "removed";
     }
 
     public String getUsernameParam(FacesContext context) {

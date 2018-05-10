@@ -2,11 +2,9 @@
 <!DOCTYPE html
         PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://xmlns.jcp.org/jsf/html" xml:lang="en" lang="en">
 <h:head>
-    <title>Login</title>
+    <title>Registration form</title>
     <h:outputStylesheet library="css" name="default.css" />
 </h:head>
 <h:body>
@@ -18,17 +16,30 @@
         <h:link value="Messages" outcome="messages" rendered="#{userManager.loggedIn}"/>
     </div>
     <h:form>
-        <h:panelGrid columns="2">
+        <h:panelGrid columns="7">
             <h:outputLabel value="Username:" for="username" rendered="#{!userManager.loggedIn}"/>
             <h:inputText id="username" value="#{userManager.username}" rendered="#{!userManager.loggedIn}"/>
 
             <h:outputLabel value="Password:" for="password" rendered="#{!userManager.loggedIn}"/>
-            <h:inputSecret id="password" value="#{userManager.password}" rendered="#{!userManager.loggedIn}"/>
+            <h:inputText id="password" value="#{userManager.password}" rendered="#{!userManager.loggedIn}"/>
 
-            <h:commandButton action="#{userManager.login}" value="Login"
+            <h:outputLabel value="Email:" for="email" rendered="#{!userManager.loggedIn}"/>
+            <h:inputText id="email" value="#{userManager.email}" rendered="#{!userManager.loggedIn}"/>
+
+            <h:outputLabel value="Firstname:" for="firstname" rendered="#{!userManager.loggedIn}"/>
+            <h:inputText id="firstname" value="#{userManager.firstName}" rendered="#{!userManager.loggedIn}"/>
+
+            <h:outputLabel value="Middlename:" for="middlename" rendered="#{!userManager.loggedIn}"/>
+            <h:inputText id="middlename" value="#{userManager.middleName}" rendered="#{!userManager.loggedIn}"/>
+
+            <h:outputLabel value="Lastname:" for="lastname" rendered="#{!userManager.loggedIn}"/>
+            <h:inputText id="lastname" value="#{userManager.lastName}" rendered="#{!userManager.loggedIn}"/>
+
+            <h:outputLabel value="Telephone:" for="telephone" rendered="#{!userManager.loggedIn}"/>
+            <h:inputText id="telephone" value="#{userManager.telephone}" rendered="#{!userManager.loggedIn}"/>
+
+            <h:commandButton action="#{userManager.register}" value="Register"
                              rendered="#{!userManager.loggedIn}"/>
-            <h:commandButton action="#{userManager.logout}" value="Logout"
-                             rendered="#{userManager.loggedIn}"/>
 
             <!--
                         <h:commandButton action="#{userController.login}" value="#{bundle.Login_label}"

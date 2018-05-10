@@ -3,7 +3,8 @@
         PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:f="http://java.sun.com/jsf/core" xml:lang="en" lang="en">
+      xmlns:f="http://java.sun.com/jsf/core" xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets" xml:lang="en" lang="en">
 <h:head>
     <title>Index</title>
     <h:outputStylesheet library="css" name="default.css"/>
@@ -13,38 +14,32 @@
         <h:link value="Index" outcome="index" id="active"/>
         <h:link value="Login" outcome="login" rendered="#{!userManager.loggedIn}"/>
         <h:link value="Logout" outcome="login" rendered="#{userManager.loggedIn}"/>
-        <a href="#register">Register</a>
-        <a href="#about">About</a>
+        <h:link value="Register" outcome="register" rendered="#{!userManager.loggedIn}"/>
+        <h:link value="Messages" outcome="messages" rendered="#{userManager.loggedIn}"/>
     </div>
     <h:form rendered="#{messageManager.currentUser}">
-        <h:inputTextarea value="#{messageManager.typingMessage}" cols="30" rows="4" />
+        <h:inputTextarea value="#{messageManager.typingMessage}" cols="30" rows="4"/>
         <h:commandButton action="#{messageManager.createTextMessage}" value="Create"
                          rendered="#{messageManager.currentUser}"/>
     </h:form>
     <div class="messages">
-        <h2>Messages</h2>
-        <h:dataTable var="m"
-                     summary="List of all messages from logged in or given user"
-                     value="#{messageManager.retrieveMessages()}">
-            <h:column>
-                <f:facet name="MessageUser">
-                    <h:outputText value="User:" />
-                </f:facet>
-                <h:outputText value="#{m.messager.username}" />
-            </h:column>
-            <h:column>
-                <f:facet name="MessageText">
-                    <h:outputText value="Message:" />
-                </f:facet>
-                <h:outputText value="#{m.text}" />
-            </h:column>
-            <h:column>
-                <f:facet name="MessageDate">
-                    <h:outputText value="Post date:" />
-                </f:facet>
-                <h:outputText value="#{m.date}" />
-            </h:column>
-        </h:dataTable>
+        <h1>Messages</h1>
+        <ui:repeat value="#{messageManager.retrieveMessages()}" var="m">
+            <h:form>
+                <div class="user">
+                    <h2>#{m.messager.username}</h2>
+                </div>
+                <div class="message">
+                    <h3>#{m.text}</h3>
+                </div>
+                <div class="date">
+                    <h4>#{m.date}</h4>
+                </div>
+                <h:commandButton action="#{messageManager.removeMessage(m)}" value="Remove"
+                          rendered="#{messageManager.currentUserModeratorAdmin}"/>
+                <h:commandButton action="#{messageManager.viewMessage(m)}" value="View"/>
+            </h:form>
+        </ui:repeat>
     </div>
 </h:body>
 </html>

@@ -14,8 +14,11 @@
             <h:link value="Index" outcome="index" id="active"/>
             <h:link value="Login" outcome="login" rendered="#{!userManager.loggedIn}"/>
             <h:link value="Logout" outcome="login" rendered="#{userManager.loggedIn}"/>
-            <a href="#register">Register</a>
-            <a href="#about">About</a>
+            <h:link value="Register" outcome="register" rendered="#{!userManager.loggedIn}"/>
+            <h:link value="Messages" outcome="messages" rendered="#{userManager.loggedIn}"/>
+        </div>
+        <div>
+            <h1>Welcome to Kwetter</h1>
         </div>
     </h:body>
 </html>

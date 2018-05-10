@@ -118,7 +118,11 @@ public class UserServiceImpl implements UserService {
             user.setVerified(true);
             userDAO.edit(user);
 
-            return Response.ok().header(HttpHeaders.AUTHORIZATION, Constants.BEARER + token)
+            Set<String> authorities = new HashSet<>(); //TODO: Better authorities implementation.
+            authorities.add(user.getRole().toString());
+            String bearerToken = tokenProvider.issueToken(user.getUsername(), authorities, false); //TODO: remember me implementation
+
+            return Response.ok().header(HttpHeaders.AUTHORIZATION, Constants.BEARER + bearerToken)
                     .entity(user).tag("Registration confirmed").build();
 
         } catch (Exception e) {

@@ -31,5 +31,28 @@
             <from-outcome>created</from-outcome>
             <to-view-id>/messages.xhtml</to-view-id>
         </navigation-case>
+        <navigation-case>
+            <from-outcome>removed</from-outcome>
+            <to-view-id>/messages.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>viewMessage</from-outcome>
+            <to-view-id>/message.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    <navigation-rule>
+        <from-view-id>/register.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>error</from-outcome>
+            <to-view-id>/index.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>register</from-outcome>
+            <to-view-id>/register.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>created</from-outcome>
+            <to-view-id>/login.xhtml</to-view-id>
+        </navigation-case>
     </navigation-rule>
 </faces-config>

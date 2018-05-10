@@ -1,6 +1,7 @@
 package com.github.timgoes1997.java.web;
 
 import com.github.timgoes1997.java.authentication.session.auth.SessionAuth;
+import com.github.timgoes1997.java.services.ServiceHelper;
 import com.github.timgoes1997.java.services.beans.interfaces.UserService;
 
 import javax.enterprise.context.SessionScoped;
@@ -23,6 +24,12 @@ public class UserManager implements Serializable {
 
     private String username;
     private String password;
+    private String email;
+
+    private String firstName;
+    private String middleName;
+    private String lastName;
+    private String telephone;
 
     public String login() {
         try {
@@ -33,17 +40,41 @@ public class UserManager implements Serializable {
         }
     }
 
-    public boolean isLoggedIn(){
+    public boolean isLoggedIn() {
         return SessionAuth.isLoggedIn(getCurrentRequest());
     }
 
-    public String logout(){
-        try{
+    public String register() {
+        try {
+            if (username == null || username == "" ||
+                    password == null || password == "" ||
+                    email == null || email == "" ||
+                    firstName == null || firstName == "" ||
+                    lastName == null || lastName == "" ||
+                    telephone == null || telephone == ""){
+                return "register";
+            }else{
+                userService.registerUser(username, password, email, firstName, middleName, lastName, telephone);
+            }
+            return "created";
+        } catch (Exception e) {
+            logger.info(e.getMessage());
+            return "error";
+        }
+    }
+
+    public String logout() {
+        try {
             return userService.logoutFromSession(getCurrentRequest());
-        }catch (Exception e){
+        } catch (Exception e) {
             logger.severe(e.getMessage());
             return "error";
         }
+    }
+
+    private HttpServletRequest getCurrentRequest() {
+        FacesContext context = FacesContext.getCurrentInstance();
+        return (HttpServletRequest) context.getExternalContext().getRequest();
     }
 
     public String getUsername() {
@@ -62,8 +93,43 @@ public class UserManager implements Serializable {
         this.password = password;
     }
 
-    private HttpServletRequest getCurrentRequest(){
-        FacesContext context = FacesContext.getCurrentInstance();
-        return (HttpServletRequest) context.getExternalContext().getRequest();
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getMiddleName() {
+        return middleName;
+    }
+
+    public void setMiddleName(String middleName) {
+        this.middleName = middleName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getTelephone() {
+        return telephone;
+    }
+
+    public void setTelephone(String telephone) {
+        this.telephone = telephone;
     }
 }
