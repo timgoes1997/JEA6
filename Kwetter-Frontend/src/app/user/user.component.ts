@@ -11,6 +11,10 @@ import {MessageService} from '../services/message.service';
 import {Kweet} from '../entities/Kweet';
 import {KweetService} from '../services/kweet.service';
 import {AuthService} from '../services/auth.service';
+import {Event} from '../enums/event.enum';
+import {$WebSocket, WebSocketSendMode} from 'angular2-websocket/angular2-websocket';
+
+const webSocketURL = 'ws://localhost:8080/Kwetter/listener/user/';
 
 @Component({
   selector: 'app-user',
@@ -24,6 +28,8 @@ export class UserComponent implements OnInit {
   currentLoggedInUser: User;
 
   kweets: Kweet[];
+
+  ws: any;
 
   constructor(private userService: UserService,
               private authService: AuthService,
@@ -47,6 +53,7 @@ export class UserComponent implements OnInit {
     const name = this.route.snapshot.paramMap.get('name');
     this.getUser(name);
     this.getUserKweets(name);
+    this.initSocketConnection(name);
   }
 
   isUserLoggedInUser(): boolean {
@@ -114,6 +121,25 @@ export class UserComponent implements OnInit {
       return this.currentLoggedInUser.role === 'Admin' || this.currentLoggedInUser.role === 'Moderator'
         || this.currentLoggedInUser.id === kweet.messager.id;
     }
+  }
+
+  private initSocketConnection(name: string): void {
+    const URL = webSocketURL + name;
+    this.ws = new $WebSocket(URL).onOpen(() => {
+      console.log('Websocket is connected!');
+    });
+
+    /*
+    this.ws.setSend4Mode(WebSocketSendMode.Direct);
+    this.ws.send('Hello My name is Jeff and i like *');
+
+    this.ws.onMessage((msg: MessageEvent) => {
+      console.log('onMessage', msg.data);
+    });
+
+    this.ws.onClose(() => {
+      console.log('Websocket has been closed');
+    });*/
   }
 
   /**

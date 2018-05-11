@@ -1,5 +1,6 @@
 package com.github.timgoes1997.java.websockets;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.websocket.*;
 import javax.websocket.server.PathParam;
@@ -20,12 +21,14 @@ public class UserMessageEndPoint {
     private static Set<UserMessageEndPoint> userMessageEndPoints = new CopyOnWriteArraySet<>();
     private static HashMap<String, String> users = new HashMap<>();
 
+
     @OnOpen
     public void onOpen(Session session, @PathParam("username") String username){
+        logger.info("hello");
         this.session = session;
         userMessageEndPoints.add(this);
         users.put(session.getId(), username);
-
+        //check if username exists otherwise discconect
     }
 
     @OnMessage

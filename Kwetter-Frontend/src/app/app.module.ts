@@ -20,6 +20,7 @@ import {KweetMessagePipe} from './pipes/kweet-message.pipe';
 import { NavBarComponent } from './nav-bar/nav-bar.component';
 import { LogoutComponent } from './logout/logout.component';
 import { MessageCreateComponent } from './message-create/message-create.component';
+import {WebSocketService} from './services/web-socket.service';
 
 
 @NgModule({
@@ -48,7 +49,8 @@ import { MessageCreateComponent } from './message-create/message-create.componen
     MessageService,
     CookieService,
     UserService,
-    KweetService
+    KweetService,
+    WebSocketService
   ],
   bootstrap: [AppComponent]
 })
