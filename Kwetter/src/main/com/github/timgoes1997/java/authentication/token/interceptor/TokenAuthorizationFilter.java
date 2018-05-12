@@ -3,6 +3,7 @@ package com.github.timgoes1997.java.authentication.token.interceptor;
 import com.github.timgoes1997.java.authentication.Constants;
 import com.github.timgoes1997.java.authentication.token.TokenProvider;
 import com.github.timgoes1997.java.entity.user.User;
+import com.github.timgoes1997.java.entity.user.UserRole;
 
 import javax.annotation.Priority;
 import javax.inject.Inject;
@@ -14,6 +15,7 @@ import javax.ws.rs.container.ResourceContext;
 import javax.ws.rs.container.ResourceInfo;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
 import java.io.IOException;
@@ -44,13 +46,22 @@ public class TokenAuthorizationFilter implements ContainerRequestFilter {
 
         try {
             String token = extractToken(requestContext);
-
             tokenProvider.validateToken(token);
             logger.info("Valid token: " + token);
 
             User user = tokenProvider.extractUser(token);
-
             requestContext.setProperty(Constants.USER_REQUEST_STRING, user);
+            if(!hasRoles(user, tokenAuthorization.allowed())){
+                throw new NotAuthorizedException("Your role isn't allowed to execute this method");
+            }
+
+            if(!tokenAuthorization.onlySelf()) return;
+
+            //todo: kijken naar type request en verkrijgen message en user object, kan helaas niet zo makkelijk of ik moet GET request in filter doen is niet echt bepaald praktisch.
+
+            MultivaluedMap<String,String> pathParams = requestContext.getUriInfo().getPathParameters();
+
+
             logger.info("User for token: " + token);
         } catch (Exception e) {
             if (!tokenAuthorization.requiresUser()) return;
@@ -70,5 +81,14 @@ public class TokenAuthorizationFilter implements ContainerRequestFilter {
         }
 
         return authorizationHeader.substring(Constants.BEARER.length(), authorizationHeader.length());
+    }
+
+    public boolean hasRoles(User user, UserRole[] roles) {
+        if(user == null) return false;
+        if (roles == null || roles.length == 0) return true;
+        for (UserRole role : roles) {
+            if (role.equals(user.getRole())) return true;
+        }
+        return false;
     }
 }

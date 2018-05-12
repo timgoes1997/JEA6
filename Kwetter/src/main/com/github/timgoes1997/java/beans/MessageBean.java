@@ -85,8 +85,7 @@ public class MessageBean {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @UserTokenAuthorization(requiresUser = true,
-            allowed = {UserRole.User, UserRole.Moderator, UserRole.Admin},
-            onlySelf = true)
+            allowed = {UserRole.User, UserRole.Moderator, UserRole.Admin})
     @Path("{id}/reply")
     public ReplyMessage createReply(@Context ContainerRequestContext request, @PathParam("id") long messageID, @FormParam("text") String text) {
         return messageUriBuilder.buildReplyMessageUriLinks(request, uriInfo, messageService.createReplyMessage(request, messageID, text));
