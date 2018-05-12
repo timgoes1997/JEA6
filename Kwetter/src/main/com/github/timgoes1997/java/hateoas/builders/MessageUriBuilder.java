@@ -10,6 +10,11 @@ import com.sun.research.ws.wadl.HTTPMethods;
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.core.UriInfo;
 
+/**
+ * Eventuele extra laag in de toekomst is om de method annotation op te vragen uit de klasse.
+ * De waarde uit te lezen en kijken of de huidige user ook die permissie heeft en is ingelogd etc.
+ * En op basis daarvan ook links toevoegen. Als er dan bijvoorbeeld geen link voor remove is in angular hoef ik die knop überhaupt niet te genereren etc.
+ */
 public class MessageUriBuilder {
 
     public Remessage buildRemessageUriLinks(UriInfo uriInfo, Remessage remessage){
