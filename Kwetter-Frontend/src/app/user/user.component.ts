@@ -133,13 +133,18 @@ export class UserComponent implements OnInit {
     this.ws.setSend4Mode(WebSocketSendMode.Direct);
     this.ws.send('Hello My name is Jeff and i like *');
 
+    */
     this.ws.onMessage((msg: MessageEvent) => {
       console.log('onMessage', msg.data);
+      if (!this.isUserLoggedInUser()) {
+        const kweetObject = JSON.parse(msg.data);
+        this.onReceiveUserCreatedKweet(kweetObject);
+      }
     });
 
     this.ws.onClose(() => {
       console.log('Websocket has been closed');
-    });*/
+    });
   }
 
   /**
