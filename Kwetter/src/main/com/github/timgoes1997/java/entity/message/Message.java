@@ -2,6 +2,7 @@ package com.github.timgoes1997.java.entity.message;
 
 import com.github.timgoes1997.java.entity.tag.Tag;
 import com.github.timgoes1997.java.entity.user.User;
+import com.github.timgoes1997.java.hateoas.Link;
 
 import javax.json.*;
 import javax.persistence.*;
@@ -9,6 +10,7 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -90,6 +92,9 @@ public abstract class Message implements Serializable {
             joinColumns = { @JoinColumn(name="MESSAGE_ID", referencedColumnName="ID")},
             inverseJoinColumns = { @JoinColumn(name="LIKED_ACCOUNT_ID", referencedColumnName="ID")})
     protected List<User> likes;
+
+    @Transient
+    protected List<Link> links = new ArrayList<>();
 
     public Message(){
 
@@ -186,8 +191,10 @@ public abstract class Message implements Serializable {
     public JsonObject toJson(){
         JsonArrayBuilder mentionsJsonArray = Json.createArrayBuilder();
         JsonArrayBuilder tagsJsonArray = Json.createArrayBuilder();
+        JsonArrayBuilder linksJsonArray = Json.createArrayBuilder();
         mentions.stream().map(User::toJsonSimple).forEach(mentionsJsonArray::add);
         tags.stream().map(Tag::toJson).forEach(tagsJsonArray::add);
+        links.stream().map(Link::toJson).forEach(linksJsonArray::add);
 
         return Json.createObjectBuilder()
                 .add("id", this.id)
@@ -198,6 +205,29 @@ public abstract class Message implements Serializable {
                 .add("text", this.text)
                 .add("type", this.type.toString())
                 .add("discriminator", String.valueOf(this.discriminator))
+                .add("links", linksJsonArray)
                 .build();
+    }
+
+    public List<Link> getLinks() {
+        return links;
+    }
+
+    public void setLinks(List<Link> links) {
+        this.links = links;
+    }
+
+    public boolean hasLinks(){
+        return links.size() > 0;
+    }
+
+    public void addLink(Link link){
+        if(link != null){
+            links.add(link);
+        }
+    }
+
+    public void addLink(String url, String rel, String requestType){
+        links.add(new Link(url, rel, requestType));
     }
 }
