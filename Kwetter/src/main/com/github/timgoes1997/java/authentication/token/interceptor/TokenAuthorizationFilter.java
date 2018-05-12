@@ -10,10 +10,14 @@ import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
+import javax.ws.rs.container.ResourceContext;
+import javax.ws.rs.container.ResourceInfo;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.logging.Logger;
 
 
@@ -28,11 +32,19 @@ public class TokenAuthorizationFilter implements ContainerRequestFilter {
     @Inject
     private TokenProvider tokenProvider;
 
+    @Context
+    private ResourceInfo resourceInfo;
+
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
-        String token = extractToken(requestContext);
 
-        try{
+        Method resourceMethod = resourceInfo.getResourceMethod();
+        UserTokenAuthorization tokenAuthorization = resourceMethod.getAnnotation(UserTokenAuthorization.class);
+        if (tokenAuthorization == null) return;
+
+        try {
+            String token = extractToken(requestContext);
+
             tokenProvider.validateToken(token);
             logger.info("Valid token: " + token);
 
@@ -40,13 +52,14 @@ public class TokenAuthorizationFilter implements ContainerRequestFilter {
 
             requestContext.setProperty(Constants.USER_REQUEST_STRING, user);
             logger.info("User for token: " + token);
-        }catch (Exception e){
-            logger.severe("Invalid token: " + token);
+        } catch (Exception e) {
+            if (!tokenAuthorization.requiresUser()) return;
+            logger.severe("Invalid token or non given");
             requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).build());
         }
     }
 
-    public String extractToken(ContainerRequestContext requestContext){
+    public String extractToken(ContainerRequestContext requestContext) {
         String authorizationHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
         logger.info("Auth token used: " + authorizationHeader);
 

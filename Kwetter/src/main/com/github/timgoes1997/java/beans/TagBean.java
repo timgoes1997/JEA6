@@ -1,7 +1,9 @@
 package com.github.timgoes1997.java.beans;
 
+import com.github.timgoes1997.java.authentication.token.interceptor.UserTokenAuthorization;
 import com.github.timgoes1997.java.entity.message.Message;
 import com.github.timgoes1997.java.entity.tag.Tag;
+import com.github.timgoes1997.java.entity.user.UserRole;
 import com.github.timgoes1997.java.services.beans.interfaces.TagService;
 
 import javax.ejb.Stateless;
@@ -26,6 +28,9 @@ public class TagBean {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
+    @UserTokenAuthorization(requiresUser = true,
+            allowed = {UserRole.User, UserRole.Moderator, UserRole.Admin},
+            onlySelf = true)
     @Path("create/{tagname}")
     public Tag createTag(@PathParam("tagname") String tag) {
         return tagService.createTag(tag);

@@ -28,7 +28,7 @@ public class UserBean {
     @POST
     @Path("/login")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public Response authenticate(@FormParam("username") String username, @FormParam("password") String password){
+    public Response authenticate(@FormParam("username") String username, @FormParam("password") String password) {
         return userService.authenticateUsingToken(username, password);
     }
 
@@ -36,19 +36,19 @@ public class UserBean {
     @Path("/register")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public User register(@FormParam("username") String username,
-                             @FormParam("password") String password,
-                             @FormParam("email") String email,
-                             @FormParam("firstName") String firstName,
-                             @FormParam("middleName") String middleName,
-                             @FormParam("lastName") String lastName,
-                             @FormParam("telephone") String telephone){
+                         @FormParam("password") String password,
+                         @FormParam("email") String email,
+                         @FormParam("firstName") String firstName,
+                         @FormParam("middleName") String middleName,
+                         @FormParam("lastName") String lastName,
+                         @FormParam("telephone") String telephone) {
         return userService.registerUser(username, password, email, firstName, middleName, lastName, telephone);
     }
 
     @GET
     @Path("/verify/{token}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response confirmRegistration(@PathParam("token") String token){
+    public Response confirmRegistration(@PathParam("token") String token) {
         return userService.confirmUserRegistration(token);
     }
 
@@ -61,32 +61,42 @@ public class UserBean {
 
     @GET
     @Path("{username}/following")
-    @UserTokenAuthorization
+    @UserTokenAuthorization(requiresUser = true,
+            allowed = {UserRole.User, UserRole.Moderator, UserRole.Admin},
+            onlySelf = true)
     @Produces(MediaType.APPLICATION_JSON)
-    public boolean isFollowingUser(@Context ContainerRequestContext request,@PathParam("username") String username) {
+    public boolean isFollowingUser(@Context ContainerRequestContext request, @PathParam("username") String username) {
         return userService.isFollowingUser(request, username);
     }
 
     @POST
     @Path("/{username}/follow")
+    @UserTokenAuthorization(requiresUser = true,
+            allowed = {UserRole.User, UserRole.Moderator, UserRole.Admin},
+            onlySelf = true)
     @Produces(MediaType.APPLICATION_JSON)
-    public User follow(@Context ContainerRequestContext request, @PathParam("username") String username){
+    public User follow(@Context ContainerRequestContext request, @PathParam("username") String username) {
         return userService.followUser(request, username);
     }
 
     @DELETE
     @Path("/{username}/delete")
-    @UserTokenAuthorization({UserRole.User})
+    @UserTokenAuthorization(requiresUser = true,
+            allowed = {UserRole.User, UserRole.Moderator, UserRole.Admin},
+            onlySelf = true,
+            onlySelfExceptions = {UserRole.Moderator, UserRole.Admin})
     @Produces(MediaType.APPLICATION_JSON)
-    public User delete(@Context ContainerRequestContext request, @PathParam("username") String username){
+    public User delete(@Context ContainerRequestContext request, @PathParam("username") String username) {
         return userService.deleteUser(request, username);
     }
 
     @GET
     @Path("/authenticated")
-    @UserTokenAuthorization
+    @UserTokenAuthorization(requiresUser = true,
+            allowed = {UserRole.User, UserRole.Moderator, UserRole.Admin},
+            onlySelf = true)
     @Produces(MediaType.APPLICATION_JSON)
-    public User getAuthenticatedUser(@Context ContainerRequestContext request){
+    public User getAuthenticatedUser(@Context ContainerRequestContext request) {
         return userService.getAuthenticatedUser(request);
     }
 }

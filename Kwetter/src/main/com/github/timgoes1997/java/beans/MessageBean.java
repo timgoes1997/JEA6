@@ -17,6 +17,7 @@ import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriInfo;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,57 +36,68 @@ public class MessageBean {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @UserTokenAuthorization()
     @Path("{id}")
-    public Message getMessageByID(@PathParam("id") long id) {
-        return messageUriBuilder.buildMessageUriLinks(uriInfo, messageService.getMessageByID(id));
+    public Message getMessageByID(@Context ContainerRequestContext request, @PathParam("id") long id) {
+        return messageUriBuilder.buildMessageUriLinks(request, uriInfo, messageService.getMessageByID(id));
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @UserTokenAuthorization()
     @Path("{id}/replies")
-    public List<ReplyMessage> getMessageRepliesByMessageID(@PathParam("id") long id) {
+    public List<ReplyMessage> getMessageRepliesByMessageID(@Context ContainerRequestContext request, @PathParam("id") long id) {
         return messageService.getMessageRepliesByMessageID(id)
                 .stream()
-                .map(m -> (messageUriBuilder.buildReplyMessageUriLinks(uriInfo, m)))
+                .map(m -> (messageUriBuilder.buildReplyMessageUriLinks(request, uriInfo, m)))
                 .collect(Collectors.toList());
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @UserTokenAuthorization()
     @Path("/user/{username}/{id}")
-    public Message getMessageByUsernameAndID(@PathParam("username") String username, @PathParam("id") long id) {
-        return messageUriBuilder.buildMessageUriLinks(uriInfo, messageService.getMessageByUsernameAndID(username, id));
+    public Message getMessageByUsernameAndID(@Context ContainerRequestContext request, @PathParam("username") String username, @PathParam("id") long id) {
+        return messageUriBuilder.buildMessageUriLinks(request, uriInfo, messageService.getMessageByUsernameAndID(username, id));
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @UserTokenAuthorization()
     @Path("/user/{username}/messages")
-    public List<Message> getProfileMessagesByUsername(@PathParam("username") String username) {
+    public List<Message> getProfileMessagesByUsername(@Context ContainerRequestContext request, @PathParam("username") String username) {
         return messageService.getProfileMessagesByUsername(username)
                 .stream()
-                .map(m -> (messageUriBuilder.buildMessageUriLinks(uriInfo, m)))
+                .map(m -> (messageUriBuilder.buildMessageUriLinks(request, uriInfo, m)))
                 .collect(Collectors.toList());
     }
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
-    @UserTokenAuthorization({UserRole.User})
+    @UserTokenAuthorization(requiresUser = true,
+            allowed = {UserRole.User, UserRole.Moderator, UserRole.Admin},
+            onlySelf = true)
     @Path("create")
     public Message createMessage(@Context ContainerRequestContext request, @FormParam("message") String message, @FormParam("messageType") MessageType messageType) {
-        return messageUriBuilder.buildMessageUriLinks(uriInfo, messageService.createMessage(request, message, messageType));
+        return messageUriBuilder.buildMessageUriLinks(request, uriInfo, messageService.createMessage(request, message, messageType));
     }
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
-    @UserTokenAuthorization({UserRole.User})
+    @UserTokenAuthorization(requiresUser = true,
+            allowed = {UserRole.User, UserRole.Moderator, UserRole.Admin},
+            onlySelf = true)
     @Path("{id}/reply")
     public ReplyMessage createReply(@Context ContainerRequestContext request, @PathParam("id") long messageID, @FormParam("text") String text) {
-        return messageUriBuilder.buildReplyMessageUriLinks(uriInfo, messageService.createReplyMessage(request, messageID, text));
+        return messageUriBuilder.buildReplyMessageUriLinks(request, uriInfo, messageService.createReplyMessage(request, messageID, text));
     }
 
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
-    @UserTokenAuthorization({UserRole.User})
+    @UserTokenAuthorization(requiresUser = true,
+            allowed = {UserRole.User, UserRole.Moderator, UserRole.Admin},
+            onlySelf = true,
+            onlySelfExceptions = {UserRole.Moderator, UserRole.Admin})
     @Path("{id}/remove")
     public Message removeMessage(@Context ContainerRequestContext request, @PathParam("id") long messageID) {
         return messageService.removeMessage(request, messageID);
