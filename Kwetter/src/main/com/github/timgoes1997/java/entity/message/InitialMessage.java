@@ -3,6 +3,9 @@ package com.github.timgoes1997.java.entity.message;
 import com.github.timgoes1997.java.entity.tag.Tag;
 import com.github.timgoes1997.java.entity.user.User;
 
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import java.time.LocalDateTime;
@@ -27,8 +30,11 @@ public class InitialMessage extends Message {
         this.discriminator = 1;
     }
 
-//    @Override
-//    public int getDiscriminator() {
-//        return this.getDiscriminator();
-//    }
+    @Override
+    public JsonObject toJson() {
+        JsonObjectBuilder builder = Json.createObjectBuilder( super.toJson());
+        builder.remove("discriminator");
+        builder.add("discriminator", String.valueOf(this.discriminator));
+        return builder.build();
+    }
 }

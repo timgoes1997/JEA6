@@ -3,6 +3,9 @@ package com.github.timgoes1997.java.entity.message;
 import com.github.timgoes1997.java.entity.tag.Tag;
 import com.github.timgoes1997.java.entity.user.User;
 
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -41,7 +44,7 @@ public class ReplyMessage extends Message implements Serializable {
 
     @OneToOne
     @JoinColumn(name = "MESSAGE")
-    private Message message;
+    protected Message message;
 
     public ReplyMessage(){
         super();
@@ -65,5 +68,14 @@ public class ReplyMessage extends Message implements Serializable {
 
     public void setMessage(Message message) {
         this.message = message;
+    }
+
+    @Override
+    public JsonObject toJson() {
+        JsonObjectBuilder builder = Json.createObjectBuilder( super.toJson());
+        builder.remove("discriminator");
+        builder.add("discriminator", String.valueOf(this.discriminator));
+        builder.add("message", this.message.toJson());
+        return builder.build();
     }
 }

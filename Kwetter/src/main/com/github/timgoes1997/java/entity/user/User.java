@@ -5,6 +5,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.timgoes1997.java.entity.message.Message;
 import com.github.timgoes1997.java.entity.user.interfaces.UserInterface;
 
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.*;
 import javax.validation.constraints.Pattern;
@@ -367,4 +370,26 @@ public class User implements Serializable, UserInterface {
 
         return Objects.hash(id);
     }
+
+    public JsonObject toJsonSimple(){
+        return Json.createObjectBuilder()
+                .add("id", this.id)
+                .add("username", this.username).build();
+    }
+
+    public JsonObject toJson(){
+        JsonObjectBuilder builder = Json.createObjectBuilder()
+                .add("id", this.id)
+                .add("username", this.username)
+                .add("firstName", this.firstName)
+                .add("lastName", this.lastName)
+                .add("registrationDate", this.registrationDate.toString())
+                .add("role", this.role.toString())
+                .add("email", this.email);
+        if(middleName != null){
+            builder.add("middleName", this.middleName);
+        }
+        return builder.build();
+    }
+
 }

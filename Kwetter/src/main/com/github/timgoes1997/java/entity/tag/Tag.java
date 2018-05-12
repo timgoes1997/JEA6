@@ -1,5 +1,7 @@
 package com.github.timgoes1997.java.entity.tag;
 
+import javax.json.Json;
+import javax.json.JsonObject;
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
@@ -67,5 +69,11 @@ public class Tag implements Serializable {
     public int hashCode() {
 
         return Objects.hash(id);
+    }
+
+    public JsonObject toJson(){
+        return Json.createObjectBuilder()
+                .add("id", this.id)
+                .add("tagName", this.tagName).build();
     }
 }

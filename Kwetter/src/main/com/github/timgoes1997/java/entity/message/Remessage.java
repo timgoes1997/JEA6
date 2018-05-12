@@ -3,6 +3,9 @@ package com.github.timgoes1997.java.entity.message;
 import com.github.timgoes1997.java.entity.tag.Tag;
 import com.github.timgoes1997.java.entity.user.User;
 
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -55,5 +58,14 @@ public class Remessage extends ReplyMessage implements Serializable {
 
     public boolean isHasText() {
         return hasText;
+    }
+
+    @Override
+    public JsonObject toJson() {
+        JsonObjectBuilder builder = Json.createObjectBuilder( super.toJson());
+        builder.remove("discriminator");
+        builder.add("discriminator", String.valueOf(this.discriminator));
+        builder.add("hasText", String .valueOf(this.hasText));
+        return builder.build();
     }
 }

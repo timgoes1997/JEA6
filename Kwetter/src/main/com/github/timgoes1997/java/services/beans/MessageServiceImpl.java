@@ -10,8 +10,10 @@ import com.github.timgoes1997.java.entity.message.ReplyMessage;
 import com.github.timgoes1997.java.entity.user.User;
 import com.github.timgoes1997.java.services.ServiceHelper;
 import com.github.timgoes1997.java.services.beans.interfaces.MessageService;
+import com.github.timgoes1997.java.websockets.MessageInformer;
 
 import javax.ejb.Stateless;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.container.ContainerRequestContext;
@@ -26,6 +28,10 @@ public class MessageServiceImpl implements MessageService {
 
     @Inject
     private UserDAO userDAO;
+
+    @Inject
+    @MessageInformer
+    Event<Message> messageEvent;
 
     @Override
     public Message getMessageByID(long id) {
@@ -97,8 +103,8 @@ public class MessageServiceImpl implements MessageService {
                     messageType, user, new Date(),
                     messageDAO.generateTags(text), messageDAO.generateMentions(text));
             messageDAO.create(initialMessage);
-
-            return messageDAO.find(initialMessage.getId());
+            messageEvent.fire(initialMessage);
+            return initialMessage;
         }catch (Exception e){
             ServiceHelper.checkIfWebApplicationExceptionAndThrow(e);
             throw new InternalServerErrorException("Couldn't retrieve message after creating, it might not have been created by the server yet!");
@@ -132,7 +138,7 @@ public class MessageServiceImpl implements MessageService {
                     messageDAO.generateTags(text), messageDAO.generateMentions(text),
                     message);
             messageDAO.create(reply);
-
+            messageEvent.fire(reply);
             return reply;
         } catch (Exception e) {
             ServiceHelper.checkIfWebApplicationExceptionAndThrow(e);

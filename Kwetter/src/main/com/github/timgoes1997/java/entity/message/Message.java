@@ -3,6 +3,7 @@ package com.github.timgoes1997.java.entity.message;
 import com.github.timgoes1997.java.entity.tag.Tag;
 import com.github.timgoes1997.java.entity.user.User;
 
+import javax.json.*;
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
@@ -179,7 +180,24 @@ public abstract class Message implements Serializable {
 
     @Override
     public int hashCode() {
-
         return Objects.hash(id);
+    }
+
+    public JsonObject toJson(){
+        JsonArrayBuilder mentionsJsonArray = Json.createArrayBuilder();
+        JsonArrayBuilder tagsJsonArray = Json.createArrayBuilder();
+        mentions.stream().map(User::toJsonSimple).forEach(mentionsJsonArray::add);
+        tags.stream().map(Tag::toJson).forEach(tagsJsonArray::add);
+
+        return Json.createObjectBuilder()
+                .add("id", this.id)
+                .add("messager", this.messager.toJsonSimple())
+                .add("date", this.date.toString())
+                .add("mentions", mentionsJsonArray)
+                .add("tags", tagsJsonArray)
+                .add("text", this.text)
+                .add("type", this.type.toString())
+                .add("discriminator", String.valueOf(this.discriminator))
+                .build();
     }
 }
