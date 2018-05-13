@@ -8,6 +8,9 @@ import {catchError, tap} from 'rxjs/operators';
 import {AuthService} from '../services/auth.service';
 import {ErrorHandlingService} from '../services/error-handling.service';
 import {MessageRepliesComponent} from '../message-replies/message-replies.component';
+import {MessageReplyCountComponent} from '../message-reply-count/message-reply-count.component';
+import {MessageRemessageComponent} from '../message-remessage/message-remessage.component';
+import {MessageRemessageCountComponent} from '../message-remessage-count/message-remessage-count.component';
 
 @Component({
   selector: 'app-message-details',
@@ -24,6 +27,12 @@ export class MessageDetailsComponent implements OnInit {
 
   @ViewChild(MessageRepliesComponent)
   private messageRepliesComponent: MessageRepliesComponent;
+
+  @ViewChild(MessageReplyCountComponent)
+  private messageReplyCountComponent: MessageReplyCountComponent;
+
+  @ViewChild(MessageRemessageCountComponent)
+  private messageRemessageCountComponent: MessageRemessageCountComponent;
 
   currentLoggedInUser: User;
 
@@ -83,6 +92,8 @@ export class MessageDetailsComponent implements OnInit {
   OnUserCreatedReply(kweet: Kweet) {
     if (this.messageRepliesComponent) {
       this.messageRepliesComponent.OnReceiveUserCreatedReply(kweet);
+      this.messageReplyCountComponent.getReplyCount();
+      this.messageRemessageCountComponent.getRemessageCount();
     }
   }
 
