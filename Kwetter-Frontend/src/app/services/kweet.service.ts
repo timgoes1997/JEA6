@@ -22,17 +22,17 @@ export class KweetService {
 
   getKweet(name: string, id: number): Observable<any> {
     const requestURL = `${this.messageURL}/user/${name}/${id}`;
-    return this.http.get<Kweet>(requestURL, {observe: 'response'});
+    return this.http.get<Kweet>(requestURL, {observe: 'response', headers: this.getAuthHeaders()});
   }
 
   getKweets(name: string): Observable<any> {
     const requestURL = `${this.messageURL}/user/${name}/messages`;
-    return this.http.get<Kweet[]>(requestURL, {observe: 'response'});
+    return this.http.get<Kweet[]>(requestURL, {observe: 'response', headers: this.getAuthHeaders()});
   }
 
   getTagKweets(tagName: string): Observable<any> {
     const requestURL = `${this.tagURL}/${tagName}`;
-    return this.http.get<Kweet[]>(requestURL, {observe: 'response'});
+    return this.http.get<Kweet[]>(requestURL, {observe: 'response', headers: this.getAuthHeaders()});
   }
 
   deleteKweet(kweet: Kweet): boolean {
