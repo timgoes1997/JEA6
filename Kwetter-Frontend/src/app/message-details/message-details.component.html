@@ -1,5 +1,5 @@
-<div class="container">
-  <div class="message" *ngIf="kweet">
+<div class="container" *ngIf="kweet">
+  <div class="message">
     <p>Kweet type {{kweet.discriminator | kweetType}}</p>
 
     <a routerLink="/user/{{kweet.messager.username}}">
@@ -17,5 +17,9 @@
     <app-message-delete [kweet]="kweet" (onMessageDeleted)="onReceiveDeleteKweet($event)">
     </app-message-delete>
 
+  </div>
+  <div id="replies" class="replies" *ngIf="!kweetUsingInput">
+    <h2>Replies</h2>
+    <app-message-replies [kweet]="kweet"></app-message-replies>
   </div>
 </div>

@@ -23,7 +23,7 @@ export class MessageDetailsComponent implements OnInit {
 
   currentLoggedInUser: User;
 
-  kweetUsingInput = false;
+  kweetUsingInput = true;
 
   constructor(private kweetService: KweetService,
               private errorHandlingService: ErrorHandlingService,
@@ -40,7 +40,7 @@ export class MessageDetailsComponent implements OnInit {
 
   ngOnInit() {
     if (!this.kweet) {
-      this.kweetUsingInput = true;
+      this.kweetUsingInput = false;
       const name = this.route.snapshot.paramMap.get('name');
       const message = +this.route.snapshot.paramMap.get('message');
 
