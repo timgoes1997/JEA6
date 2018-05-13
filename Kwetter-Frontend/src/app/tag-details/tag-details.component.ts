@@ -18,14 +18,16 @@ export class TagDetailsComponent implements OnInit {
 
   kweets: Kweet[];
 
+  name: string;
+
   constructor(public kweetService: KweetService,
               private errorHandlingService: ErrorHandlingService,
               private route: ActivatedRoute) {
   }
 
   ngOnInit() {
-    const name = this.route.snapshot.paramMap.get('name');
-    this.getTagKweets(name);
+    this.name = this.route.snapshot.paramMap.get('name');
+    this.getTagKweets(this.name);
   }
 
   getTagKweets(name: string) {
