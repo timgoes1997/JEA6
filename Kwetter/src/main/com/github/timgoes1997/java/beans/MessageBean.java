@@ -12,6 +12,9 @@ import com.sun.research.ws.wadl.HTTPMethods;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 import javax.ws.rs.*;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Context;
@@ -56,6 +59,22 @@ public class MessageBean {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @UserTokenAuthorization()
+    @Path("{id}/repliescount")
+    public long getMessageReplyCountByMessageID(@Context ContainerRequestContext request, @PathParam("id") long id) {
+        return messageService.getReplyCount(id);
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @UserTokenAuthorization()
+    @Path("{id}/remessagescount")
+    public long getMessageRemessagesCountByMessageID(@Context ContainerRequestContext request, @PathParam("id") long id) {
+        return messageService.getReplyCount(id);
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @UserTokenAuthorization()
     @Path("/user/{username}/{id}")
     public Message getMessageByUsernameAndID(@Context ContainerRequestContext request, @PathParam("username") String username, @PathParam("id") long id) {
         return messageUriBuilder.buildMessageUriLinks(request, uriInfo, messageService.getMessageByUsernameAndID(username, id));
@@ -72,6 +91,24 @@ public class MessageBean {
                 .collect(Collectors.toList());
     }
 
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @UserTokenAuthorization()
+    @Path("{id}/likes")
+    public JsonObject getMessageLikes(@Context ContainerRequestContext request, @PathParam("id") long messageID) {
+        return Json.createObjectBuilder()
+                .add("amount", messageService.getMessageLikes(messageID))
+                .build();
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @UserTokenAuthorization()
+    @Path("{id}/hasliked")
+    public boolean hasLikedMessage(@Context ContainerRequestContext request, @PathParam("id") long messageID) {
+        return messageService.hasLiked(request, messageID);
+    }
+
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @UserTokenAuthorization(requiresUser = true,
@@ -85,10 +122,23 @@ public class MessageBean {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @UserTokenAuthorization(requiresUser = true,
-            allowed = {UserRole.User, UserRole.Moderator, UserRole.Admin})
+            allowed = {UserRole.User, UserRole.Moderator, UserRole.Admin},
+            onlySelf = true)
     @Path("{id}/reply")
     public ReplyMessage createReply(@Context ContainerRequestContext request, @PathParam("id") long messageID, @FormParam("text") String text) {
         return messageUriBuilder.buildReplyMessageUriLinks(request, uriInfo, messageService.createReplyMessage(request, messageID, text));
+    }
+
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @UserTokenAuthorization(requiresUser = true,
+            allowed = {UserRole.User, UserRole.Moderator, UserRole.Admin},
+            onlySelf = true)
+    @Path("{id}/addlike")
+    public JsonObject likeMessage(@Context ContainerRequestContext request, @PathParam("id") long messageID){
+        return Json.createObjectBuilder()
+                .add("amount", messageService.addMessageLike(request, messageID))
+                .build();
     }
 
     @DELETE
@@ -102,4 +152,15 @@ public class MessageBean {
         return messageService.removeMessage(request, messageID);
     }
 
+    @DELETE
+    @Produces(MediaType.APPLICATION_JSON)
+    @UserTokenAuthorization(requiresUser = true,
+            allowed = {UserRole.User, UserRole.Moderator, UserRole.Admin},
+            onlySelf = true)
+    @Path("{id}/removelike")
+    public JsonObject removeMessageLike(@Context ContainerRequestContext request, @PathParam("id") long messageID) {
+        return Json.createObjectBuilder()
+                .add("amount", messageService.removeMessageLike(request, messageID))
+                .build();
+    }
 }

@@ -182,6 +182,24 @@ public class MessageDAOImpl implements MessageDAO {
     }
 
     @Override
+    public long getRemessageCount(Message message) {
+        return (em.createNamedQuery(Remessage.COUNT_REMESSAGES_FOR_MESSAGE_ID, long.class)
+                .setParameter("id", message.getId()).getSingleResult());
+    }
+
+    @Override
+    public long getReplyCount(Message message) {
+        return (em.createNamedQuery(ReplyMessage.COUNT_REPLIES_FOR_MESSAGE_ID, long.class)
+                .setParameter("id", message.getId()).getSingleResult());
+    }
+
+    @Override
+    public long getAmountOfLikes(Message message) {
+        return ((Number)em.createNativeQuery("SELECT COUNT(*) FROM MESSAGE_LIKES m WHERE m.MESSAGE_ID = ?1")
+                .setParameter(1, message.getId()).getSingleResult()).longValue();
+    }
+
+    @Override
     public List<Message> getUserTimeLine(User user) {
         return em.createNativeQuery("SELECT * FROM MESSAGE m " +
                 "WHERE m.MESSAGER_ID IN (SELECT USER_ID FROM USER_FOLLOWING WHERE FOLLOWER_ID = ?1) " +

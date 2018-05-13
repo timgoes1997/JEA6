@@ -24,5 +24,15 @@ public interface MessageService {
     Message removeMessage(ContainerRequestContext requestContext, long messageID);
     Message removeMessage(User user, long messageID);
 
+    long getMessageLikes(long messageID);
+    long addMessageLike(ContainerRequestContext requestContext, long messageID);
+    long addMessageLike(User user, long messageID);
+    boolean hasLiked(ContainerRequestContext requestContext, long messageID);
+    boolean hasLiked(User user, long messageID);
+    long removeMessageLike(ContainerRequestContext requestContext, long messageID);
+    long removeMessageLike(User user, long messageID);
+
+    long getReplyCount(long messageID);
+    long getRemessageCount(long messageID);
     void basicMessageValidation(String text);
 }

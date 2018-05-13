@@ -20,6 +20,8 @@ import java.util.List;
                 query="SELECT r FROM Remessage r WHERE r.discriminator=3"),
         @NamedQuery(name=Remessage.FIND_REMESSAGE_FOR_MESSAGE_ID,
                 query="SELECT r FROM Remessage r WHERE r.discriminator=3 AND r.message.id = :id"),
+        @NamedQuery(name=Remessage.COUNT_REMESSAGES_FOR_MESSAGE_ID,
+                query="SELECT COUNT(r) FROM Remessage r WHERE r.discriminator=3 AND r.message.id = :id"),
 })
 public class Remessage extends ReplyMessage implements Serializable {
     //======================
@@ -29,6 +31,7 @@ public class Remessage extends ReplyMessage implements Serializable {
     public static final String FIND_ALL = "Remessage.findAll";
     public static final String FIND_ALL_BY_TYPE = "Remessage.findRepliesByType";
     public static final String FIND_REMESSAGE_FOR_MESSAGE_ID = "Message.findRemessages";
+    public static final String COUNT_REMESSAGES_FOR_MESSAGE_ID = "Message.countRemessages";
 
     private static final long serialVersionUID = -9015261934439105868L;
 

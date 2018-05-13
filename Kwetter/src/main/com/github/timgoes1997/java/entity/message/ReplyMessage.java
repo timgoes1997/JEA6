@@ -25,6 +25,8 @@ import java.util.List;
                 query="SELECT r FROM ReplyMessage r WHERE r.discriminator=2"),
         @NamedQuery(name=ReplyMessage.FIND_REPLY_FOR_MESSAGE_ID,
                 query="SELECT r FROM ReplyMessage r WHERE r.discriminator=2 AND r.message.id = :id"),
+        @NamedQuery(name=ReplyMessage.COUNT_REPLIES_FOR_MESSAGE_ID,
+                query="SELECT COUNT(r) FROM ReplyMessage r WHERE r.discriminator=2 AND r.message.id = :id"),
 })
 public class ReplyMessage extends Message implements Serializable {
 
@@ -35,6 +37,7 @@ public class ReplyMessage extends Message implements Serializable {
     public static final String FIND_ALL = "ReplyMessage.findAll";
     public static final String FIND_ALL_BY_TYPE = "ReplyMessage.findRepliesByType";
     public static final String FIND_REPLY_FOR_MESSAGE_ID = "Message.findReplies";
+    public static final String COUNT_REPLIES_FOR_MESSAGE_ID = "Message.countReplies";
 
     private static final long serialVersionUID = 6864653489060895368L;
 

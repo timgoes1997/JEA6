@@ -40,6 +40,12 @@ public class MessageUriBuilder {
         message.addLink(getRepliesUri(uriInfo, message));
         message.addLink(getCreateReplyUri(requestContext, uriInfo, message));
         message.addLink(getRemoveUri(requestContext, uriInfo, message));
+        message.addLink(getAddLikeURI(requestContext,uriInfo, message));
+        message.addLink(getRemoveLikeURI(requestContext,uriInfo, message));
+        message.addLink(getHasLikedURI(requestContext,uriInfo, message));
+        message.addLink(getMessageLikes(requestContext,uriInfo, message));
+        message.addLink(getMessageRemessagesCount(requestContext,uriInfo, message));
+        message.addLink(getMessageRepliesCount(requestContext,uriInfo, message));
         return message;
     }
 
@@ -97,6 +103,120 @@ public class MessageUriBuilder {
                     .toString();
             return new Link(uri, "remove", HttpMethod.DELETE);
         } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private Link getAddLikeURI(ContainerRequestContext requestContext, UriInfo uriInfo, Message message){
+        try{
+            Method method = MessageBean.class.getMethod("likeMessage", ContainerRequestContext.class, long.class);
+            UserTokenAuthorization tokenAuthorization = method.getAnnotation(UserTokenAuthorization.class);
+            if (!hasPermission(requestContext, tokenAuthorization, message)) return null;
+
+            String uri = uriInfo.getBaseUriBuilder()
+                    .path(MessageBean.class)
+                    .path(method)
+                    .resolveTemplate("id", message.getId())
+                    .build()
+                    .toString();
+            return new Link(uri, "addLike", HttpMethod.POST);
+        }catch (NoSuchMethodException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private Link getRemoveLikeURI(ContainerRequestContext requestContext, UriInfo uriInfo, Message message){
+        try{
+            Method method = MessageBean.class.getMethod("removeMessageLike", ContainerRequestContext.class, long.class);
+            UserTokenAuthorization tokenAuthorization = method.getAnnotation(UserTokenAuthorization.class);
+            if (!hasPermission(requestContext, tokenAuthorization, message)) return null;
+
+            String uri = uriInfo.getBaseUriBuilder()
+                    .path(MessageBean.class)
+                    .path(method)
+                    .resolveTemplate("id", message.getId())
+                    .build()
+                    .toString();
+            return new Link(uri, "removelike", HttpMethod.DELETE);
+        }catch (NoSuchMethodException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private Link getHasLikedURI(ContainerRequestContext requestContext, UriInfo uriInfo, Message message){
+        try{
+            Method method = MessageBean.class.getMethod("hasLikedMessage", ContainerRequestContext.class, long.class);
+            UserTokenAuthorization tokenAuthorization = method.getAnnotation(UserTokenAuthorization.class);
+            if (!hasPermission(requestContext, tokenAuthorization, message)) return null;
+
+            String uri = uriInfo.getBaseUriBuilder()
+                    .path(MessageBean.class)
+                    .path(method)
+                    .resolveTemplate("id", message.getId())
+                    .build()
+                    .toString();
+            return new Link(uri, "hasliked", HttpMethod.GET);
+        }catch (NoSuchMethodException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private Link getMessageLikes(ContainerRequestContext requestContext, UriInfo uriInfo, Message message){
+        try{
+            Method method = MessageBean.class.getMethod("getMessageLikes", ContainerRequestContext.class, long.class);
+            UserTokenAuthorization tokenAuthorization = method.getAnnotation(UserTokenAuthorization.class);
+            if (!hasPermission(requestContext, tokenAuthorization, message)) return null;
+
+            String uri = uriInfo.getBaseUriBuilder()
+                    .path(MessageBean.class)
+                    .path(method)
+                    .resolveTemplate("id", message.getId())
+                    .build()
+                    .toString();
+            return new Link(uri, "likes", HttpMethod.GET);
+        }catch (NoSuchMethodException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private Link getMessageRepliesCount(ContainerRequestContext requestContext, UriInfo uriInfo, Message message){
+        try{
+            Method method = MessageBean.class.getMethod("getMessageReplyCountByMessageID", ContainerRequestContext.class, long.class);
+            UserTokenAuthorization tokenAuthorization = method.getAnnotation(UserTokenAuthorization.class);
+            if (!hasPermission(requestContext, tokenAuthorization, message)) return null;
+
+            String uri = uriInfo.getBaseUriBuilder()
+                    .path(MessageBean.class)
+                    .path(method)
+                    .resolveTemplate("id", message.getId())
+                    .build()
+                    .toString();
+            return new Link(uri, "repliescount", HttpMethod.GET);
+        }catch (NoSuchMethodException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private Link getMessageRemessagesCount(ContainerRequestContext requestContext, UriInfo uriInfo, Message message){
+        try{
+            Method method = MessageBean.class.getMethod("getMessageRemessagesCountByMessageID", ContainerRequestContext.class, long.class);
+            UserTokenAuthorization tokenAuthorization = method.getAnnotation(UserTokenAuthorization.class);
+            if (!hasPermission(requestContext, tokenAuthorization, message)) return null;
+
+            String uri = uriInfo.getBaseUriBuilder()
+                    .path(MessageBean.class)
+                    .path(method)
+                    .resolveTemplate("id", message.getId())
+                    .build()
+                    .toString();
+            return new Link(uri, "remessagescount", HttpMethod.GET);
+        }catch (NoSuchMethodException e) {
             e.printStackTrace();
             return null;
         }

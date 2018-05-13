@@ -38,6 +38,11 @@ public interface MessageDAO {
     List<ReplyMessage> getMessageReplies(Message message, int firstResult, int maxResults);
     List<Message> getAllMessages();
 
+    long getRemessageCount(Message message);
+    long getReplyCount(Message message);
+
+    long getAmountOfLikes(Message message);
+
     void nullMessageData(Message message);
 
     void remove(Message message);
