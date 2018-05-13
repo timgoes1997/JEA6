@@ -25,4 +25,7 @@ export class NavBarComponent implements OnInit {
     this.loggedIn = user;
   }
 
+  reload() {
+    location.reload(true);
+  }
 }

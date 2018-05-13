@@ -14,30 +14,6 @@
     <li *ngFor="let kweet of kweets">
       <app-message-details [kweet]="kweet">
       </app-message-details>
-
-
-     <!-- <div class="message">
-        <p>Kweet type {{kweet.discriminator | kweetType}} </p>
-
-        <a routerLink="/user/{{kweet.messager.username}}">
-          <h4>{{kweet.messager.username}} </h4>
-        </a>
-
-        <div [innerHTML]="kweet | kweetMessage">
-
-        </div>
-
-        <a routerLink="/user/{{kweet.messager.username}}/{{kweet.id}}">
-          <p>{{kweet.date}}</p>
-        </a>
-
-        <div class="options">
-          <div class="delete" *ngIf="equalsModeratorAdminOrUser(kweet)">
-            <button (click)="Delete(kweet)">remove</button>
-          </div>
-        </div>
-
-      </div> -->
     </li>
   </div>
 </div>
