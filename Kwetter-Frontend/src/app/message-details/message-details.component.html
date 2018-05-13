@@ -17,6 +17,9 @@
     <app-message-delete [kweet]="kweet" (onMessageDeleted)="onReceiveDeleteKweet($event)">
     </app-message-delete>
 
+    <app-message-likes [kweet]="kweet">
+    </app-message-likes>
+
   </div>
   <div class="other" *ngIf="!kweetUsingInput">
     <div id="reply" class="replies" >

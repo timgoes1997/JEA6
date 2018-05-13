@@ -27,6 +27,9 @@ import {RestService} from './services/rest.service';
 import { MessageRepliesComponent } from './message-replies/message-replies.component';
 import { MessageListComponent } from './message-list/message-list.component';
 import { MessageReplyComponent } from './message-reply/message-reply.component';
+import { MessageLikesComponent } from './message-likes/message-likes.component';
+import { MessageLikesLikeComponent } from './message-likes-like/message-likes-like.component';
+import { MessageLikesDislikeComponent } from './message-likes-dislike/message-likes-dislike.component';
 
 
 @NgModule({
@@ -45,7 +48,10 @@ import { MessageReplyComponent } from './message-reply/message-reply.component';
     MessageDeleteComponent,
     MessageRepliesComponent,
     MessageListComponent,
-    MessageReplyComponent
+    MessageReplyComponent,
+    MessageLikesComponent,
+    MessageLikesLikeComponent,
+    MessageLikesDislikeComponent
   ],
   imports: [
     BrowserModule,

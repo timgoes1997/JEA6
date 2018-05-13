@@ -1,0 +1,11 @@
+<div id="likes">
+  <p>{{likes}}</p>
+  <div id="likeAction" *ngIf="hasLikedUri">
+    <div id="likeActionTypeLike" *ngIf="hasLiked">
+      <app-message-likes-dislike [kweet]="kweet" (onReceiveLike)="OnUpdateLikes($event)"></app-message-likes-dislike>
+    </div>
+    <div id="likeActionTypeDislike" *ngIf="!hasLiked">
+      <app-message-likes-like [kweet]="kweet" (onReceiveLike)="OnUpdateLikes($event)"></app-message-likes-like>
+    </div>
+  </div>
+</div>

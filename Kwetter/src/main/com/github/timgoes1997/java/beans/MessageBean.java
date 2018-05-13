@@ -103,7 +103,9 @@ public class MessageBean {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @UserTokenAuthorization()
+    @UserTokenAuthorization(requiresUser = true,
+            allowed = {UserRole.User, UserRole.Moderator, UserRole.Admin},
+            onlySelf = true)
     @Path("{id}/hasliked")
     public boolean hasLikedMessage(@Context ContainerRequestContext request, @PathParam("id") long messageID) {
         return messageService.hasLiked(request, messageID);
