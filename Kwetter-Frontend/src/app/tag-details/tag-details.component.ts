@@ -7,6 +7,7 @@ import {MessageService} from '../services/message.service';
 import {ActivatedRoute} from '@angular/router';
 import {catchError, tap} from 'rxjs/operators';
 import {HttpResponse} from '@angular/common/http';
+import {ErrorHandlingService} from '../services/error-handling.service';
 
 @Component({
   selector: 'app-tag-details',
@@ -18,7 +19,7 @@ export class TagDetailsComponent implements OnInit {
   kweets: Kweet[];
 
   constructor(public kweetService: KweetService,
-              private messageService: MessageService,
+              private errorHandlingService: ErrorHandlingService,
               private route: ActivatedRoute) {
   }
 
@@ -29,8 +30,8 @@ export class TagDetailsComponent implements OnInit {
 
   getTagKweets(name: string) {
     this.kweetService.getTagKweets(name).pipe(
-      tap(_ => this.log(`fetched kweets for user named ${name}`)),
-      catchError(this.handleError<HttpResponse<Kweet[]>>(`getHero name=${name}`))
+      tap(_ => this.errorHandlingService.log(`fetched kweets for user named ${name}`)),
+      catchError(this.errorHandlingService.handleError<HttpResponse<Kweet[]>>(`Erro on tag name=${name}`))
     ).subscribe(kweets => this.OnReceiveTagKweets(kweets));
   }
 
@@ -39,29 +40,5 @@ export class TagDetailsComponent implements OnInit {
       this.kweets = response.body;
       console.log('received kweet list');
     }
-  }
-
-  /**
-   * Handle Http operation that failed.
-   * Let the app continue.
-   * @param operation - name of the operation that failed
-   * @param result - optional value to return as the observable result
-   */
-  private handleError<T>(operation = 'operation', result?: T) {
-    return (error: any): Observable<T> => {
-
-      // TODO: handling error request
-      console.error(error); // log to console instead
-
-      // TODO: better job of transforming error for user consumption
-      this.log(`${operation} failed: ${error.message}`);
-
-      // Let the app keep running by returning an empty result.
-      return of(result as T);
-    };
-  }
-
-  private log(message: string) {
-    this.messageService.add('HeroService: ' + message);
   }
 }

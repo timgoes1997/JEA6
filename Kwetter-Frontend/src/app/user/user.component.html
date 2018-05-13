@@ -12,7 +12,11 @@
   <app-message-create *ngIf="isUserLoggedInUser()"></app-message-create>
   <div class="messagelist">
     <li *ngFor="let kweet of kweets">
-      <div class="message">
+      <app-message-details [kweet]="kweet">
+      </app-message-details>
+
+
+     <!-- <div class="message">
         <p>Kweet type {{kweet.discriminator | kweetType}} </p>
 
         <a routerLink="/user/{{kweet.messager.username}}">
@@ -33,7 +37,7 @@
           </div>
         </div>
 
-      </div>
+      </div> -->
     </li>
   </div>
 </div>

@@ -21,6 +21,7 @@ import { NavBarComponent } from './nav-bar/nav-bar.component';
 import { LogoutComponent } from './logout/logout.component';
 import { MessageCreateComponent } from './message-create/message-create.component';
 import {WebSocketService} from './services/web-socket.service';
+import {ErrorHandlingService} from './services/error-handling.service';
 
 
 @NgModule({
@@ -50,7 +51,8 @@ import {WebSocketService} from './services/web-socket.service';
     CookieService,
     UserService,
     KweetService,
-    WebSocketService
+    WebSocketService,
+    ErrorHandlingService
   ],
   bootstrap: [AppComponent]
 })

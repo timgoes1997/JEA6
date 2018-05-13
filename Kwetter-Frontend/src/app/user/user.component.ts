@@ -11,6 +11,7 @@ import {Kweet} from '../entities/Kweet';
 import {KweetService} from '../services/kweet.service';
 import {AuthService} from '../services/auth.service';
 import {$WebSocket, WebSocketSendMode} from 'angular2-websocket/angular2-websocket';
+import {ErrorHandlingService} from '../services/error-handling.service';
 
 const webSocketURL = 'ws://localhost:8080/Kwetter/listener/user/';
 
@@ -31,7 +32,7 @@ export class UserComponent implements OnInit {
 
   constructor(private userService: UserService,
               private authService: AuthService,
-              private messageService: MessageService,
+              private errorHandlingService: ErrorHandlingService,
               private kweetService: KweetService,
               private route: ActivatedRoute,
               private router: Router) {
@@ -67,15 +68,15 @@ export class UserComponent implements OnInit {
 
   getUser(name: string) {
     this.userService.getUser(name).pipe(
-      tap(_ => this.log(`fetched user named ${name}`)),
-      catchError(this.handleError<HttpResponse<User>>(`getHero name=${name}`))
+      tap(_ => this.errorHandlingService.log(`fetched user named ${name}`)),
+      catchError(this.errorHandlingService.handleError<HttpResponse<User>>(`getHero name=${name}`))
     ).subscribe(user => this.OnReceiveUser(user));
   }
 
   getUserKweets(name: string) {
     this.kweetService.getKweets(name).pipe(
-      tap(_ => this.log(`fetched kweets for user named ${name}`)),
-      catchError(this.handleError<HttpResponse<Kweet[]>>(`getHero name=${name}`))
+      tap(_ => this.errorHandlingService.log(`fetched kweets for user named ${name}`)),
+      catchError(this.errorHandlingService.handleError<HttpResponse<Kweet[]>>(`getHero name=${name}`))
     ).subscribe(kweets => this.OnReceiveUserKweets(kweets));
   }
 
@@ -147,29 +148,4 @@ export class UserComponent implements OnInit {
       console.log('Websocket has been closed');
     });
   }
-
-  /**
-   * Handle Http operation that failed.
-   * Let the app continue.
-   * @param operation - name of the operation that failed
-   * @param result - optional value to return as the observable result
-   */
-  private handleError<T>(operation = 'operation', result?: T) {
-    return (error: any): Observable<T> => {
-
-      // TODO: handling error request
-      console.error(error); // log to console instead
-
-      // TODO: better job of transforming error for user consumption
-      this.log(`${operation} failed: ${error.message}`);
-
-      // Let the app keep running by returning an empty result.
-      return of(result as T);
-    };
-  }
-
-  private log(message: string) {
-    this.messageService.add('HeroService: ' + message);
-  }
-
 }

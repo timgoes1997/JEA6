@@ -1,7 +1,4 @@
-import {Component, OnInit} from '@angular/core';
-import {Observable} from 'rxjs/Observable';
-import {of} from 'rxjs/observable/of';
-import {MessageService} from '../services/message.service';
+import {Component, Input, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {User} from '../entities/User';
 import {HttpResponse} from '@angular/common/http';
@@ -9,6 +6,7 @@ import {Kweet} from '../entities/Kweet';
 import {KweetService} from '../services/kweet.service';
 import {catchError, tap} from 'rxjs/operators';
 import {AuthService} from '../services/auth.service';
+import {ErrorHandlingService} from '../services/error-handling.service';
 
 @Component({
   selector: 'app-message-details',
@@ -17,12 +15,13 @@ import {AuthService} from '../services/auth.service';
 })
 export class MessageDetailsComponent implements OnInit {
 
+  @Input()
   kweet: Kweet;
 
   currentLoggedInUser: User;
 
   constructor(private kweetService: KweetService,
-              private messageService: MessageService,
+              private errorHandlingService: ErrorHandlingService,
               private authService: AuthService,
               private route: ActivatedRoute,
               private router: Router) {
@@ -35,13 +34,15 @@ export class MessageDetailsComponent implements OnInit {
   }
 
   ngOnInit() {
-    const name = this.route.snapshot.paramMap.get('name');
-    const message = +this.route.snapshot.paramMap.get('message');
+    if (!this.kweet) {
+      const name = this.route.snapshot.paramMap.get('name');
+      const message = +this.route.snapshot.paramMap.get('message');
 
-    this.kweetService.getKweet(name, message).pipe(
-      tap(_ => this.log(`fetched kweet ${message} from user ${name}`)),
-      catchError(this.handleError<HttpResponse<Kweet>>(`retrieving kweet ${message} from ${name}`))
-    ).subscribe(kweet => this.OnReceive(kweet));
+      this.kweetService.getKweet(name, message).pipe(
+        tap(_ => this.errorHandlingService.log(`fetched kweet ${message} from user ${name}`)),
+        catchError(this.errorHandlingService.handleError<HttpResponse<Kweet>>(`retrieving kweet ${message} from ${name}`))
+      ).subscribe(kweet => this.OnReceive(kweet));
+    }
   }
 
   OnReceive(response: HttpResponse<Kweet>) {
@@ -76,26 +77,5 @@ export class MessageDetailsComponent implements OnInit {
       return this.currentLoggedInUser.role === 'Admin' || this.currentLoggedInUser.role === 'Moderator'
         || this.currentLoggedInUser.id === this.kweet.messager.id;
     }
-  }
-
-  /**
-   * Handle Http operation that failed.
-   * Let the app continue.
-   * @param operation - name of the operation that failed
-   * @param result - optional value to return as the observable result
-   */
-  private handleError<T>(operation = 'operation', result?: T) {
-    return (error: any): Observable<T> => {
-
-      // TODO: handling error request
-      console.error(error); // log to console instead
-
-      // Let the app keep running by returning an empty result.
-      return of(result as T);
-    };
-  }
-
-  private log(message: string) {
-    this.messageService.add('HeroService: ' + message);
   }
 }

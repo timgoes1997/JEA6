@@ -1,13 +1,18 @@
 <div class="container">
-  <div class="main" *ngIf="kweet">
+  <div class="message" *ngIf="kweet">
+    <p>Kweet type {{kweet.discriminator | kweetType}}</p>
+
     <a routerLink="/user/{{kweet.messager.username}}">
-    <h4>{{kweet.messager.username}} </h4>
+      <h4>{{kweet.messager.username}} </h4>
     </a>
+
     <div [innerHTML]="kweet | kweetMessage">
 
     </div>
-    <p>{{kweet.date}}</p>
-    <p>Kweet type {{kweet.discriminator | kweetType}}</p>
+
+    <a routerLink="/user/{{kweet.messager.username}}/{{kweet.id}}">
+      <p>{{kweet.date}}</p>
+    </a>
 
     <div class="options">
       <li>
