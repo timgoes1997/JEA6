@@ -2,7 +2,7 @@
   <a class="active" routerLink="/">Kwetter</a>
   <div *ngIf="loggedIn">
     <a routerLink="/user/{{loggedIn.username}}" (click)="reload()">{{loggedIn.username}}</a>
-    <a routerLink="/logout">Logout</a>
+    <a routerLink="/logout" (click)="reload()">Logout</a>
   </div>
   <div *ngIf="!loggedIn">
     <a routerLink="/login">Login</a>

@@ -90,6 +90,14 @@ export class AuthService {
     });
   }
 
+  getAuthHeaders(): HttpHeaders {
+    const authValue = this.getAuthToken(authHeaderKey);
+    if (authValue) {
+      return new HttpHeaders().append(authHeaderKey, authValue);
+    }
+    return new HttpHeaders();
+  }
+
   private registerReceive(http: HttpResponse<any>) {
     console.log('received register response');
     this.loginReceive(http);

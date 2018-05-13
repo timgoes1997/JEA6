@@ -14,13 +14,8 @@
       <p>{{kweet.date}}</p>
     </a>
 
-    <div class="options">
-      <li>
-        <ul *ngIf="equalsModeratorAdminOrUser()">
-          <button (click)="Delete()">remove</button>
-        </ul>
-      </li>
-    </div>
+    <app-message-delete [kweet]="kweet" (onMessageDeleted)="onReceiveDeleteKweet($event)">
+    </app-message-delete>
 
   </div>
 </div>

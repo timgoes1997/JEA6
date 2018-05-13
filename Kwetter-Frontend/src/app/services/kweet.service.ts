@@ -22,22 +22,22 @@ export class KweetService {
 
   getKweet(name: string, id: number): Observable<any> {
     const requestURL = `${this.messageURL}/user/${name}/${id}`;
-    return this.http.get<Kweet>(requestURL, {observe: 'response', headers: this.getAuthHeaders()});
+    return this.http.get<Kweet>(requestURL, {observe: 'response', headers: this.authService.getAuthHeaders()});
   }
 
   getKweets(name: string): Observable<any> {
     const requestURL = `${this.messageURL}/user/${name}/messages`;
-    return this.http.get<Kweet[]>(requestURL, {observe: 'response', headers: this.getAuthHeaders()});
+    return this.http.get<Kweet[]>(requestURL, {observe: 'response', headers: this.authService.getAuthHeaders()});
   }
 
   getTagKweets(tagName: string): Observable<any> {
     const requestURL = `${this.tagURL}/${tagName}`;
-    return this.http.get<Kweet[]>(requestURL, {observe: 'response', headers: this.getAuthHeaders()});
+    return this.http.get<Kweet[]>(requestURL, {observe: 'response', headers: this.authService.getAuthHeaders()});
   }
 
   deleteKweet(kweet: Kweet): boolean {
     const requestURL = `${this.messageURL}/${kweet.id}/remove`;
-    let headers = this.getAuthHeaders();
+    let headers = this.authService.getAuthHeaders();
     headers = headers.append('Content-Type', 'application/x-www-form-urlencoded');
     if (!headers.has(authHeaderKey)) {
       return false;
@@ -62,7 +62,7 @@ export class KweetService {
 
   createKweet(text: string): boolean {
     const requestURL = `${this.messageURL}/create`;
-    let headers = this.getAuthHeaders();
+    let headers = this.authService.getAuthHeaders();
     headers = headers.append('Content-Type', 'application/x-www-form-urlencoded');
     if (!headers.has(authHeaderKey)) {
       return false;
@@ -84,14 +84,5 @@ export class KweetService {
       console.log('updated current user kweet');
     }
   }
-
-  getAuthHeaders(): HttpHeaders {
-    const authValue = this.authService.getAuthToken(authHeaderKey);
-    if (authValue) {
-      return new HttpHeaders().append(authHeaderKey, authValue);
-    }
-    return new HttpHeaders();
-  }
-
   // createKweetHTML
 }

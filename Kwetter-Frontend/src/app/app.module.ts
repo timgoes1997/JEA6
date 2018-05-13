@@ -22,6 +22,8 @@ import { LogoutComponent } from './logout/logout.component';
 import { MessageCreateComponent } from './message-create/message-create.component';
 import {WebSocketService} from './services/web-socket.service';
 import {ErrorHandlingService} from './services/error-handling.service';
+import { MessageDeleteComponent } from './message-delete/message-delete.component';
+import {RestService} from './services/rest.service';
 
 
 @NgModule({
@@ -36,7 +38,8 @@ import {ErrorHandlingService} from './services/error-handling.service';
     KweetMessagePipe,
     NavBarComponent,
     LogoutComponent,
-    MessageCreateComponent
+    MessageCreateComponent,
+    MessageDeleteComponent
   ],
   imports: [
     BrowserModule,
@@ -52,7 +55,8 @@ import {ErrorHandlingService} from './services/error-handling.service';
     UserService,
     KweetService,
     WebSocketService,
-    ErrorHandlingService
+    ErrorHandlingService,
+    RestService
   ],
   bootstrap: [AppComponent]
 })

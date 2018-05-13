@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {User} from '../entities/User';
 import {HttpResponse} from '@angular/common/http';
@@ -18,7 +18,12 @@ export class MessageDetailsComponent implements OnInit {
   @Input()
   kweet: Kweet;
 
+  @Output()
+  onMessageDeleted: EventEmitter<Kweet> = new EventEmitter<Kweet>();
+
   currentLoggedInUser: User;
+
+  kweetUsingInput = false;
 
   constructor(private kweetService: KweetService,
               private errorHandlingService: ErrorHandlingService,
@@ -35,6 +40,7 @@ export class MessageDetailsComponent implements OnInit {
 
   ngOnInit() {
     if (!this.kweet) {
+      this.kweetUsingInput = true;
       const name = this.route.snapshot.paramMap.get('name');
       const message = +this.route.snapshot.paramMap.get('message');
 
@@ -61,6 +67,9 @@ export class MessageDetailsComponent implements OnInit {
   }
 
   onReceiveDeleteKweet(kweet: Kweet) {
+    if (!this.kweetUsingInput) {
+      this.onMessageDeleted.emit(kweet);
+    }
     if (kweet && this.kweet && this.kweet.id === kweet.id) {
       const name = this.route.snapshot.paramMap.get('name');
       this.router.navigateByUrl(`user/${name}`);
