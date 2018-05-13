@@ -27,7 +27,7 @@ export class MessageRepliesComponent implements OnInit {
       return;
     }
 
-    const uri = this.hasGetURI();
+    const uri = this.restService.getUri(this.kweet.links, rel, requestType);
     if (!uri) {
       console.log('no request type');
       return;
@@ -48,20 +48,9 @@ export class MessageRepliesComponent implements OnInit {
     }
   }
 
-  hasUri(): boolean {
-    return this.hasGetURI() != null;
-  }
-
-  hasGetURI(): string {
-    if (!this.kweet) {
-      return null;
+  OnReceiveUserCreatedReply(kweet: Kweet) {
+    if (kweet && this.kweets) {
+      this.kweets.unshift(kweet);
     }
-
-    for (const link of  this.kweet.links) {
-      if (link.rel === rel && link.requestType === requestType) {
-        return link.link;
-      }
-    }
-    return null;
   }
 }

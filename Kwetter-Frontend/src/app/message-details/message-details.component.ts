@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {User} from '../entities/User';
 import {HttpResponse} from '@angular/common/http';
@@ -7,6 +7,7 @@ import {KweetService} from '../services/kweet.service';
 import {catchError, tap} from 'rxjs/operators';
 import {AuthService} from '../services/auth.service';
 import {ErrorHandlingService} from '../services/error-handling.service';
+import {MessageRepliesComponent} from '../message-replies/message-replies.component';
 
 @Component({
   selector: 'app-message-details',
@@ -20,6 +21,9 @@ export class MessageDetailsComponent implements OnInit {
 
   @Output()
   onMessageDeleted: EventEmitter<Kweet> = new EventEmitter<Kweet>();
+
+  @ViewChild(MessageRepliesComponent)
+  private messageRepliesComponent: MessageRepliesComponent;
 
   currentLoggedInUser: User;
 
@@ -67,7 +71,7 @@ export class MessageDetailsComponent implements OnInit {
   }
 
   onReceiveDeleteKweet(kweet: Kweet) {
-    if (!this.kweetUsingInput && kweet) {
+    if (this.kweetUsingInput && kweet) {
       this.onMessageDeleted.emit(kweet);
     }
     if (kweet && this.kweet && this.kweet.id === kweet.id) {
@@ -76,15 +80,14 @@ export class MessageDetailsComponent implements OnInit {
     }
   }
 
-  Delete() {
-    console.log('test');
-    this.kweetService.deleteKweet(this.kweet);
-  }
-
-  equalsModeratorAdminOrUser(): boolean {
-    if (this.kweet && this.currentLoggedInUser && this.kweet.messager) {
-      return this.currentLoggedInUser.role === 'Admin' || this.currentLoggedInUser.role === 'Moderator'
-        || this.currentLoggedInUser.id === this.kweet.messager.id;
+  OnUserCreatedReply(kweet: Kweet) {
+    if (this.messageRepliesComponent) {
+      this.messageRepliesComponent.OnReceiveUserCreatedReply(kweet);
     }
   }
+
+  Reload() {
+    location.reload();
+  }
+
 }

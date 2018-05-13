@@ -34,7 +34,7 @@ export class MessageDeleteComponent implements OnInit {
       return;
     }
 
-    const uri = this.hasDeleteURI();
+    const uri = this.restService.getUri(this.kweet.links, rel, requestType);
     if (!uri) {
       console.log('no request type');
       return;
@@ -54,27 +54,7 @@ export class MessageDeleteComponent implements OnInit {
     }
   }
 
-  /*
-  private receiveDeleteKweet(kweet: Kweet) {
-    if (kweet && this.kweet && this.kweet.id === kweet.id) {
-      const name = this.route.snapshot.paramMap.get('name');
-      this.router.navigateByUrl(`user/${name}`);
-      location.reload();
-    }
-  }*/
-
   hasUri(): boolean {
-    return this.hasDeleteURI() != null;
-  }
-
-  hasDeleteURI(): string {
-    if (!this.kweet) { return null; }
-
-    for (const link of  this.kweet.links) {
-      if (link.rel === rel && link.requestType === requestType) {
-        return link.link;
-      }
-    }
-    return null;
+    return this.restService.hasUri(this.kweet.links, rel, requestType);
   }
 }

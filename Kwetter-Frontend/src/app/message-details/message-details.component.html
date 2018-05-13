@@ -10,7 +10,7 @@
 
     </div>
 
-    <a routerLink="/user/{{kweet.messager.username}}/{{kweet.id}}">
+    <a routerLink="/user/{{kweet.messager.username}}/{{kweet.id}}" (click)="Reload()">
       <p>{{kweet.date}}</p>
     </a>
 
@@ -18,8 +18,14 @@
     </app-message-delete>
 
   </div>
-  <div id="replies" class="replies" *ngIf="!kweetUsingInput">
-    <h2>Replies</h2>
-    <app-message-replies [kweet]="kweet"></app-message-replies>
+  <div class="other" *ngIf="!kweetUsingInput">
+    <div id="reply" class="replies" >
+      <h4>Create reply</h4>
+      <app-message-reply [kweet]="kweet" (onUserReply)="OnUserCreatedReply($event)"></app-message-reply>
+    </div>
+    <div id="replies" class="replies">
+      <h2>Replies</h2>
+      <app-message-replies [kweet]="kweet"></app-message-replies>
+    </div>
   </div>
 </div>

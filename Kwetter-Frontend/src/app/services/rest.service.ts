@@ -3,6 +3,7 @@ import {AuthService} from './auth.service';
 import {Kweet} from '../entities/Kweet';
 import {HttpClient, HttpParams, HttpResponse} from '@angular/common/http';
 import {Observable} from 'rxjs/Observable';
+import {Link} from '../entities/Link';
 
 @Injectable()
 export class RestService {
@@ -38,5 +39,18 @@ export class RestService {
       headers: headers,
       withCredentials: true
     });
+  }
+
+  hasUri(links: Link[], rel: string, requestType: string): boolean {
+    return this.getUri(links, rel, requestType) != null;
+  }
+
+  getUri(links: Link[], rel: string, requestType: string): string {
+    for (const link of  links) {
+      if (link.rel === rel && link.requestType === requestType) {
+        return link.link;
+      }
+    }
+    return null;
   }
 }
