@@ -59,7 +59,23 @@ export class AuthService {
   }
 
   logout() {
-    this.cookieService.delete(authHeaderKey);
+    //this.cookieService.delete(authHeaderKey);
+    const cookies = document.cookie.split('; ');
+    for (let c = 0; c < cookies.length; c++) {
+      const d = window.location.hostname.split('.');
+      while (d.length > 0) {
+        const cookieBase = encodeURIComponent(cookies[c]
+          .split(';')[0]
+          .split('=')[0]) + '=; expires=Thu, 01-Jan-1970 00:00:01 GMT; domain=' + d.join('.') + ' ;path=';
+        const p = location.pathname.split('/');
+        document.cookie = cookieBase + '/';
+        while (p.length > 0) {
+          document.cookie = cookieBase + p.join('/');
+          p.pop();
+        }
+        d.shift();
+      }
+    }
     this.loggedInUser.next(null);
   }
 
@@ -100,14 +116,14 @@ export class AuthService {
 
   private registerReceive(http: HttpResponse<any>) {
     console.log('received register response');
-    this.loginReceive(http);
+    // this.loginReceive(http);
   }
 
   private loginReceive(http: HttpResponse<any>) {
     if (http.status === 200) {
       const authKey = 'Authorization';
       const authValue = http.headers.get(authKey);
-      this.cookieService.set(authKey, authValue);
+      this.cookieService.set(authKey, authValue, 3, '/', window.location.hostname);
       this.loggedInUser.next(http.body);
       console.log(authValue);
       this.router.navigateByUrl('/');

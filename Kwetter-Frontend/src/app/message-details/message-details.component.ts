@@ -67,7 +67,7 @@ export class MessageDetailsComponent implements OnInit {
   }
 
   onReceiveDeleteKweet(kweet: Kweet) {
-    if (!this.kweetUsingInput) {
+    if (!this.kweetUsingInput && kweet) {
       this.onMessageDeleted.emit(kweet);
     }
     if (kweet && this.kweet && this.kweet.id === kweet.id) {
