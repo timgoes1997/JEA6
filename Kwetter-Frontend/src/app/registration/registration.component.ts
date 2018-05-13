@@ -5,7 +5,6 @@ import {logger} from 'codelyzer/util/logger';
 import {AuthService} from '../services/auth.service';
 import {AuthRegistrationObject} from '../entities/AuthRegistrationObject';
 import {HttpResponse} from '@angular/common/http';
-import {CookieService} from 'ng2-cookies';
 
 @Component({
   selector: 'app-registration',
@@ -20,7 +19,6 @@ export class RegistrationComponent implements OnInit {
 
   constructor(private fb: FormBuilder,
               private authService: AuthService,
-              private cookieService: CookieService,
               private router: Router) {
     this.createForm();
   }

@@ -1,8 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 import {of} from 'rxjs/observable/of';
-import {UserService} from '../services/user.service';
-import {CookieService} from 'ng2-cookies';
 import {MessageService} from '../services/message.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {User} from '../entities/User';
@@ -24,7 +22,6 @@ export class MessageDetailsComponent implements OnInit {
   currentLoggedInUser: User;
 
   constructor(private kweetService: KweetService,
-              private cookieService: CookieService,
               private messageService: MessageService,
               private authService: AuthService,
               private route: ActivatedRoute,

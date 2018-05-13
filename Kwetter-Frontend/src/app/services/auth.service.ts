@@ -64,6 +64,7 @@ export class AuthService {
   }
 
   logout() {
+    this.cookieService.delete(authHeaderKey);
     this.loggedInUser.next(null);
   }
 

@@ -1,7 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {UserService} from '../services/user.service';
 import {ActivatedRoute, Router} from '@angular/router';
-import {CookieService} from 'ng2-cookies';
 import {User} from '../entities/User';
 import {HttpResponse} from '@angular/common/http';
 import {catchError, tap} from 'rxjs/operators';
@@ -11,7 +10,6 @@ import {MessageService} from '../services/message.service';
 import {Kweet} from '../entities/Kweet';
 import {KweetService} from '../services/kweet.service';
 import {AuthService} from '../services/auth.service';
-import {Event} from '../enums/event.enum';
 import {$WebSocket, WebSocketSendMode} from 'angular2-websocket/angular2-websocket';
 
 const webSocketURL = 'ws://localhost:8080/Kwetter/listener/user/';
@@ -33,13 +31,12 @@ export class UserComponent implements OnInit {
 
   constructor(private userService: UserService,
               private authService: AuthService,
-              private cookieService: CookieService,
               private messageService: MessageService,
               private kweetService: KweetService,
               private route: ActivatedRoute,
               private router: Router) {
     this.authService.loggedInUser.subscribe(value => {
-      this.currentLoggedInUser = value;
+      this.onReceiveUser(value);
     });
     this.kweetService.userCreateKweet.subscribe(value => {
       this.onReceiveUserCreatedKweet(value);
@@ -54,6 +51,10 @@ export class UserComponent implements OnInit {
     this.getUser(name);
     this.getUserKweets(name);
     this.initSocketConnection(name);
+  }
+
+  onReceiveUser(user: User) {
+    this.currentLoggedInUser = user;
   }
 
   isUserLoggedInUser(): boolean {

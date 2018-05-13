@@ -1,11 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {User} from '../entities/User';
-import {of} from 'rxjs/observable/of';
-import {Observable} from 'rxjs/Observable';
 import {AuthService} from '../services/auth.service';
-import {MessageService} from '../services/message.service';
-import {HttpResponse} from '@angular/common/http';
-import {CookieService} from 'ng2-cookies';
 
 @Component({
   selector: 'app-nav-bar',
