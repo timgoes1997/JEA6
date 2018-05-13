@@ -24,6 +24,7 @@ import {WebSocketService} from './services/web-socket.service';
 import {ErrorHandlingService} from './services/error-handling.service';
 import { MessageDeleteComponent } from './message-delete/message-delete.component';
 import {RestService} from './services/rest.service';
+import { MessageRepliesComponent } from './message-replies/message-replies.component';
 
 
 @NgModule({
@@ -39,7 +40,8 @@ import {RestService} from './services/rest.service';
     NavBarComponent,
     LogoutComponent,
     MessageCreateComponent,
-    MessageDeleteComponent
+    MessageDeleteComponent,
+    MessageRepliesComponent
   ],
   imports: [
     BrowserModule,
