@@ -16,22 +16,25 @@
 
     <app-message-delete [kweet]="kweet" (onMessageDeleted)="onReceiveDeleteKweet($event)"></app-message-delete>
     <app-message-likes [kweet]="kweet"></app-message-likes>
-    <app-message-reply-count [kweet]="kweet"></app-message-reply-count>
-    <app-message-remessage-count [kweet]="kweet"></app-message-remessage-count>
 
   </div>
-  <div class="other" *ngIf="!kweetUsingInput">
-    <div id="reply" class="replies" >
-      <h4>Create reply</h4>
-      <app-message-reply [kweet]="kweet" (onUserReply)="OnUserCreatedReply($event)"></app-message-reply>
+  <div class="other">
+    <div id="reply" class="replies">
+      <app-message-reply-count [kweet]="kweet"></app-message-reply-count>
+      <div id="createReply" class="replies" *ngIf="!kweetUsingInput">
+        <h4>Create reply</h4>
+        <app-message-reply [kweet]="kweet" (onUserReply)="OnUserCreatedReply($event)"></app-message-reply>
+      </div>
+    </div>
+    <div id="remessage" class="replies">
+      <app-message-remessage-count [kweet]="kweet"></app-message-remessage-count>
+      <div id="createRemessage" class="replies" *ngIf="!kweetUsingInput">
+        <h4>Create remessage</h4>
+        <app-message-remessage [kweet]="kweet"></app-message-remessage>
+      </div>
     </div>
     <br>
-    <div id="remessage" class="replies" >
-      <h4>Create remessage</h4>
-      <app-message-remessage [kweet]="kweet"></app-message-remessage>
-    </div>
-    <br>
-    <div id="replies" class="replies">
+    <div id="replies" class="replies" *ngIf="!kweetUsingInput">
       <h2>Replies</h2>
       <app-message-replies [kweet]="kweet"></app-message-replies>
     </div>
