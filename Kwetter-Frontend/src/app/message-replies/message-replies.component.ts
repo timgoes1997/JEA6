@@ -9,7 +9,7 @@ import {Kweet} from '../entities/Kweet';
 export class MessageRepliesComponent implements OnInit {
 
   @Input()
-  kweet: Kweet;
+  kweets: Kweet[];
 
   constructor() { }
 

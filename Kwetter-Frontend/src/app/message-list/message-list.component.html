@@ -1,0 +1,6 @@
+<div class="messagelist">
+  <li *ngFor="let kweet of kweets">
+    <app-message-details [kweet]="kweet" (onMessageDeleted)="OnReceiveUserKweetDelete($event)">
+    </app-message-details>
+  </li>
+</div>

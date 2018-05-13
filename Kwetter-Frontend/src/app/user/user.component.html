@@ -10,10 +10,5 @@
     <p>{{user.role}}</p>
   </div>
   <app-message-create *ngIf="isUserLoggedInUser()"></app-message-create>
-  <div class="messagelist">
-    <li *ngFor="let kweet of kweets">
-      <app-message-details [kweet]="kweet" (onMessageDeleted)="OnReceiveUserKweetDelete($event)">
-      </app-message-details>
-    </li>
-  </div>
+  <app-message-list [kweets]="kweets"></app-message-list>
 </div>

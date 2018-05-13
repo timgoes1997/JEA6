@@ -25,6 +25,7 @@ import {ErrorHandlingService} from './services/error-handling.service';
 import { MessageDeleteComponent } from './message-delete/message-delete.component';
 import {RestService} from './services/rest.service';
 import { MessageRepliesComponent } from './message-replies/message-replies.component';
+import { MessageListComponent } from './message-list/message-list.component';
 
 
 @NgModule({
@@ -41,7 +42,8 @@ import { MessageRepliesComponent } from './message-replies/message-replies.compo
     LogoutComponent,
     MessageCreateComponent,
     MessageDeleteComponent,
-    MessageRepliesComponent
+    MessageRepliesComponent,
+    MessageListComponent
   ],
   imports: [
     BrowserModule,
