@@ -38,7 +38,6 @@ export class MessageLikesComponent implements OnInit {
     this.restService.getUriWithAuthHeaders<number>(uri).subscribe(
       likes => this.OnReceiveKweetLikes(likes)
     );
-    console.log('executed delete');
 
     const hasUri = this.restService.getUri(this.kweet.links, relHas, requestType);
     if (!hasUri) {

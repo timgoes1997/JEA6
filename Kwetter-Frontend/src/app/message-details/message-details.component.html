@@ -14,11 +14,10 @@
       <p>{{kweet.date}}</p>
     </a>
 
-    <app-message-delete [kweet]="kweet" (onMessageDeleted)="onReceiveDeleteKweet($event)">
-    </app-message-delete>
-
-    <app-message-likes [kweet]="kweet">
-    </app-message-likes>
+    <app-message-delete [kweet]="kweet" (onMessageDeleted)="onReceiveDeleteKweet($event)"></app-message-delete>
+    <app-message-likes [kweet]="kweet"></app-message-likes>
+    <app-message-reply-count [kweet]="kweet"></app-message-reply-count>
+    <app-message-remessage-count [kweet]="kweet"></app-message-remessage-count>
 
   </div>
   <div class="other" *ngIf="!kweetUsingInput">

@@ -70,7 +70,7 @@ public class MessageBean {
     @UserTokenAuthorization()
     @Path("{id}/remessagescount")
     public long getMessageRemessagesCountByMessageID(@Context ContainerRequestContext request, @PathParam("id") long id) {
-        return messageService.getReplyCount(id);
+        return messageService.getRemessageCount(id);
     }
 
     @GET
