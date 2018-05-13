@@ -35,24 +35,23 @@ export class KweetService {
     return this.http.get<Kweet[]>(requestURL, {observe: 'response'});
   }
 
-  deleteKweet(kweet: Kweet) {
+  deleteKweet(kweet: Kweet): boolean {
     const requestURL = `${this.messageURL}/${kweet.id}/remove`;
-    const authValue = this.authService.getAuthToken(authHeaderKey);
-    if (authValue) {
-      const headers = new HttpHeaders()
-        .append(authHeaderKey, authValue)
-        .append('Content-Type', 'application/x-www-form-urlencoded');
-      this.http.delete<Kweet>(requestURL, {
-        observe: 'response',
-        headers: headers,
-        withCredentials: true
-      }).subscribe(value => this.kweetDelete(value));
-    } else {
+    let headers = this.getAuthHeaders();
+    headers = headers.append('Content-Type', 'application/x-www-form-urlencoded');
+    if (!headers.has(authHeaderKey)) {
       return false;
     }
+    this.http.delete<Kweet>(requestURL, {
+      observe: 'response',
+      headers: headers,
+      withCredentials: true
+    }).subscribe(value => this.kweetDelete(value));
+    return true;
+
   }
 
-  private kweetDelete(http: HttpResponse<any>){
+  private kweetDelete(http: HttpResponse<any>) {
     console.log('received kweet delete');
     if (http.status === 200) {
       this.userDeletedKweet.next(http.body);
@@ -63,24 +62,20 @@ export class KweetService {
 
   createKweet(text: string): boolean {
     const requestURL = `${this.messageURL}/create`;
-    const authValue = this.authService.getAuthToken(authHeaderKey);
-    if (authValue) {
-      const headers = new HttpHeaders()
-        .append(authHeaderKey, authValue)
-        .append('Content-Type', 'application/x-www-form-urlencoded');
-      const body = new HttpParams()
-        .set('message', text)
-        .set('messageType', 'Public');
-      this.http.post<Kweet>(requestURL, body, {
-        observe: 'response',
-        headers: headers,
-        withCredentials: true
-      }).subscribe(value => this.kweetReceive(value));
-    } else {
+    let headers = this.getAuthHeaders();
+    headers = headers.append('Content-Type', 'application/x-www-form-urlencoded');
+    if (!headers.has(authHeaderKey)) {
       return false;
     }
+    const body = new HttpParams()
+      .set('message', text)
+      .set('messageType', 'Public');
+    this.http.post<Kweet>(requestURL, body, {
+      observe: 'response',
+      headers: headers,
+      withCredentials: true
+    }).subscribe(value => this.kweetReceive(value));
   }
-
 
   private kweetReceive(http: HttpResponse<any>) {
     console.log('received kweet response');
@@ -88,6 +83,14 @@ export class KweetService {
       this.userCreateKweet.next(http.body);
       console.log('updated current user kweet');
     }
+  }
+
+  getAuthHeaders(): HttpHeaders {
+    const authValue = this.authService.getAuthToken(authHeaderKey);
+    if (authValue) {
+      return new HttpHeaders().append(authHeaderKey, authValue);
+    }
+    return new HttpHeaders();
   }
 
   // createKweetHTML

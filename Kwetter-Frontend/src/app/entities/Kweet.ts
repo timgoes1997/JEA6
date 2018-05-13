@@ -1,5 +1,6 @@
 import {Tag} from './Tag';
 import {User} from './User';
+import {Link} from './Link';
 
 export class Kweet {
   constructor(
@@ -10,8 +11,8 @@ export class Kweet {
     public type: string,
     public tags: Tag[],
     public likes: User[],
+    public links: Link[],
     public mentions: User[],
     public messager: User) {
-
   }
 }
