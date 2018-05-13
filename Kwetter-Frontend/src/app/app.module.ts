@@ -30,6 +30,7 @@ import { MessageReplyComponent } from './message-reply/message-reply.component';
 import { MessageLikesComponent } from './message-likes/message-likes.component';
 import { MessageLikesLikeComponent } from './message-likes-like/message-likes-like.component';
 import { MessageLikesDislikeComponent } from './message-likes-dislike/message-likes-dislike.component';
+import { MessageRemessageComponent } from './message-remessage/message-remessage.component';
 
 
 @NgModule({
@@ -51,7 +52,8 @@ import { MessageLikesDislikeComponent } from './message-likes-dislike/message-li
     MessageReplyComponent,
     MessageLikesComponent,
     MessageLikesLikeComponent,
-    MessageLikesDislikeComponent
+    MessageLikesDislikeComponent,
+    MessageRemessageComponent
   ],
   imports: [
     BrowserModule,

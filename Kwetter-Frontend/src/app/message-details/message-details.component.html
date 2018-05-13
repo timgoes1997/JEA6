@@ -26,6 +26,12 @@
       <h4>Create reply</h4>
       <app-message-reply [kweet]="kweet" (onUserReply)="OnUserCreatedReply($event)"></app-message-reply>
     </div>
+    <br>
+    <div id="remessage" class="replies" >
+      <h4>Create remessage</h4>
+      <app-message-remessage [kweet]="kweet"></app-message-remessage>
+    </div>
+    <br>
     <div id="replies" class="replies">
       <h2>Replies</h2>
       <app-message-replies [kweet]="kweet"></app-message-replies>

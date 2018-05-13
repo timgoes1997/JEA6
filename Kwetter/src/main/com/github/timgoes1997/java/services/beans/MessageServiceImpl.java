@@ -3,10 +3,7 @@ package com.github.timgoes1997.java.services.beans;
 import com.github.timgoes1997.java.authentication.Constants;
 import com.github.timgoes1997.java.dao.interfaces.MessageDAO;
 import com.github.timgoes1997.java.dao.interfaces.UserDAO;
-import com.github.timgoes1997.java.entity.message.InitialMessage;
-import com.github.timgoes1997.java.entity.message.Message;
-import com.github.timgoes1997.java.entity.message.MessageType;
-import com.github.timgoes1997.java.entity.message.ReplyMessage;
+import com.github.timgoes1997.java.entity.message.*;
 import com.github.timgoes1997.java.entity.user.User;
 import com.github.timgoes1997.java.services.ServiceHelper;
 import com.github.timgoes1997.java.services.beans.interfaces.MessageService;
@@ -138,8 +135,41 @@ public class MessageServiceImpl implements MessageService {
                     messageDAO.generateTags(text), messageDAO.generateMentions(text),
                     message);
             messageDAO.create(reply);
-            messageEvent.fire(reply);
+            //messageEvent.fire(reply);
             return reply;
+        } catch (Exception e) {
+            ServiceHelper.checkIfWebApplicationExceptionAndThrow(e);
+            throw new InternalServerErrorException("Something went wrong while creating your " +
+                    "reply message due to a internal server exception, please contact a administrator :(");
+        }
+    }
+
+    @Override
+    public Remessage createRemessageMessage(ContainerRequestContext requestContext, long messageID, String text) {
+        try {
+            return createRemessageMessage((User) requestContext.getProperty(Constants.USER_REQUEST_STRING), messageID, text);
+        } catch (Exception e) {
+            ServiceHelper.checkIfWebApplicationExceptionAndThrow(e);
+            throw new InternalServerErrorException("Something went wrong while removing your " +
+                    "message due to a internal server exception, please contact a administrator :(");
+        }
+    }
+
+    @Override
+    public Remessage createRemessageMessage(User user, long messageID, String text) {
+        try {
+            if (!messageDAO.exists(messageID)) {
+                throw new NotFoundException("Message you tried to reply to doesn't exist");
+            }
+
+            Message message = messageDAO.find(messageID);
+            Remessage remessage = new Remessage(text,
+                    message.getType(), user, new Date(),
+                    messageDAO.generateTags(text), messageDAO.generateMentions(text),
+                    message);
+            messageDAO.create(remessage);
+            messageEvent.fire(remessage);
+            return remessage;
         } catch (Exception e) {
             ServiceHelper.checkIfWebApplicationExceptionAndThrow(e);
             throw new InternalServerErrorException("Something went wrong while creating your " +

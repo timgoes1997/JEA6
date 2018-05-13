@@ -39,6 +39,7 @@ public class MessageUriBuilder {
         message.addLink(getDirectUri(uriInfo, message));
         message.addLink(getRepliesUri(uriInfo, message));
         message.addLink(getCreateReplyUri(requestContext, uriInfo, message));
+        message.addLink(getCreateRemessageUri(requestContext, uriInfo, message));
         message.addLink(getRemoveUri(requestContext, uriInfo, message));
         message.addLink(getAddLikeURI(requestContext,uriInfo, message));
         message.addLink(getRemoveLikeURI(requestContext,uriInfo, message));
@@ -86,7 +87,26 @@ public class MessageUriBuilder {
             e.printStackTrace();
             return null;
         }
+    }
 
+    private Link getCreateRemessageUri(ContainerRequestContext requestContext, UriInfo uriInfo, Message message) {
+        try {
+            Method method = MessageBean.class.getMethod("createRemessage", ContainerRequestContext.class, long.class, String.class);
+            UserTokenAuthorization tokenAuthorization = method.getAnnotation(UserTokenAuthorization.class);
+            if (!hasPermission(requestContext, tokenAuthorization, message)) return null;
+
+            String uri = uriInfo.getBaseUriBuilder()
+                    .path(MessageBean.class)
+                    .path(method)
+                    .resolveTemplate("id", message.getId())
+                    .build()
+                    .toString();
+            return new Link(uri, "remessage", HttpMethod.POST);
+
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     private Link getRemoveUri(ContainerRequestContext requestContext, UriInfo uriInfo, Message message) {

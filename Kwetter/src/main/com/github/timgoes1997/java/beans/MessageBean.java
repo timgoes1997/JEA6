@@ -3,6 +3,7 @@ package com.github.timgoes1997.java.beans;
 import com.github.timgoes1997.java.authentication.token.interceptor.UserTokenAuthorization;
 import com.github.timgoes1997.java.entity.message.Message;
 import com.github.timgoes1997.java.entity.message.MessageType;
+import com.github.timgoes1997.java.entity.message.Remessage;
 import com.github.timgoes1997.java.entity.message.ReplyMessage;
 import com.github.timgoes1997.java.entity.user.UserRole;
 import com.github.timgoes1997.java.hateoas.Link;
@@ -129,6 +130,16 @@ public class MessageBean {
     @Path("{id}/reply")
     public ReplyMessage createReply(@Context ContainerRequestContext request, @PathParam("id") long messageID, @FormParam("text") String text) {
         return messageUriBuilder.buildReplyMessageUriLinks(request, uriInfo, messageService.createReplyMessage(request, messageID, text));
+    }
+
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @UserTokenAuthorization(requiresUser = true,
+            allowed = {UserRole.User, UserRole.Moderator, UserRole.Admin},
+            onlySelf = true)
+    @Path("{id}/remessage")
+    public Remessage createRemessage(@Context ContainerRequestContext request, @PathParam("id") long messageID, @FormParam("text") String text) {
+        return messageUriBuilder.buildRemessageUriLinks(request, uriInfo, messageService.createRemessageMessage(request, messageID, text));
     }
 
     @POST

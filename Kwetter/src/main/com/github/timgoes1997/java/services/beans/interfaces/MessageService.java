@@ -2,6 +2,7 @@ package com.github.timgoes1997.java.services.beans.interfaces;
 
 import com.github.timgoes1997.java.entity.message.Message;
 import com.github.timgoes1997.java.entity.message.MessageType;
+import com.github.timgoes1997.java.entity.message.Remessage;
 import com.github.timgoes1997.java.entity.message.ReplyMessage;
 import com.github.timgoes1997.java.entity.user.User;
 
@@ -20,6 +21,8 @@ public interface MessageService {
     Message createMessage(User user, String text, MessageType messageType);
     ReplyMessage createReplyMessage(ContainerRequestContext requestContext, long messageID, String text);
     ReplyMessage createReplyMessage(User user, long messageID, String text);
+    Remessage createRemessageMessage(ContainerRequestContext requestContext, long messageID, String text);
+    Remessage createRemessageMessage(User user, long messageID, String text);
 
     Message removeMessage(ContainerRequestContext requestContext, long messageID);
     Message removeMessage(User user, long messageID);
